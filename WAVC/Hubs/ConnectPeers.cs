@@ -20,9 +20,18 @@ namespace WAVC.Hubs
         }
         public async Task NewUser(string peerId)
         {
-            var user = await userManager.GetUserAsync(Context.User);
+            string name;
+            try
+            {
+                var user = await userManager.GetUserAsync(Context.User);
+                name = user.UserName;
+            }
+            catch
+            {
+                name = "Guest";
+            }
             //var session = new Session() { PeerId = peerId, User = user };
-            await Clients.Others.SendAsync("NewUserInfo", new { name=user.UserName, peerId= peerId});
+            await Clients.Others.SendAsync("NewUserInfo", new { name, peerId});
             /*if (context.Sessions.Find(peerId) != null)
             {
                 //error - already registered id
