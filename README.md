@@ -1,9 +1,14 @@
-# WAVC
-Web Application for Video Conferences
+### WAVC
 
-After cloning this repository change ConnectionStrings in appsettings.json file to match your database.
-By default code will connect to MSSQL server.
+#Tablica Wirtualna
 
-Either by Visual Studio command prompt or by opening solution in Visual Studio and clicking Tools -> NuGet Package Manager -> Package Manager Console: type in command "Update-Database".
-
-After update is complete you should be ready to go.
+Przy próbie statycznego otwarcia strony, może wystąpić błąd spowodowany przez politykę bezpieczeństwa CORS.
+Należy wtedy
+1. włączyć przeglądarkę w niebezpiecznym trybie. Wskazówki można znaleźć w linku poniżej
+  https://stackoverflow.com/questions/3102819/disable-same-origin-policy-in-chrome
+lub
+2. uruchomić dowolny lokalny serwer http
+  Najprościej za pomocą narzędzia http-server
+  1. należy pobrać node.js
+  2. npm install http-server -g
+  3. http-server "<ścieżka do katalogu"
