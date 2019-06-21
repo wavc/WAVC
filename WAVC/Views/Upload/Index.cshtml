@@ -9,28 +9,32 @@
         align-items: center;
         display: flex;
         justify-content: center;
-        z-index: 10000;
+        z-index: -1;
     }
 
     .hide_element {
         display: none;
-        z-index: 9999;
     }
 
     .drag_entered {
+        z-index: 10000 !important;
         background-color: rgba(128, 128, 128, 0.4);
     }
 </style>
 <script>
 
-    var overlay, overlayText, entered = 0;
+    var overlay, overlayText, filesInput, entered = 0;
     window.onload = () => {
         overlay = document.getElementById("overlay");
         overlayText = document.getElementById("overlay_text");
-        overlay.addEventListener("dragenter", StartedDragging);
-        overlay.addEventListener("dragleave", EndedDragging);
-        overlay.addEventListener("dragover", PreventOpen);
-        overlay.addEventListener("drop", Dropped);
+        filesInput = document.getElementById("files");
+
+        document.body.addEventListener("dragenter", StartedDragging);
+        document.body.addEventListener("dragleave", EndedDragging);
+        document.body.addEventListener("dragover", PreventOpen);
+        document.body.addEventListener("drop", Dropped);
+
+        filesInput.addEventListener("change", FilesChanged);
     }
     function StartedDragging(e) {
         entered++;
@@ -52,10 +56,27 @@
     function Dropped(e) {
         PreventOpen(e);
         EndedDragging(e);
-        //...
-        console.log(e);
+        filesInput.files = e.dataTransfer.files;
+        filesInput.dispatchEvent(new Event("change"));
+    }
+    function FilesChanged() {
+        var totalSize = 0;
+        for (var i = 0; i < filesInput.files.length; i++) {
+            totalSize += filesInput.files[i].size;
+        }
+        console.log(totalSize);
+        var form = document.getElementById("form");
+        var progressBar = document.getElementById("progress");
+        var ajax = new XMLHttpRequest();
+        ajax.upload.addEventListener("progress", (e) => progressBar.value = 100*e.loaded/totalSize);
+        ajax.open("POST", "/Upload/Upload");
+        ajax.send(new FormData(form));
     }
 </script>
+<form id="form" asp-action="Upload">
+    <input id="files" type="file" name="files" multiple />
+</form>
+<input id="progress" type="range" min="0" max="100" value="0" disabled/>
 <div id="overlay">
     <div id="overlay_text" class="hide_element">
         Drop Files Here
