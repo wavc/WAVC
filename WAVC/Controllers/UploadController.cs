@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WAVC.Controllers
 {
-    public class WebRtcController : Controller
+    public class UploadController : Controller
     {
         public IActionResult Index()
         {

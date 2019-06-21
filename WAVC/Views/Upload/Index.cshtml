@@ -1,0 +1,63 @@
+﻿<style>
+    #overlay {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        color: white;
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        z-index: 10000;
+    }
+
+    .hide_element {
+        display: none;
+        z-index: 9999;
+    }
+
+    .drag_entered {
+        background-color: rgba(128, 128, 128, 0.4);
+    }
+</style>
+<script>
+
+    var overlay, overlayText, entered = 0;
+    window.onload = () => {
+        overlay = document.getElementById("overlay");
+        overlayText = document.getElementById("overlay_text");
+        overlay.addEventListener("dragenter", StartedDragging);
+        overlay.addEventListener("dragleave", EndedDragging);
+        overlay.addEventListener("dragover", PreventOpen);
+        overlay.addEventListener("drop", Dropped);
+    }
+    function StartedDragging(e) {
+        entered++;
+        if (entered == 1) {
+            overlay.classList.add("drag_entered");
+            overlayText.classList.remove("hide_element");
+        }
+    }
+    function PreventOpen(e) {
+        e.preventDefault();
+    }
+    function EndedDragging(e) {
+        entered--;
+        if (entered == 0) {
+            overlay.classList.remove("drag_entered");
+            overlayText.classList.add("hide_element");
+        }
+    }
+    function Dropped(e) {
+        PreventOpen(e);
+        EndedDragging(e);
+        //...
+        console.log(e);
+    }
+</script>
+<div id="overlay">
+    <div id="overlay_text" class="hide_element">
+        Drop Files Here
+    </div>
+</div>
