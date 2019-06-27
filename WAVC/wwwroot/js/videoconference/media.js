@@ -1,7 +1,6 @@
 var audioDevices = [];
 var videoDevices = [];
 var localVideo;
-var myStream = { s: null };
 
 function SetUpMedia() {
     localVideo = document.getElementById("camera_preview");
@@ -26,17 +25,21 @@ function SetUpMedia() {
     UpdateVideo({ video: true });
 }
 function StopVideo() {
-    if (myStream.s != null) {
-        myStream.s.getTracks().forEach(function (track) {
+    if (localVideo.srcObject != null) {
+        localVideo.srcObject.getTracks().forEach(function (track) {
             track.stop();
         });
-        myStream.s = null;
+        localVideo.srcObject = null;
     }
 }
-function UpdateVideo(constraints) {
+function UpdateVideo(constraints, OnStream) {
     StopVideo();
     navigator.mediaDevices.getUserMedia(constraints).
-        then(stream => { localVideo.srcObject = stream; myStream.s = stream; }).
+        then(stream => {
+            localVideo.srcObject = stream;
+            if(typeof(OnStream)!="undefined")
+                OnStream(stream);
+        }).
         catch((msg) => console.log(msg, constraints));
 }
 
@@ -66,9 +69,5 @@ function UpdateButton() {
         audio: selectedAudioDevice,
         video: selectedVideoDevice
     };
-    UpdateVideo(constraints);
-
-    WaitForObject(myStream, s => s.s == null, () => {
-        UpdateCall();
-    });
+    UpdateVideo(constraints, (x) => UpdateCall());
 }

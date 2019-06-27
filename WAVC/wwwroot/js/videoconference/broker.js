@@ -12,7 +12,7 @@ function SetUpConnection() {
     connection.on("UserQuit", peerId => {
         console.log("User " + peerId + " quitted");
         var callId = calls.filter(c => c.peer == peerId)[0].id;
-        DeleteElement(callId);
+        DeleteParent(callId);
     });
     
     WaitForObject(peer, (p) => typeof(p.id)==="undefined", (object) => {

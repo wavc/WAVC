@@ -13,9 +13,10 @@
             WaitForMultipleObjects(objectArray, Condition, Handler);
     });
 }*/
-function DeleteElement(elementName) {
+function DeleteParent(elementName) {
     try {
         var videoToDelete = document.getElementById(elementName);
-        videoToDelete.parentElement.removeChild(videoToDelete);
+        var parent = videoToDelete.parentElement;
+        parent.parentElement.removeChild(parent);
     } catch{ }
 }

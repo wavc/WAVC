@@ -1,4 +1,4 @@
-﻿var peer, calls = [];
+﻿var peer, calls = [], names = [];
 function SetUpPeer() {
     var myStream = document.getElementById("camera_preview");
     peer = new Peer();
@@ -27,18 +27,22 @@ function SetUpCall(call) {
 
         AddRemoteVideoElement(remoteStream, call.id, remoteName);
         calls.push(call);
+        names.push(remoteName);
     });
     call.on('close', function () {
         console.log("Closed Stream");
-        calls = calls.filter((c) => {
-            return c !== call;
-        });
-        DeleteElement(call.id);
+
+        index = calls.indexOf(call);
+        calls.splice(index, 1);
+        names.splice(index, 1);
+
+        DeleteParent(call.id);
     });
 }
 function UpdateCall() {
     for (var i = 0; i < calls.length; i++) {
-        MakeCall({ peerId: calls[i].peer });
+        console.log(names[i]);
+        MakeCall({ peerId: calls[i].peer, name: names[i]});
         calls[i].close();
     }
 }

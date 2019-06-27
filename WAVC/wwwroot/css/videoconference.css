@@ -4,7 +4,11 @@
     flex-wrap: wrap;
 }
 
-#video_container > * {
+#video_container > div {
     display: inline-block;
     max-width: 50%;
+}
+
+#video_container > div > video {
+    max-width: 100%;
 }
