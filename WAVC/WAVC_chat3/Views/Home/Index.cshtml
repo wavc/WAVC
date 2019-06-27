@@ -1,0 +1,48 @@
+﻿@page
+<style>
+    #chat-div {
+        border: 1px solid black
+    }
+    ul {
+        list-style-type: none;
+    }
+    .message-right {
+        text-align: right
+    }
+    .message-left {
+        text-align: left
+    }
+    .author{
+        font-weight: bold;
+    }
+</style>
+<div class="container">
+    <div class="row">&nbsp;</div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div class="col-6">
+            User:
+            <br />
+            <input type="text" id="userInput" />
+            <br />
+            Message:
+            <br />
+            <input type="text" id="messageInput" />
+            <input type="button" id="sendButton" value="Send Message" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <hr />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">&nbsp;</div>
+        <div id="chat-div"class="col-6">
+            <h3>CHAT</h3>
+            <ul id="messagesList"></ul>
+        </div>
+    </div>
+</div>
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
