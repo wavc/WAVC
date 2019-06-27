@@ -1,0 +1,10 @@
+﻿#video_container {
+    max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#video_container > * {
+    display: inline-block;
+    max-width: 50%;
+}

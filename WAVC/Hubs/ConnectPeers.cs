@@ -20,28 +20,23 @@ namespace WAVC.Hubs
         }
         public async Task NewUser(string peerId)
         {
-            var user = await userManager.GetUserAsync(Context.User);
-            //var session = new Session() { PeerId = peerId, User = user };
-            await Clients.Others.SendAsync("NewUserInfo", new { name=user.UserName, peerId= peerId});
-            /*if (context.Sessions.Find(peerId) != null)
+            string name;
+            try
             {
-                //error - already registered id
+                var user = await userManager.GetUserAsync(Context.User);
+                name = user.UserName;
             }
-            var users = context.Sessions
-                .Select(s => new { name = s.User.UserName, peerId = s.PeerId }).ToArray();
-
-            context.Add(session);
-            await context.SaveChangesAsync();
-
-            await Clients.Caller.SendAsync("UsersInfo", users);*/
+            catch
+            {
+                name = "Guest";
+            }
+            
+            await Clients.All.SendAsync("NewUserInfo", new { name, peerId});
 
         }
         public async Task Quit(string peerId)
         {
             await Clients.Others.SendAsync("UserQuit", peerId);
-            /*var session = context.Sessions.Find(peerId);
-            context.Remove(session);
-            await context.SaveChangesAsync();*/
         }
     }
 }

@@ -1,74 +1,25 @@
-﻿<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
+﻿<link rel="stylesheet" href="~/css/videoconference.css">
+<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
 <script src="~/lib/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/device_selector.js"></script>
-<script src="~/js/media.js"></script>
+<script src="~/js/videoconference/util.js"></script>
+<script src="~/js/videoconference/device_selector.js"></script>
+<script src="~/js/videoconference/media.js"></script>
+<script src="~/js/videoconference/peerConnection.js"></script>
+<script src="~/js/videoconference/broker.js"></script>
 
 <div id="audio_select"></div>
 <div id="video_select"></div>
 <div id="update_button"></div>
 <input type="button" value="Stop" onclick="StopVideo()" /><br />
 <span id="peer_id"></span><br />
-<video id="camera_preview" autoplay playinline></video>
-<div id="foreign_cameras"></div>
+<div id="video_container">
+    <div>
+        My Preview <br />
+        <video id="camera_preview" autoplay playinline></video>
+    </div>
+</div>
 <script>
-
-    Main();
-    var peer = new Peer();
-    var myStream = document.getElementById("camera_preview");
-    function WaitForId(object, Handler) {
-        if (typeof (object.id) === "undefined")
-            setTimeout(() => { WaitForId(object, Handler); }, 200);
-        else Handler(object);
-
-    }
-    function OnCall(remoteStream) {
-        console.log("Got remote stream");
-        var container = document.getElementById("foreign_cameras");
-
-        var video = document.createElement("video");
-        video.setAttribute("autoplay", "");
-        video.setAttribute("playinline", "");
-        video.srcObject = remoteStream;
-        container.appendChild(video);
-    }
-    function ConnectPeers(foreign_peer) {
-        var call = peer.call(foreign_peer, myStream.srcObject);
-        call.on('stream', function (remoteStream) {
-            OnCall(remoteStream);
-        });
-    }
-
-    peer.on('call', function (call) {
-        setTimeout(() => {
-            call.answer(myStream.srcObject);
-        }, 1000); //wait or video to get set up (gotta do better solution)
-        call.on('stream', function (remoteStream) {
-            OnCall(remoteStream);
-        });
-    });
-    peer.on('close', (e) => { console.log(e); });
-    peer.on('disconnected', (e) => { console.log(e); });
-    peer.on('error', (e) => { console.log(e); });
-
-    var connection = new signalR.HubConnectionBuilder().withUrl("/conn_peer").build();
-    connection.on("NewUserInfo", user => {
-        console.log("new user: " + user.name);
-        ConnectPeers(user.peerId);
-    });
-    connection.on("UserQuit", peerId => {
-        console.log("User " + peerId + " quitted");
-    })
-    WaitForId(peer, (object) => {
-        document.getElementById("peer_id").innerHTML = object.id;
-
-        connection.start().then(() => {
-            console.log(peer.id);
-            connection.invoke("NewUser", peer.id);
-        }).catch(err => {
-            return console.error(err.toString());
-        });
-    });
-    window.onbeforeunload = () => {
-        connection.invoke("Quit", peer.id);
-    };
+    SetUpMedia();
+    SetUpPeer();
+    SetUpConnection();
 </script>
