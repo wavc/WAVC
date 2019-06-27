@@ -1,0 +1,28 @@
+﻿<link rel="stylesheet" href="~/css/videoconference.css">
+﻿@{ 
+    ViewData["Title"] = "Call";
+}
+<script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
+<script src="~/lib/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/videoconference/util.js"></script>
+<script src="~/js/videoconference/device_selector.js"></script>
+<script src="~/js/videoconference/media.js"></script>
+<script src="~/js/videoconference/peerConnection.js"></script>
+<script src="~/js/videoconference/broker.js"></script>
+
+<div id="audio_select"></div>
+<div id="video_select"></div>
+<div id="update_button"></div>
+<input type="button" value="Stop" onclick="StopVideo()" /><br />
+<span id="peer_id"></span><br />
+<div id="video_container">
+    <div>
+        My Preview <br />
+        <video id="camera_preview" autoplay playinline></video>
+    </div>
+</div>
+<script>
+    SetUpMedia();
+    SetUpPeer();
+    SetUpConnection();
+</script>
