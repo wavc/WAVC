@@ -1,0 +1,12 @@
+﻿<link rel="stylesheet" href="~/css/drag_and_drop.min.css" />
+<script src="~/js/file_upload.min.js"></script>
+
+<form id="form" asp-action="Upload">
+    <input id="files" type="file" name="files" multiple />
+</form>
+<input id="progress" type="range" min="0" max="100" value="0" disabled />
+<div id="overlay">
+    <div id="overlay_text" class="hide_element">
+        Drop Files Here
+    </div>
+</div>

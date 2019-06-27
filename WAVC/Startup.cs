@@ -13,7 +13,6 @@ using WAVC.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WAVC.Models;
-using WAVC.Hubs;
 
 namespace WAVC
 {
@@ -67,7 +66,6 @@ namespace WAVC
             app.UseAuthentication();
             app.UseSignalR(routes =>
             {
-                routes.MapHub<ConnectPeers>("/conn_peer");
             });
 
             app.UseMvc(routes =>
