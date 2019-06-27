@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Virtual Board</title>
+	<link href="stylesheets/styles.css" rel="stylesheet" type="text/css">
+	<script type = "text/javascript" src="scripts/paper-full.js"></script>
+<script type = "text/paperscript" src="scripts/scripts.js" canvas="canvas"></script>
+</head>
+<body>
+	<h1>Virtual Board Prototype</h1>
+    <script>//window.app.recangle.activate();</script>
+<div id="buttons">
+        <button id="rectangleButton" onClick="app.rectangle.activate()">Rectangle</button>
+        <button id="circleButton" onClick = "app.circle.activate()">Circle</button>
+        <button id="lineButton" onClick="app.line.activate()">Line</button>
+        <button id="penButton" onClick="app.pen.activate()">Pen</button>
+        <button id="ellipseButton" onClick="app.ellipse.activate()">Ellipse</button>
+        <button id="handButton" onClick="app.hand.activate()">HAND</button>
+        <button id="fillButton" onClick="app.filler.activate()">Fill</button>
+        <button id="eraserButton" onClick="app.eraser.activate()">Eraser</button>
+       <div class="slidecontainer">
+           <span> Stroke Width:</span>
+          <input type="range" min="1" max="20" value="2" class="slider" id="strokeWidthSlider">
+        </div>
+        <div>
+            <span>Stroke Color: </span>
+            <input type ="color" id ="strokePicker" value = "#000000"/>
+            <span>Fill Color: </span>
+            <input type ="color" id ="fillPicker" value = "#FFFFFF" />
+    </div>
+    </div>
+	<canvas reload id="canvas"></canvas>
+</body>
+</html>
