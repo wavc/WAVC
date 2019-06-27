@@ -29,8 +29,7 @@ namespace WAVC.Hubs
             catch
             {
                 name = "Guest";
-            }
-            
+            }            
             await Clients.All.SendAsync("NewUserInfo", new { name, peerId});
 
         }
