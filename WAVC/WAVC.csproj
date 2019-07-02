@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>aspnet-WAVC-EF4E93CC-6BDF-4E21-AF2F-047076BA0A7D</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Data\Migrations\20190530143628_ApplicationUser.cs" />
+    <Compile Remove="Data\Migrations\20190530143628_ApplicationUser.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190603130610_AppUser.cs" />
+    <Compile Remove="Data\Migrations\20190603130610_AppUser.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190603131638_AppUser.cs" />
+    <Compile Remove="Data\Migrations\20190603131638_AppUser.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190603133706_AppUser.cs" />
+    <Compile Remove="Data\Migrations\20190603133706_AppUser.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.4.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.9" />
+  </ItemGroup>
+
+</Project>

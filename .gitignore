@@ -1,0 +1,5 @@
+.vs
+WAVC/bin/
+WAVC/obj/
+WAVC/wwwroot/files/
+WAVC/WAVC.csproj.user
