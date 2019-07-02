@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WAVC.Data;
 using WAVC.Models;
 
@@ -150,34 +146,6 @@ namespace WAVC.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-
-
-        class ReferenceLoader<T> where T : class
-        {
-            ICollection<T> objs;
-            DbContext ctx;
-            public ReferenceLoader(ICollection<T> objs, DbContext ctx)
-            {
-                this.objs = objs;
-                this.ctx = ctx;
-            }
-            public ReferenceLoader<T> LoadReference<TProperty>(Expression<Func<T, TProperty>> propertyExpression) where TProperty : class
-            {
-                foreach (var obj in objs)
-                {
-                    ctx.Entry(obj).Reference(propertyExpression).Load();
-                }
-                return this;
-            }
-            public ReferenceLoader<T> LoadCollection<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> propertyExpression) where TProperty : class
-            {
-                foreach (var obj in objs)
-                {
-                    ctx.Entry(obj).Collection(propertyExpression).Load();
-                }
-                return this;
-            }
         }
     }
 }
