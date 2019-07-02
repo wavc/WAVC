@@ -25,17 +25,18 @@ namespace WAVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-
             var user = await userManager.GetUserAsync(HttpContext.User);
-            //friends
             if (user != null)
             {
-                dBContext.Entry(user).Collection(x => x.Friends).Load();
-                dBContext.Entry(user).Collection(x => x.WhoseFriend).Load();
+                //Friends
+                new ReferenceLoader<ApplicationUser>(new List<ApplicationUser>() { user }, dBContext).
+                    LoadCollection(x => x.Friends).
+                    LoadCollection(x => x.WhoseFriend);
+
                 new ReferenceLoader<Friend>(user.Friends, dBContext).
-                    LoadReferences(x => x.FriendA).
-                    LoadReferences(x => x.FriendA).
-                    LoadReferences(x => x.Whose);
+                    LoadReference(x => x.FriendA).
+                    LoadReference(x => x.FriendB).
+                    LoadReference(x => x.Whose);
 
                 var userFriends = user.Friends.
                     Where(x => x.Friendship != null).
@@ -43,11 +44,11 @@ namespace WAVC.Controllers
                     ToList();
                 ViewBag.Friends = userFriends;
 
-
+                //Friend Requests
                 new ReferenceLoader<Friend>(user.WhoseFriend, dBContext).
-                    LoadReferences(x => x.FriendA).
-                    LoadReferences(x => x.FriendA).
-                    LoadReferences(x => x.Who);
+                    LoadReference(x => x.FriendA).
+                    LoadReference(x => x.FriendB).
+                    LoadReference(x => x.Who);
 
                 var requests = user.WhoseFriend.
                     Where(x => x.Friendship == null).
@@ -60,6 +61,9 @@ namespace WAVC.Controllers
                 ViewBag.FriendRequests = ViewBag.Friends = new List<ApplicationUser>();
             }
 
+            //All users except self 
+            //(should not show friends)
+            //(could do so that not whole list is sent, but while typying name a few users would show up, whose name starts with what has been typed)
             var users = dBContext.Users.ToList();
             if (user != null)
                 users = users.Where(x => x != user).ToList();
@@ -68,30 +72,33 @@ namespace WAVC.Controllers
             return View();
         }
 
-        class ReferenceLoader<T> where T : class
+        [Route("Home/Index/{user}")]
+        public async Task<IActionResult> Index(string user)
         {
-            ICollection<T> objs;
-            DbContext ctx;
-            public ReferenceLoader(ICollection<T> objs, DbContext ctx)
+            var thisUser = await userManager.GetUserAsync(HttpContext.User);
+            var friend = dBContext.Users.Find(user);
+
+            dBContext.Entry(thisUser).Collection(x => x.Friends).Load();
+
+            new ReferenceLoader<Friend>(thisUser.Friends, dBContext).
+                LoadReference(x => x.FriendA).
+                LoadReference(x => x.FriendB).
+                LoadReference(x => x.Whose);
+
+            if (thisUser!=null && thisUser.Friends.FirstOrDefault(x => x.Whose == friend && x.Friendship != null)!=null)
             {
-                this.objs = objs;
-                this.ctx = ctx;
+                //show conversation with this user (prolly js should download that)
+                return await Index();
             }
-            public ReferenceLoader<T> LoadReferences<TProperty>(Expression<Func<T, TProperty>> propertyExpression) where TProperty : class
-            {
-                foreach(var obj in objs)
-                {
-                    ctx.Entry(obj).Reference(propertyExpression).Load();
-                }
-                return this;
-            }
+
+            return RedirectToAction(nameof(Error));
         }
-        
 
         public async Task<IActionResult> FriendRequest(string id)
         {
             var user = await userManager.GetUserAsync(HttpContext.User);
             var selected = dBContext.Users.Find(id);
+            //validate if selected != null or request hasn't been sent already
             var request = new Friend() { Who = user, Whose = selected };
 
             dBContext.Add(request);
@@ -143,6 +150,34 @@ namespace WAVC.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+
+        class ReferenceLoader<T> where T : class
+        {
+            ICollection<T> objs;
+            DbContext ctx;
+            public ReferenceLoader(ICollection<T> objs, DbContext ctx)
+            {
+                this.objs = objs;
+                this.ctx = ctx;
+            }
+            public ReferenceLoader<T> LoadReference<TProperty>(Expression<Func<T, TProperty>> propertyExpression) where TProperty : class
+            {
+                foreach (var obj in objs)
+                {
+                    ctx.Entry(obj).Reference(propertyExpression).Load();
+                }
+                return this;
+            }
+            public ReferenceLoader<T> LoadCollection<TProperty>(Expression<Func<T, IEnumerable<TProperty>>> propertyExpression) where TProperty : class
+            {
+                foreach (var obj in objs)
+                {
+                    ctx.Entry(obj).Collection(propertyExpression).Load();
+                }
+                return this;
+            }
         }
     }
 }
