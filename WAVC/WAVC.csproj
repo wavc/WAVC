@@ -15,6 +15,8 @@
     <Compile Remove="Data\Migrations\20190603131638_AppUser.Designer.cs" />
     <Compile Remove="Data\Migrations\20190603133706_AppUser.cs" />
     <Compile Remove="Data\Migrations\20190603133706_AppUser.Designer.cs" />
+    <Compile Remove="Data\Migrations\20190702150935_Friends.cs" />
+    <Compile Remove="Data\Migrations\20190702150935_Friends.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
