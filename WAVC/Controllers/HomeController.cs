@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -30,23 +32,22 @@ namespace WAVC.Controllers
             {
                 dBContext.Entry(user).Collection(x => x.Friends).Load();
                 dBContext.Entry(user).Collection(x => x.WhoseFriend).Load();
-                foreach (var friend in user.Friends)
-                {
-                    dBContext.Entry(friend).Reference(x => x.FriendA).Load();
-                    dBContext.Entry(friend).Reference(x => x.FriendB).Load();
-                    dBContext.Entry(friend).Reference(x => x.Whose).Load();
-                }
-                foreach (var whoseFriend in user.WhoseFriend)
-                {
-                    dBContext.Entry(whoseFriend).Reference(x => x.FriendA).Load();
-                    dBContext.Entry(whoseFriend).Reference(x => x.FriendB).Load();
-                    dBContext.Entry(whoseFriend).Reference(x => x.Who).Load();
-                }
+                new ReferenceLoader<Friend>(user.Friends, dBContext).
+                    LoadReferences(x => x.FriendA).
+                    LoadReferences(x => x.FriendA).
+                    LoadReferences(x => x.Whose);
+
                 var userFriends = user.Friends.
                     Where(x => x.Friendship != null).
                     Select(x => x.Whose).
                     ToList();
                 ViewBag.Friends = userFriends;
+
+
+                new ReferenceLoader<Friend>(user.WhoseFriend, dBContext).
+                    LoadReferences(x => x.FriendA).
+                    LoadReferences(x => x.FriendA).
+                    LoadReferences(x => x.Who);
 
                 var requests = user.WhoseFriend.
                     Where(x => x.Friendship == null).
@@ -66,6 +67,26 @@ namespace WAVC.Controllers
 
             return View();
         }
+
+        class ReferenceLoader<T> where T : class
+        {
+            ICollection<T> objs;
+            DbContext ctx;
+            public ReferenceLoader(ICollection<T> objs, DbContext ctx)
+            {
+                this.objs = objs;
+                this.ctx = ctx;
+            }
+            public ReferenceLoader<T> LoadReferences<TProperty>(Expression<Func<T, TProperty>> propertyExpression) where TProperty : class
+            {
+                foreach(var obj in objs)
+                {
+                    ctx.Entry(obj).Reference(propertyExpression).Load();
+                }
+                return this;
+            }
+        }
+        
 
         public async Task<IActionResult> FriendRequest(string id)
         {
