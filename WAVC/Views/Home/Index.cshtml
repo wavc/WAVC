@@ -2,24 +2,50 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-All Users:
-<form action="Home/FriendRequest">
-    <select name="id">
-        @foreach (var user in (List<ApplicationUser>)ViewBag.Users)
-        {
-            <option value="@user.Id">@user.UserName</option>
+<script>
+    var minLen = 2;
+    function SendAJAX(httpMethod, url) {
+        var ajax = new XMLHttpRequest();
+        var promise = new Promise(onResponse =>
+            ajax.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    onResponse(this.responseText);
+                }
+            });
+        ajax.open(httpMethod, url, true);
+        ajax.send();
+        return promise;
+    }
+
+    function Search() {
+        var friendReqURL = "Home/FriendRequest";
+        var q = document.getElementById("search").value;
+        if (q.length >= minLen) {
+            SendAJAX("GET", "/Home/Search?query=" + q).then((x) => {
+                console.log(x.length);
+                var list = JSON.parse(x);
+                var res = "";
+                for (var i = 0; i < list.length; i++) {
+                    res += "<a href=\"" + friendReqURL + "?id=" + list[i] + "\">" + list[i] + "</a><br>";
+                }
+                document.getElementById("results").innerHTML = res;
+            });
         }
-    </select>
-    <input type="submit" value="Send request" />
-</form>
+    }
+</script>
+Search
+<input id="search" onkeyup="Search()" />
+<div id="results">
+</div>
+
 <br />
 Requests:
 @foreach (var user in (List<ApplicationUser>)ViewBag.FriendRequests)
 {
     <form action="Home/AcceptRequest">
-        <input name="user" value="@user.Id" hidden />
+        <input name="name" value="@user.UserName" hidden />
         @user.UserName<br />
-        <input type="radio" name="result" value="yes" /> Yes 
+        <input type="radio" name="result" value="yes" /> Yes
         <input type="radio" name="result" value="no" /> No<br />
         <input type="submit" value="Accept request" />
     </form>
@@ -29,6 +55,6 @@ Friends:
 <ul>
     @foreach (var friend in (List<ApplicationUser>)ViewBag.Friends)
     {
-        <li id="@friend.Id">@friend.UserName</li>
+        <li name="@friend.UserName">@friend.UserName</li>
     }
 </ul>

@@ -13,60 +13,33 @@ namespace WAVC.Controllers
     {
         UserManager<ApplicationUser> userManager;
         ApplicationDbContext dBContext;
+        FriendsManager friendsManager;
+        int searchResults = 10;
+
         public HomeController(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext)
         {
             this.userManager = userManager;
             this.dBContext = dBContext;
+            friendsManager = new FriendsManager(dBContext);
         }
 
         public async Task<IActionResult> Index()
         {
             var user = await userManager.GetUserAsync(HttpContext.User);
+
             if (user != null)
             {
-                //Friends
-                new ReferenceLoader<ApplicationUser>(new List<ApplicationUser>() { user }, dBContext).
-                    LoadCollection(x => x.Friends).
-                    LoadCollection(x => x.WhoseFriend);
-
-                new ReferenceLoader<Friend>(user.Friends, dBContext).
-                    LoadReference(x => x.FriendA).
-                    LoadReference(x => x.FriendB).
-                    LoadReference(x => x.Whose);
-
-                var userFriends = user.Friends.
-                    Where(x => x.Friendship != null).
-                    Select(x => x.Whose).
-                    ToList();
-                ViewBag.Friends = userFriends;
-
-                //Friend Requests
-                new ReferenceLoader<Friend>(user.WhoseFriend, dBContext).
-                    LoadReference(x => x.FriendA).
-                    LoadReference(x => x.FriendB).
-                    LoadReference(x => x.Who);
-
-                var requests = user.WhoseFriend.
-                    Where(x => x.Friendship == null).
-                    Select(x => x.Who).
-                    ToList();
-                ViewBag.FriendRequests = requests;
+                ViewBag.Friends = friendsManager.GetFriends(user);
+                
+                ViewBag.FriendRequests = friendsManager.GetRequestsForUser(user); 
             }
             else
             {
                 ViewBag.FriendRequests = ViewBag.Friends = new List<ApplicationUser>();
             }
-
-            //All users except self 
-            //(should not show friends)
-            //(could do so that not whole list is sent, but while typying name a few users would show up, whose name starts with what has been typed)
-            var users = dBContext.Users.ToList();
-            if (user != null)
-                users = users.Where(x => x != user).ToList();
-            ViewBag.Users = users;
-
             return View();
         }
+
 
         [Route("Home/Index/{user}")]
         public async Task<IActionResult> Index(string user)
@@ -74,14 +47,7 @@ namespace WAVC.Controllers
             var thisUser = await userManager.GetUserAsync(HttpContext.User);
             var friend = dBContext.Users.Find(user);
 
-            dBContext.Entry(thisUser).Collection(x => x.Friends).Load();
-
-            new ReferenceLoader<Friend>(thisUser.Friends, dBContext).
-                LoadReference(x => x.FriendA).
-                LoadReference(x => x.FriendB).
-                LoadReference(x => x.Whose);
-
-            if (thisUser!=null && thisUser.Friends.FirstOrDefault(x => x.Whose == friend && x.Friendship != null)!=null)
+            if (thisUser != null && friendsManager.GetRequestsForUser(thisUser).Contains(friend))
             {
                 //show conversation with this user (prolly js should download that)
                 return await Index();
@@ -90,36 +56,62 @@ namespace WAVC.Controllers
             return RedirectToAction(nameof(Error));
         }
 
-        public async Task<IActionResult> FriendRequest(string id)
+        public async Task<JsonResult> Search(string query)
         {
             var user = await userManager.GetUserAsync(HttpContext.User);
-            var selected = dBContext.Users.Find(id);
-            //validate if selected != null or request hasn't been sent already
-            var request = new Friend() { Who = user, Whose = selected };
 
-            dBContext.Add(request);
-            await dBContext.SaveChangesAsync();
+            var users = dBContext.Users.ToList();
+            var queryResult = friendsManager.GetOthers(user, users).
+                Select(u => new
+                {
+                    user = u,
+                    comparisonResult = u.UserName.IndexOf(query)
+                }).
+                OrderBy(x => x.comparisonResult).
+                Take(searchResults).
+                Where(x => x.comparisonResult >= 0).
+                Select(x => x.user.UserName);
+
+            return Json(queryResult);
+        }
+
+        public async Task<IActionResult> FriendRequest(string name)
+        {
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            var selected = dBContext.Users.FirstOrDefault(x => x.UserName == name);
+
+            if (selected != null)
+                return RedirectToAction(nameof(Error));
+
+            if (friendsManager.GetRequestsForUser(user).Contains(selected))
+            {
+                //selected already sent request - treat it as accept
+                return await AcceptRequest(selected.Id, "yes");
+            }
+
+            if (friendsManager.GetUserRequests(user).Contains(selected))
+            {
+                //user already sent request - do nothing
+                return RedirectToAction(nameof(Index));
+            }
+
+            await friendsManager.CreateRequestAsync(user, selected);
 
             return RedirectToAction(nameof(Index));
         }
 
-        public async Task<IActionResult> AcceptRequest(string user, string result)
+        public async Task<IActionResult> AcceptRequest(string name, string result)
         {
             var thisUser = await userManager.GetUserAsync(HttpContext.User);
-            var other = dBContext.Users.Find(user);
-            var request = dBContext.Friends.FirstOrDefault(x => x.Who == other && x.Whose == thisUser);
+            var other = dBContext.Users.FirstOrDefault(x => x.UserName == name);
             if (result == "no")
             {
-                dBContext.Remove(request);
+                await friendsManager.RejectRequestAsync(thisUser, other);
             }
             else
             {
-                var accept = new Friend() { Who = thisUser, Whose = other };
-                var friendship = new Friendship() { A = request, B = accept };
-                dBContext.Add(accept);
-                dBContext.Add(friendship);
+                await friendsManager.AcceptRequestAsync(thisUser, other);
             }
-            await dBContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
