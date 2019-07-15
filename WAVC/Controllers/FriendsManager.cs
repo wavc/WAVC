@@ -82,15 +82,24 @@ namespace WAVC.Controllers
             await dBContext.SaveChangesAsync();
         }
 
-        public async Task AcceptRequestAsync(ApplicationUser I, ApplicationUser friend)
+        public async Task RejectRequestAsync(ApplicationUser I, ApplicationUser friend)
         {
-            var request = GetRequestsForUser(I).Find(x => x == friend);
+            if (I == null || friend == null)
+                throw new ArgumentNullException();
+            var request = GetRequestsForUser(I).FirstOrDefault(x => x == friend);
+            if (request == null)
+                throw new NullReferenceException();
+
             dBContext.Remove(request);
             await dBContext.SaveChangesAsync();
         }
-        public async Task RejectRequestAsync(ApplicationUser I, ApplicationUser friend)
+        public async Task AcceptRequestAsync(ApplicationUser I, ApplicationUser friend)
         {
+            if (I == null || friend == null)
+                throw new ArgumentNullException();
             var request = Get(I, u => u.WhoseFriend, false).Find(x => x.Who == friend);
+            if (request == null)
+                throw new NullReferenceException();
 
             var accept = new Friend() { Who = I, Whose = friend };
             var friendship = new Friendship() { A = request, B = accept };

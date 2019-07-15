@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,8 +31,8 @@ namespace WAVC.Controllers
             if (user != null)
             {
                 ViewBag.Friends = friendsManager.GetFriends(user);
-                
-                ViewBag.FriendRequests = friendsManager.GetRequestsForUser(user); 
+
+                ViewBag.FriendRequests = friendsManager.GetRequestsForUser(user);
             }
             else
             {
@@ -45,9 +46,9 @@ namespace WAVC.Controllers
         public async Task<IActionResult> Index(string user)
         {
             var thisUser = await userManager.GetUserAsync(HttpContext.User);
-            var friend = dBContext.Users.Find(user);
+            var friend = dBContext.Users.FirstOrDefault(x => x.UserName == user);
 
-            if (thisUser != null && friendsManager.GetRequestsForUser(thisUser).Contains(friend))
+            if (thisUser != null && friend != null && friendsManager.GetRequestsForUser(thisUser).Contains(friend)) //get friendships
             {
                 //show conversation with this user (prolly js should download that)
                 return await Index();
@@ -80,7 +81,7 @@ namespace WAVC.Controllers
             var user = await userManager.GetUserAsync(HttpContext.User);
             var selected = dBContext.Users.FirstOrDefault(x => x.UserName == name);
 
-            if (selected != null)
+            if (selected == null || user == null)
                 return RedirectToAction(nameof(Error));
 
             if (friendsManager.GetRequestsForUser(user).Contains(selected))
@@ -97,20 +98,34 @@ namespace WAVC.Controllers
 
             await friendsManager.CreateRequestAsync(user, selected);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index)); //if we decide to use ajax to send requests, then here should be some message returned instead of redirection
         }
 
         public async Task<IActionResult> AcceptRequest(string name, string result)
         {
             var thisUser = await userManager.GetUserAsync(HttpContext.User);
             var other = dBContext.Users.FirstOrDefault(x => x.UserName == name);
-            if (result == "no")
+            try
             {
-                await friendsManager.RejectRequestAsync(thisUser, other);
+
+                if (result == "no")
+                {
+                    await friendsManager.RejectRequestAsync(thisUser, other);
+                }
+                else
+                {
+                    await friendsManager.AcceptRequestAsync(thisUser, other);
+                }
             }
-            else
+            catch(ArgumentNullException)
             {
-                await friendsManager.AcceptRequestAsync(thisUser, other);
+                //there is no such user
+                return RedirectToAction(nameof(Error));
+            }
+            catch(NullReferenceException)
+            {
+                //there is no request to be accepted/rejected
+                return RedirectToAction(nameof(Error));
             }
 
             return RedirectToAction(nameof(Index));

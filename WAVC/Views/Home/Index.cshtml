@@ -26,7 +26,7 @@
                 var list = JSON.parse(x);
                 var res = "";
                 for (var i = 0; i < list.length; i++) {
-                    res += "<a href=\"" + friendReqURL + "?id=" + list[i] + "\">" + list[i] + "</a><br>";
+                    res += "<a href=\"" + friendReqURL + "?name=" + list[i] + "\">" + list[i] + "</a><br>";
                 }
                 document.getElementById("results").innerHTML = res;
             });
@@ -55,6 +55,6 @@ Friends:
 <ul>
     @foreach (var friend in (List<ApplicationUser>)ViewBag.Friends)
     {
-        <li name="@friend.UserName">@friend.UserName</li>
+        <li name="@friend.UserName"><a ="">@friend.UserName</a></li>
     }
 </ul>
