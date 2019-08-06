@@ -12,6 +12,7 @@ namespace WAVC.Models
 
         public int AId { get; set; }
         public Friend A { get; set; }
+
         public int BId { get; set; }
         public Friend B { get; set; }
     }

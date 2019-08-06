@@ -42,14 +42,15 @@ namespace WAVC.Controllers
         }
 
 
-        [Route("Home/Index/{user}")]
-        public async Task<IActionResult> Index(string user)
+        [Route("Home/Index/{name}.{surname}")]
+        public async Task<IActionResult> Index(string name, string surname)
         {
             var thisUser = await userManager.GetUserAsync(HttpContext.User);
-            var friend = dBContext.Users.FirstOrDefault(x => x.UserName == user);
+            var friend = friendsManager.GetFriends(thisUser).FirstOrDefault(x => x.Surname == x.Surname && x.Name == name);
 
-            if (thisUser != null && friend != null && friendsManager.GetRequestsForUser(thisUser).Contains(friend)) //get friendships
+            if (thisUser != null && friend != null) //get friendships
             {
+                ViewBag.friend = friend;
                 //show conversation with this user (prolly js should download that)
                 return await Index();
             }
@@ -66,20 +67,25 @@ namespace WAVC.Controllers
                 Select(u => new
                 {
                     user = u,
-                    comparisonResult = u.UserName.IndexOf(query)
+                    comparisonResult = (u.Name + " " + u.Surname).IndexOf(query)
                 }).
                 OrderBy(x => x.comparisonResult).
                 Take(searchResults).
                 Where(x => x.comparisonResult >= 0).
-                Select(x => x.user.UserName);
+                Select(x => new
+                {
+                    name = x.user.Name,
+                    surname = x.user.Surname,
+                    id = x.user.Id
+                });
 
             return Json(queryResult);
         }
 
-        public async Task<IActionResult> FriendRequest(string name)
+        public async Task<IActionResult> FriendRequest(string id)
         {
             var user = await userManager.GetUserAsync(HttpContext.User);
-            var selected = dBContext.Users.FirstOrDefault(x => x.UserName == name);
+            var selected = dBContext.Users.Find(id);
 
             if (selected == null || user == null)
                 return RedirectToAction(nameof(Error));
@@ -101,10 +107,10 @@ namespace WAVC.Controllers
             return RedirectToAction(nameof(Index)); //if we decide to use ajax to send requests, then here should be some message returned instead of redirection
         }
 
-        public async Task<IActionResult> AcceptRequest(string name, string result)
+        public async Task<IActionResult> AcceptRequest(string id, string result)
         {
             var thisUser = await userManager.GetUserAsync(HttpContext.User);
-            var other = dBContext.Users.FirstOrDefault(x => x.UserName == name);
+            var other = dBContext.Users.Find(id);
             try
             {
 

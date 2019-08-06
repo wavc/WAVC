@@ -13,6 +13,8 @@ using WAVC.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WAVC.Models;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Iknow.Services;
 
 namespace WAVC
 {
@@ -40,6 +42,16 @@ namespace WAVC
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddTransient<IEmailSender, EmailSender>(i =>
+                new EmailSender(
+                    Configuration["EmailSender:Host"],
+                    Configuration.GetValue<int>("EmailSender:Port"),
+                    Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+                    Configuration["EmailSender:UserName"],
+                    Configuration["EmailSender:Password"]
+                )
+            );
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddSignalR(o => o.EnableDetailedErrors = true);
