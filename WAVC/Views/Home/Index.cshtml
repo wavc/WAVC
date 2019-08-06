@@ -18,7 +18,7 @@
     }
 
     async function Search() {
-        var friendReqURL = "Home/FriendRequest";
+        var friendReqURL = "/Home/FriendRequest";
         var q = document.getElementById("search").value;
         if (q.length >= minLen) {
             var result = await SendAJAX("GET", "/Home/Search?query=" + q)
@@ -43,7 +43,7 @@ Search
 Requests:
 @foreach (var user in (List<ApplicationUser>)ViewBag.FriendRequests)
 {
-    <form action="Home/AcceptRequest">
+    <form action="/Home/AcceptRequest">
         <input name="id" value="@user.Id" hidden />
         @user.Name @user.Surname<br />
         <input type="radio" name="result" value="yes" /> Yes
@@ -62,5 +62,5 @@ Friends:
 
 @if(ViewBag.friend!=null)
 {
-    <span>Delete @ViewBag.friend.Name @ViewBag.friend.Surname</span>
+    <a href="/Home/DeleteFriend?id=@ViewBag.friend.Id">Delete @ViewBag.friend.Name @ViewBag.friend.Surname</a>
 }

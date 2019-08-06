@@ -108,5 +108,23 @@ namespace WAVC.Controllers
 
             await dBContext.SaveChangesAsync();
         }
+        public async Task<bool> DeleteFriendAsync(ApplicationUser I, ApplicationUser friend)
+        {
+            var a = Get(I, u => u.Friends, true).Find(x => x.Whose == friend);
+            if (a == null)
+                return false;
+            new ReferenceLoader<Friendship>(new List<Friendship>() { a.Friendship }, dBContext).
+                LoadReference(x => x.A).
+                LoadReference(x => x.B);
+            var b = a.Friendship.A == a ? a.Friendship.B : a.Friendship.A;
+            var friendship = a.Friendship;
+
+            dBContext.Remove(friendship);
+            dBContext.Remove(a);
+            dBContext.Remove(b);
+
+            await dBContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

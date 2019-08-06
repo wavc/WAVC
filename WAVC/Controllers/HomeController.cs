@@ -136,6 +136,23 @@ namespace WAVC.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        public async Task<IActionResult> DeleteFriend(string id)
+        {
+
+            var thisUser = await userManager.GetUserAsync(HttpContext.User);
+            var other = dBContext.Users.Find(id);
+
+
+            var result = await friendsManager.DeleteFriendAsync(thisUser, other);
+            if(!result)
+            {
+                //not friends...
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
