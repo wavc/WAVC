@@ -1,0 +1,177 @@
+body {
+    min-height: 100vh;
+    height:100vh;
+}
+
+.full-height{
+    height: 100%;
+}
+
+.border-width-5 {
+    border-width: thick;
+}
+
+.profile-picture {
+    width: 50px;
+    height: 50px;
+    /* border: 1px solid black; */
+    margin: 2px;
+}
+.h-85{
+    height: 90vh;
+     min-height: 90vh;
+}
+
+.h-10{
+    height: 5vh;
+     min-height: 5vh;
+}
+
+.h-5{
+    height: 5vh;
+     min-height: 5vh;
+}
+
+.gray-bgnd {
+    background-color: rgb(230, 230, 230);
+}
+
+.icon{
+    display:inline-block;
+    font-size: 45;
+    line-height: 45px;
+    width: 45px;
+    height: 45px;
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.color-black{
+    color:black;
+}
+
+.message {
+    max-width: calc(100%/3);
+    border-radius: 10px;
+
+}
+
+.message-sent {
+    color: white;
+    float: right;
+    clear: both;
+}
+
+.message-recieved {
+    background-color:  rgb(230, 230, 230);
+    color: black;
+    float: left;
+    clear: both;
+}
+
+.scrollbar {
+    margin-left: 5px;
+    margin-right: 5px;
+    float: left;
+    height: 100%; 
+    width: 100%;
+    background: #fff;
+    overflow-y: scroll;
+    margin-bottom: 25px;
+    }
+    .force-overflow {
+    min-height: 450px;
+    }
+    
+    .scrollbar-primary::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5; }
+    
+    .scrollbar-primary::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #4285F4; }
+    
+    .scrollbar-danger::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px; }
+    
+    .scrollbar-danger::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5; }
+    
+    .scrollbar-danger::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #ff3547; }
+    
+    .scrollbar-warning::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px; }
+    
+    .scrollbar-warning::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5; }
+    
+    .scrollbar-warning::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #FF8800; }
+    
+    .scrollbar-success::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px; }
+    
+    .scrollbar-success::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5; }
+    
+    .scrollbar-success::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #00C851; }
+    
+    .scrollbar-info::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px; }
+    
+    .scrollbar-info::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5; }
+    
+    .scrollbar-info::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #33b5e5; }
+    
+    .scrollbar-default::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px; }
+    
+    .scrollbar-default::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5; }
+    
+    .scrollbar-default::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #2BBBAD; }
+    
+    .scrollbar-secondary::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px; }
+    
+    .scrollbar-secondary::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5; }
+    
+    .scrollbar-secondary::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #aa66cc; }
