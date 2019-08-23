@@ -42,20 +42,20 @@ namespace WAVC.Controllers
         }
 
 
+        [Route("/{name}.{surname}")]
         [Route("Home/Index/{name}.{surname}")]
         public async Task<IActionResult> Index(string name, string surname)
         {
             var thisUser = await userManager.GetUserAsync(HttpContext.User);
             var friend = friendsManager.GetFriends(thisUser).FirstOrDefault(x => x.Surname == x.Surname && x.Name == name);
 
-            if (thisUser != null && friend != null) //get friendships
+            if (thisUser != null && friend != null)
             {
                 ViewBag.friend = friend;
-                //show conversation with this user (prolly js should download that)
                 return await Index();
             }
 
-            return RedirectToAction(nameof(Error));
+            return RedirectToAction(nameof(Index), null);
         }
 
         public async Task<JsonResult> Search(string query)
@@ -80,77 +80,6 @@ namespace WAVC.Controllers
                 });
 
             return Json(queryResult);
-        }
-
-        public async Task<IActionResult> FriendRequest(string id)
-        {
-            var user = await userManager.GetUserAsync(HttpContext.User);
-            var selected = dBContext.Users.Find(id);
-
-            if (selected == null || user == null)
-                return RedirectToAction(nameof(Error));
-
-            if (friendsManager.GetRequestsForUser(user).Contains(selected))
-            {
-                //selected already sent request - treat it as accept
-                return await AcceptRequest(selected.Id, "yes");
-            }
-
-            if (friendsManager.GetUserRequests(user).Contains(selected))
-            {
-                //user already sent request - do nothing
-                return RedirectToAction(nameof(Index));
-            }
-
-            await friendsManager.CreateRequestAsync(user, selected);
-
-            return RedirectToAction(nameof(Index)); //if we decide to use ajax to send requests, then here should be some message returned instead of redirection
-        }
-
-        public async Task<IActionResult> AcceptRequest(string id, string result)
-        {
-            var thisUser = await userManager.GetUserAsync(HttpContext.User);
-            var other = dBContext.Users.Find(id);
-            try
-            {
-
-                if (result == "no")
-                {
-                    await friendsManager.RejectRequestAsync(thisUser, other);
-                }
-                else
-                {
-                    await friendsManager.AcceptRequestAsync(thisUser, other);
-                }
-            }
-            catch(ArgumentNullException)
-            {
-                //there is no such user
-                return RedirectToAction(nameof(Error));
-            }
-            catch(NullReferenceException)
-            {
-                //there is no request to be accepted/rejected
-                return RedirectToAction(nameof(Error));
-            }
-
-            return RedirectToAction(nameof(Index));
-        }
-
-        public async Task<IActionResult> DeleteFriend(string id)
-        {
-
-            var thisUser = await userManager.GetUserAsync(HttpContext.User);
-            var other = dBContext.Users.Find(id);
-
-
-            var result = await friendsManager.DeleteFriendAsync(thisUser, other);
-            if(!result)
-            {
-                //not friends...
-            }
-
-            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult About()

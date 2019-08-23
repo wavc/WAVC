@@ -22,7 +22,7 @@ namespace WAVC.Controllers
             if (user == null)
                 return new List<Friend>();
 
-            new ReferenceLoader<ApplicationUser>(new List<ApplicationUser>() { user }, dBContext).
+            new ReferenceLoader<ApplicationUser>(user, dBContext).
              LoadCollection(property);
 
             var func = property.Compile();
@@ -86,7 +86,7 @@ namespace WAVC.Controllers
         {
             if (I == null || friend == null)
                 throw new ArgumentNullException();
-            var request = GetRequestsForUser(I).FirstOrDefault(x => x == friend);
+            var request = Get(I, u => u.WhoseFriend, false).Find(x => x.Who == friend);
             if (request == null)
                 throw new NullReferenceException();
 
@@ -113,7 +113,7 @@ namespace WAVC.Controllers
             var a = Get(I, u => u.Friends, true).Find(x => x.Whose == friend);
             if (a == null)
                 return false;
-            new ReferenceLoader<Friendship>(new List<Friendship>() { a.Friendship }, dBContext).
+            new ReferenceLoader<Friendship>(a.Friendship, dBContext).
                 LoadReference(x => x.A).
                 LoadReference(x => x.B);
             var b = a.Friendship.A == a ? a.Friendship.B : a.Friendship.A;

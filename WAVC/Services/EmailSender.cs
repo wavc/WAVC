@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
-namespace Iknow.Services
+namespace WAVC.Services
 {
     public class EmailSender : IEmailSender
     {

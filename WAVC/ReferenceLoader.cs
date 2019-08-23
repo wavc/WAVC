@@ -9,15 +9,24 @@ namespace WAVC
     public class ReferenceLoader<T> where T : class
     {
         ICollection<T> objs;
+        T obj;
         DbContext ctx;
         public ReferenceLoader(ICollection<T> objs, DbContext ctx)
         {
             this.objs = objs;
             this.ctx = ctx;
         }
+        public ReferenceLoader(T obj, DbContext ctx)
+        {
+            this.obj = obj; 
+            this.ctx = ctx;
+        }
         ReferenceLoader<T> Load(Action<EntityEntry<T>> action)
         {
-            foreach (var obj in objs)
+            if(objs != null)
+                foreach (var obj in objs)
+                    action(ctx.Entry(obj));
+            else if(obj != null)
                 action(ctx.Entry(obj));
             return this;
         }

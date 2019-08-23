@@ -22,7 +22,7 @@ namespace WAVC.Models
     }
     public static class ManagerExt
     {
-        public static new string GetUserFirstName(this UserManager<ApplicationUser> userManager, ClaimsPrincipal principal)
+        public static string GetUserFirstName(this UserManager<ApplicationUser> userManager, ClaimsPrincipal principal)
         {
             var user = userManager.GetUserAsync(principal).GetAwaiter().GetResult();
             return user.Name;

@@ -14,7 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WAVC.Models;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Iknow.Services;
+using WAVC.Services;
+using WAVC.Hubs;
 
 namespace WAVC
 {
@@ -78,6 +79,7 @@ namespace WAVC
             app.UseAuthentication();
             app.UseSignalR(routes =>
             {
+                routes.MapHub<FriendRequestHub>("/friend_request");
             });
 
             app.UseMvc(routes =>

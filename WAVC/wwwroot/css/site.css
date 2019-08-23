@@ -23,6 +23,12 @@ body {
     width: 100%;
 }
 
+.success{
+    color: green;
+}
+.no-success {
+    color: red;
+}
 /* QR code generator */
 #qrCode {
     margin: 15px;
