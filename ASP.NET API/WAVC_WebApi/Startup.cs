@@ -43,6 +43,9 @@ namespace WAVC_WebApi
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric= false;
             });
+
+            //for develpement purposes only 
+            services.AddCors(c => c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin()));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +54,9 @@ namespace WAVC_WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                
+                // for developement purposes only
+                app.UseCors(options => options.AllowAnyOrigin());
             }
             else
             {

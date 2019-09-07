@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-friends-list-element',
@@ -6,8 +6,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./friends-list-element.component.css']
 })
 export class FriendsListElementComponent implements OnInit {
-
-  constructor() { }
+  @Input('name') fullName: string;
+  // @Input() profilePictureUrl: string;
+  // @Input() userId: string;
+  constructor() {}
 
   ngOnInit() {
   }

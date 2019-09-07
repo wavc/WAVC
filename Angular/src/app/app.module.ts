@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import {HttpClientModule} from '@angular/common/http'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +17,7 @@ import { DialogBoxComponent } from './messenger-page/right-box/dialog-box/dialog
 import { SenderBarComponent } from './messenger-page/right-box/sender-bar/sender-bar.component';
 import { MessageRecievedComponent } from './messenger-page/right-box/dialog-box/message-recieved/message-recieved.component';
 import { MessageSentComponent } from './messenger-page/right-box/dialog-box/message-sent/message-sent.component';
+import { FetchUserService } from './services/fetch-user.service'
 
 @NgModule({
   declarations: [
@@ -36,9 +38,10 @@ import { MessageSentComponent } from './messenger-page/right-box/dialog-box/mess
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [FetchUserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

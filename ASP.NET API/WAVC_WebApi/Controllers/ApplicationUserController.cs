@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WAVC_WebApi.Data;
 using WAVC_WebApi.Models;
+using System.Diagnostics; 
 
 namespace WAVC_WebApi.Controllers
 {
@@ -52,9 +53,9 @@ namespace WAVC_WebApi.Controllers
         }
         [HttpGet]
         //GET : /api/
-        public  List<ApplicationUser> GetUsers()
+        public List<ApplicationUser> GetUsers()
         {
-            return  _userManager.Users.ToList();
+            return _userManager.Users.ToList();
         }
 
         [HttpGet("{id}/Friends")]
@@ -64,6 +65,24 @@ namespace WAVC_WebApi.Controllers
             var user = await _userManager.Users.Include(u => u.Friends).FirstAsync(u => u.Id == id);
 
             return Ok(user.Friends);
+        }
+
+        [HttpGet()]
+        [Route("allUsers")]
+        //GET /api/AllUsers
+        public async Task<ActionResult<FriendModel>> GetAllUsers(){
+
+            var users = await _dbContext.Users.ToListAsync();
+
+            List<FriendModel> usersModels = new List<FriendModel>();
+            foreach (var user in users)
+            {
+                var modelUser = new FriendModel() { UserId = user.Id, FullName = user.FullName, ProfilePictureUrl = null };
+                Debug.WriteLine(modelUser.FullName);
+                usersModels.Add(modelUser);
+            }
+
+            return Ok(usersModels);
         }
     }
 }

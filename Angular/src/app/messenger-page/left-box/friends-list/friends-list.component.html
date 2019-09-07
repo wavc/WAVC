@@ -1,25 +1,3 @@
 <div class="list-group mr-2">
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
+        <app-friends-list-element *ngFor="let user of users" [name]=user.fullName></app-friends-list-element>
 </div>
