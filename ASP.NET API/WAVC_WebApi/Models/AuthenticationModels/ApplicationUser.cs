@@ -25,7 +25,6 @@ namespace WAVC_WebApi.Models
             };
 
         }
-
     }
 
     public static class ManagerExt
