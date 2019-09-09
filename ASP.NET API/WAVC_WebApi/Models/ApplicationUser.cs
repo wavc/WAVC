@@ -1,26 +1,34 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace WAVC_WebApi.Models
 {
-    public class ApplicationUser:IdentityUser
+    public class ApplicationUser : IdentityUser
     {
-        public ApplicationUser()
+        public string Name { get; set; }
+        public string Surname { get; set; }
+
+        [InverseProperty("User")]
+        public virtual ICollection<Relationship> Friends { get; set; }
+        [InverseProperty("RelatedUser")]
+        public virtual ICollection<Relationship> RelatedFriends { get; set; }
+
+
+    }
+
+    public static class ManagerExt
+    {
+        public static string GetUserFirstName(this UserManager<ApplicationUser> userManager, ClaimsPrincipal principal)
         {
-            Friends = new HashSet<Relationship>();
+            var user = userManager.GetUserAsync(principal).GetAwaiter().GetResult();
+            return user.Name;
         }
-        public string FullName { get; set; }
-        public  virtual ICollection<Relationship> Friends { get; set; }
-        public  virtual ICollection<Relationship> RelatedFriends { get; set; }
-
-        public virtual ICollection<FriendRequest> FriendRequests { get; set; }
-        public virtual ICollection<FriendRequest> RelatedFriendRequests { get; set; }
-
-        public virtual ICollection<Message> MessagesSent { get; set; }
-        public virtual ICollection<Message> MessagesRecieved { get; set; }
+        public static string GetUserSurname(this UserManager<ApplicationUser> userManager, ClaimsPrincipal principal)
+        {
+            var user = userManager.GetUserAsync(principal).GetAwaiter().GetResult();
+            return user.Surname;
+        }
     }
 }

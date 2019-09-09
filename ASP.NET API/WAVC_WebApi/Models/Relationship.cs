@@ -12,5 +12,12 @@ namespace WAVC_WebApi.Models
         public virtual ApplicationUser User { get; set; }
         public string RelatedUserId { get; set; }
         public virtual ApplicationUser RelatedUser { get; set; }
+        public Status RelationStatus { get; set; }
+
+        public enum Status
+        {
+            RequestFromUser,
+            Accepted
+        }
     }
 }

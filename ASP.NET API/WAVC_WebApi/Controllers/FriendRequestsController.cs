@@ -10,7 +10,7 @@ using WAVC_WebApi.Models;
 
 namespace WAVC_WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    /*[Route("api/[controller]")]
     [ApiController]
     public class FriendRequestsController : ControllerBase
     {
@@ -41,6 +41,8 @@ namespace WAVC_WebApi.Controllers
 
             return friendRequest;
         }
+        //Potential problem - user identifies themselves
+        //I believe user should only send to whom they want to send request and backend should find this users identity
 
         // POST: api/FriendRequests
         [HttpPost]
@@ -51,6 +53,9 @@ namespace WAVC_WebApi.Controllers
 
             return CreatedAtAction("GetFriendRequest", new { id = friendRequest.FriendRequestId }, friendRequest);
         }
+
+        //Potential problem - user can delete any request - not even once that were requested to him
+        //I believe it would be better is user sent only name of requester and backend would be able to identify user and find appropriate request for both user names
 
         // DELETE: api/FriendRequests/5
         [HttpDelete("{id}")]
@@ -68,9 +73,10 @@ namespace WAVC_WebApi.Controllers
             return friendRequest;
         }
 
+        //Potential problem - lack of identyfication - privacy violation
         private bool FriendRequestExists(int id)
         {
             return _context.FriendRequests.Any(e => e.FriendRequestId == id);
         }
-    }
+    }*/
 }
