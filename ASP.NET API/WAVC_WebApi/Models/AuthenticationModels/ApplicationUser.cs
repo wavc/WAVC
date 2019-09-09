@@ -26,7 +26,6 @@ namespace WAVC_WebApi.Models
 
         }
     }
-
     public static class ManagerExt
     {
         public static string GetUserFirstName(this UserManager<ApplicationUser> userManager, ClaimsPrincipal principal)

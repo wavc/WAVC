@@ -1,3 +1,4 @@
+
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -54,6 +55,18 @@ namespace WAVC_WebApi
 
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<ApplicationUser>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddTransient<IEmailSender, EmailSender>(i =>
+                new EmailSender(
+                    Configuration["EmailSender:Host"],
+                    Configuration.GetValue<int>("EmailSender:Port"),
+                    Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+                    Configuration["EmailSender:UserName"],
+                    Configuration["EmailSender:Password"]
+                )
+            );
 
             services.AddTransient<IEmailSender, EmailSender>(i =>
                 new EmailSender(
