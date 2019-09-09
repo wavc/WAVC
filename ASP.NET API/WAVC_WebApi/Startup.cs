@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using WAVC_WebApi.Hubs;
+using WAVC_WebApi.Services;
 using WAVC_WebApi.Data;
 using WAVC_WebApi.Models;
 
@@ -44,6 +46,18 @@ namespace WAVC_WebApi
 
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDefaultIdentity<ApplicationUser>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            services.AddTransient<IEmailSender, EmailSender>(i =>
+                new EmailSender(
+                    Configuration["EmailSender:Host"],
+                    Configuration.GetValue<int>("EmailSender:Port"),
+                    Configuration.GetValue<bool>("EmailSender:EnableSSL"),
+                    Configuration["EmailSender:UserName"],
+                    Configuration["EmailSender:Password"]
+                )
+            );
 
             services.Configure<IdentityOptions>(options => {
                 options.Password.RequireDigit = false;
@@ -82,6 +96,8 @@ namespace WAVC_WebApi
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+            services.AddSignalR(o => o.EnableDetailedErrors = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -95,6 +111,7 @@ namespace WAVC_WebApi
                     options.AllowAnyMethod();
                     options.AllowAnyHeader();
                     });
+                app.UseDatabaseErrorPage();
             }
             else
             {
@@ -105,6 +122,12 @@ namespace WAVC_WebApi
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            app.UseAuthentication();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<FriendRequestHub>("/friend_request");
+            });
         }
     }
 }

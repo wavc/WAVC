@@ -12,13 +12,12 @@ namespace WAVC_WebApi.Data
     {
         public new DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Relationship> Relationships { get; set; }
-        public DbSet<FriendRequest> FriendRequests { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //FriendsRequest
             modelBuilder.Entity<FriendRequest>()
@@ -61,6 +60,6 @@ namespace WAVC_WebApi.Data
 
 
             base.OnModelCreating(modelBuilder);
-        }
+        }*/
     }
 }
