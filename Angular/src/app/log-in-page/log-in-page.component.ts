@@ -12,7 +12,7 @@ import {UserService} from '../shared/user.service'
 export class LogInPageComponent implements OnInit {
 
   formModel = {
-    UserName: '',
+    UserNameOrEmail: '',
     Password: ''
   }
 

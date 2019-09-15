@@ -15,7 +15,7 @@
         <!-- <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus> -->
         <label class="sr-only">User Name</label>
         <!-- #UserName="ngModel" [(ngModel)]="formModel.UserName" -->
-        <input #UserName="ngModel" [(ngModel)]="formModel.UserName" name="userName" id="userName" class="form-control" placeholder="User Name" required>
+        <input #UserName="ngModel" [(ngModel)]="formModel.UserNameOrEmail" name="userNameOrEmail" id="userName" class="form-control" placeholder="Email or Username" required>
         <label for="inputPassword" class="sr-only">Password</label>
         <!-- #Password="ngModel" [(ngModel)]="formModel.Password" -->
         <input #Password="ngModel" [(ngModel)]="formModel.Password" name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
