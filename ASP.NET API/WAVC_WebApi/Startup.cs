@@ -28,6 +28,8 @@ namespace WAVC_WebApi
         }
 
         public IConfiguration Configuration { get; }
+        readonly string MyCorsConfiguration = "myCorsConfiguration";
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -50,7 +52,16 @@ namespace WAVC_WebApi
                 options.Password.RequireNonAlphanumeric = false;
             });
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(MyCorsConfiguration,
+                    builder =>
+                    {
+                        builder.WithOrigins(Configuration["ApplicationSettings:ClientUrl"]);
+                        builder.AllowAnyMethod();
+                        builder.AllowAnyHeader();
+                    });
+            });
 
             var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWTSecret"].ToString());
             
@@ -79,17 +90,17 @@ namespace WAVC_WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors(options => {
+                    options.AllowAnyOrigin();
+                    options.AllowAnyMethod();
+                    options.AllowAnyHeader();
+                    });
             }
             else
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseCors(builder =>
-            builder.WithOrigins(Configuration["ApplicationSettings:ClientUrl"].ToString())
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            );
 
             app.UseAuthentication();
             app.UseHttpsRedirection();
