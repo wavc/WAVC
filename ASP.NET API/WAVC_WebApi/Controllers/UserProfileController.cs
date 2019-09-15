@@ -30,9 +30,9 @@ namespace WAVC_WebApi.Controllers
             var user = await _userManager.FindByIdAsync(userId);
             return new
             {
-                 user.FullName,
                  user.Email,
-                 user.UserName
+                 user.FirstName,
+                 user.LastName
             };
         }
     }

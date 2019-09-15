@@ -13,7 +13,8 @@ namespace WAVC_WebApi.Models
         {
             Friends = new HashSet<Relationship>();
         }
-        public string FullName { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public  virtual ICollection<Relationship> Friends { get; set; }
         public  virtual ICollection<Relationship> RelatedFriends { get; set; }
 

@@ -38,14 +38,15 @@ namespace WAVC_WebApi.Controllers
         [HttpPost]
         [Route("Register")]
         //POST : /api/ApplicationUser/Register
-
         public async Task<Object> PostApplicationUserAsync(ApplicationUserModel model)
         {
             var applicationUser = new ApplicationUser()
             {
-                UserName = model.UserName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber,
                 Email = model.Email,
-                FullName = model.FullName
+                UserName = model.UserName
             };
 
             try
@@ -77,10 +78,12 @@ namespace WAVC_WebApi.Controllers
         [HttpPost]
         [Route("Login")]
         //POST : /api/ApplicationUser/Login
-
         public async Task<IActionResult> Login(LoginModel model)
         {
-            var user = await _userManager.FindByNameAsync(model.UserName);
+
+            ApplicationUser user = IsValidEmail(model.UserNameOrEmail) 
+                ? await _userManager.FindByEmailAsync(model.UserNameOrEmail) 
+                : await _userManager.FindByNameAsync(model.UserNameOrEmail);
 
             if (user == null || await _userManager.CheckPasswordAsync(user, model.Password) == false)
                 return BadRequest(new { message = "Username or password is incorrect." });
@@ -105,5 +108,17 @@ namespace WAVC_WebApi.Controllers
            
         }
 
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }
