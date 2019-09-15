@@ -81,8 +81,8 @@ namespace WAVC_WebApi.Controllers
         public async Task<IActionResult> Login(LoginModel model)
         {
 
-            ApplicationUser user = IsValidEmail(model.UserNameOrEmail) 
-                ? await _userManager.FindByEmailAsync(model.UserNameOrEmail) 
+            ApplicationUser user = IsValidEmail(model.UserNameOrEmail)
+                ? await _userManager.FindByEmailAsync(model.UserNameOrEmail)
                 : await _userManager.FindByNameAsync(model.UserNameOrEmail);
 
             if (user == null || await _userManager.CheckPasswordAsync(user, model.Password) == false)

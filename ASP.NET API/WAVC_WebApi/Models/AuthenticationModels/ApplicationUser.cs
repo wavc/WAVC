@@ -25,3 +25,4 @@ namespace WAVC_WebApi.Models
         public virtual ICollection<Message> MessagesRecieved { get; set; }
     }
 }
+    
