@@ -8,23 +8,27 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 export class UserService {
 
   constructor(private fb: FormBuilder, private http: HttpClient) { }
+
   readonly BaseURI = 'https://localhost:44395/api';
-  
+
   formModel = this.fb.group({
     UserName: ['', Validators.required],
     Email: ['', Validators.email],
-    FullName: [''],
-    Passwords: this.fb.group({
-      Password: ['', [Validators.required, Validators.minLength(4)]],
-      ConfirmPassword: ['', Validators.required]
-    }, { validator: this.comparePasswords })
-
+    FirstName: [''],
+    LastName: [''],
+    PhoneNumber: [''],
+    Passwords: this.fb.group(
+      {
+        Password: ['', [Validators.required, Validators.minLength(4)]],
+        ConfirmPassword: ['', Validators.required]
+      },
+      {
+        validator: this.comparePasswords
+      })
   });
 
   comparePasswords(fb: FormGroup) {
     let confirmPswrdCtrl = fb.get('ConfirmPassword');
-    //passwordMismatch
-    //confirmPswrdCtrl.errors={passwordMismatch:true}
     if (confirmPswrdCtrl.errors == null || 'passwordMismatch' in confirmPswrdCtrl.errors) {
       if (fb.get('Password').value != confirmPswrdCtrl.value)
         confirmPswrdCtrl.setErrors({ passwordMismatch: true });
@@ -36,16 +40,19 @@ export class UserService {
   register() {
     var body = {
       UserName: this.formModel.value.UserName,
+      FirstName: this.formModel.value.FirstName,
+      LastName: this.formModel.value.LastName,
       Email: this.formModel.value.Email,
-      FullName: this.formModel.value.FullName,
+      PhoneNumber: this.formModel.value.PhoneNumber,
       Password: this.formModel.value.Passwords.Password
     };
+
     return this.http.post(this.BaseURI + '/ApplicationUser/Register', body);
   }
 
   login(formData) {
-    // let url = 'https://localhost:44395/api/ApplicationUser/Login'
     return this.http.post(this.BaseURI + '/ApplicationUser/Login', formData);
+
   }
 
   getUserProfile() {
