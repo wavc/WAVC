@@ -1,5 +1,5 @@
 <div class="text-center vh-100 bg-light">
-    <form class="form-signin pt-5">
+    <form #form="ngForm" class="form-signin pt-5" autocomplete="off" (submit)="onSubmit(form)">
         <h1 class="h1 font-weight-bold">WAVC</h1>
         <h1 class="h2 font-weight-normal mb-5">Web App for Video Conferencing</h1>
         <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
@@ -11,18 +11,22 @@
         <p class="divider-text">
                 <span class="bg-light">OR</span>
         </p>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <!-- <label for="inputEmail" class="sr-only">Email address</label> -->
+        <!-- <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus> -->
+        <label class="sr-only">User Name</label>
+        <!-- #UserName="ngModel" [(ngModel)]="formModel.UserName" -->
+        <input #UserName="ngModel" [(ngModel)]="formModel.UserName" name="userName" id="userName" class="form-control" placeholder="User Name" required>
         <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <!-- #Password="ngModel" [(ngModel)]="formModel.Password" -->
+        <input #Password="ngModel" [(ngModel)]="formModel.Password" name="password" type="password" id="inputPassword" class="form-control" placeholder="Password" required>
         <div class="checkbox mb-3">
             <label>
                 <input type="checkbox" value="remember-me"> Remember me
             </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </div> 
+        <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="form.invalid">Sign in</button>
         <div class="mt-2">
-            <span class="font-italic">Doesn't have an account? </span>
+            <span class="font-italic">Don't have an account? </span>
             <a routerLink="/registration" class="text-primary">Sign Up</a>
         </div>
         <p class="mt-5 mb-3 text-muted">&copy; 2019-2019</p>

@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +17,10 @@ import { DialogBoxComponent } from './messenger-page/right-box/dialog-box/dialog
 import { SenderBarComponent } from './messenger-page/right-box/sender-bar/sender-bar.component';
 import { MessageRecievedComponent } from './messenger-page/right-box/dialog-box/message-recieved/message-recieved.component';
 import { MessageSentComponent } from './messenger-page/right-box/dialog-box/message-sent/message-sent.component';
+import { ToastrModule } from 'ngx-toastr';
+import { UserService } from './shared/user.service';
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -36,9 +41,20 @@ import { MessageSentComponent } from './messenger-page/right-box/dialog-box/mess
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    ToastrModule.forRoot({
+      progressBar: true
+    }),
+    HttpClientModule
   ],
-  providers: [],
+  providers: [UserService,
+  {
+    provide: HTTP_INTERCEPTORS,
+    useClass: AuthInterceptor,
+    multi: true
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
