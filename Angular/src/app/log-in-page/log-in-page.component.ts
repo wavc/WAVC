@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import {UserService} from '../shared/user.service'
+import { UserService } from '../shared/user.service'
 
 @Component({
   selector: 'app-log-in-page',
@@ -19,9 +19,9 @@ export class LogInPageComponent implements OnInit {
   constructor(private service: UserService, private router: Router, private toastr: ToastrService) { }
 
   ngOnInit() {
-    if(localStorage.getItem('token') != null)
+    if (localStorage.getItem('token') != null)
       this.router.navigateByUrl('/messenger');
-   }
+  }
 
   onSubmit(form: NgForm) {
     this.service.login(form.value).subscribe(
@@ -33,8 +33,9 @@ export class LogInPageComponent implements OnInit {
         if (err.status == 400) {
           this.toastr.error('Incorrect username or password.', 'Authentication failed.');
         }
-        else
+        else {
           console.log(err);
+        }
       }
     );
   }
