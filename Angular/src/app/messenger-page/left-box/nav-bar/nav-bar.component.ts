@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 })
 export class NavBarComponent implements OnInit {
 
+  notificationCounter = 0;
   constructor(private router: Router) { }
 
   ngOnInit() {
