@@ -21,7 +21,6 @@ namespace WAVC_WebApi.Controllers
     [ApiController]
     public class ApplicationUserController : ControllerBase
     {
-
         UserManager<ApplicationUser> userManager;
         ApplicationDbContext dBContext;
         FriendsManager friendsManager;
@@ -39,7 +38,7 @@ namespace WAVC_WebApi.Controllers
             var user = await userManager.GetUserAsync(HttpContext.User);
             if (user != null)
             {
-                return friendsManager.GetFriends(user).Select(u => u.ToApplicationUserModel()).ToList(); ;
+                return friendsManager.GetFriends(user).Select(u => u.ToApplicationUserModel()).ToList();
             }
             else
             {
