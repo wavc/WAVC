@@ -15,6 +15,16 @@ namespace WAVC_WebApi.Models
         [InverseProperty("RelatedUser")]
         public virtual ICollection<Relationship> RelatedFriends { get; set; }
 
+        public ApplicationUserModel ToApplicationUserModel()
+        {
+            return new ApplicationUserModel
+            {
+                Id = Id,
+                Name = Name,
+                Surname = Surname
+            };
+
+        }
 
     }
 
