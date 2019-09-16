@@ -23,7 +23,6 @@ namespace WAVC_WebApi.Models
                 Name = Name,
                 Surname = Surname
             };
-
         }
     }
     public static class ManagerExt

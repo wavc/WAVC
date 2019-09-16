@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using WAVC_WebApi.Data;
 using WAVC_WebApi.Models;
 
@@ -18,15 +17,13 @@ namespace WAVC_WebApi.Controllers
         UserManager<ApplicationUser> userManager;
         ApplicationDbContext dBContext;
         FriendsManager friendsManager;
-        private readonly ApplicationSettings _applicationSettings;
         int searchResults = 10;
 
-        public ApplicationUserController(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext, IOptions<ApplicationSettings> appSettings)
+        public ApplicationUserController(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext)
         {
             this.userManager = userManager;
             this.dBContext = dBContext;
             friendsManager = new FriendsManager(dBContext);
-            _applicationSettings = appSettings.Value;
         }
 
 
@@ -45,8 +42,6 @@ namespace WAVC_WebApi.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("[action]")]
         public async Task<List<ApplicationUserModel>> GetRequestsForUser()
         {
             var user = await userManager.GetUserAsync(HttpContext.User);
@@ -60,16 +55,12 @@ namespace WAVC_WebApi.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("[action]")]
         public async Task<ApplicationUserModel> GetCurrentFriend(string name, string surname)
         {
             var thisUser = await userManager.GetUserAsync(HttpContext.User);
             return friendsManager.GetFriends(thisUser).FirstOrDefault(x => x.Surname == x.Surname && x.Name == name).ToApplicationUserModel();
         }
 
-        [HttpGet]
-        [Route("[action]")]
         public async Task<List<ApplicationUserModel>> Search(string query)
         {
             var user = await userManager.GetUserAsync(HttpContext.User);
