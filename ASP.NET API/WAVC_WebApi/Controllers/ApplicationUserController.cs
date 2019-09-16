@@ -16,63 +16,72 @@ using WAVC_WebApi.Models;
 
 namespace WAVC_WebApi.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class ApplicationUserController : ControllerBase
     {
-        private UserManager<ApplicationUser> _userManager;
-        private SignInManager<ApplicationUser> _signInManager;
-        private readonly ApplicationDbContext _dbContext;
-        private readonly ApplicationSettings _applicationSettings;
 
-        public ApplicationUserController(
-            UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-            ApplicationDbContext context, IOptions<ApplicationSettings> appSettings)
+        UserManager<ApplicationUser> userManager;
+        ApplicationDbContext dBContext;
+        FriendsManager friendsManager;
+        int searchResults = 10;
+
+        public ApplicationUserController(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
-            _dbContext = context;
-            _applicationSettings = appSettings.Value;
+            this.userManager = userManager;
+            this.dBContext = dBContext;
+            friendsManager = new FriendsManager(dBContext);
         }
 
-        [HttpPost]
-        [Route("Register")]
-        //POST : /api/ApplicationUser/Register
-        public async Task<Object> PostApplicationUserAsync(ApplicationUserModel model)
+        public async Task<List<ApplicationUserModel>> GetFriends()
         {
-            var applicationUser = new ApplicationUser()
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            if (user != null)
             {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.PhoneNumber,
-                Email = model.Email,
-                UserName = model.UserName
-            };
-
-            try
-            {
-                var result = await _userManager.CreateAsync(applicationUser, model.Password);
-                return Ok(result);
+                return friendsManager.GetFriends(user).Select(u => u.ToApplicationUserModel()).ToList(); ;
             }
-            catch (Exception)
+            else
             {
-                throw;
+                return new List<ApplicationUserModel>();
             }
         }
-        [HttpGet]
-        //GET : /api/
-        public  List<ApplicationUser> GetUsers()
+        public async Task<List<ApplicationUserModel>> GetRequestsForUser()
         {
-            return  _userManager.Users.ToList();
+            var user = await userManager.GetUserAsync(HttpContext.User);
+            if (user != null)
+            {
+                return friendsManager.GetRequestsForUser(user).Select(u => u.ToApplicationUserModel()).ToList();
+            }
+            else
+            {
+                return new List<ApplicationUserModel>();
+            }
         }
 
-        [HttpGet("{id}/Friends")]
-        //GET : /api/5/friends
-        public async Task<ActionResult<ApplicationUser>> GetFriendsAsync(string id)
+        public async Task<ApplicationUserModel> GetCurrentFriend(string name, string surname)
         {
-            var user = await _userManager.Users.Include(u => u.Friends).FirstAsync(u => u.Id == id);
+            var thisUser = await userManager.GetUserAsync(HttpContext.User);
+            return friendsManager.GetFriends(thisUser).FirstOrDefault(x => x.Surname == x.Surname && x.Name == name).ToApplicationUserModel();
+        }
 
-            return Ok(user.Friends);
+        public async Task<List<ApplicationUserModel>> Search(string query)
+        {
+            var user = await userManager.GetUserAsync(HttpContext.User);
+
+            var users = dBContext.Users.ToList();
+            var queryResult = friendsManager.GetOthers(user, users).
+                Select(u => new
+                {
+                    user = u,
+                    comparisonResult = (u.Name + " " + u.Surname).IndexOf(query)
+                }).
+                OrderBy(x => x.comparisonResult).
+                Take(searchResults).
+                Where(x => x.comparisonResult >= 0).
+                Select(x => x.user.ToApplicationUserModel()).ToList();
+
+            return queryResult;
         }
 
         [HttpPost]
