@@ -38,6 +38,7 @@ namespace WAVC_WebApi.Controllers
             var user = await userManager.GetUserAsync(HttpContext.User);
             if (user != null)
             {
+
                 return friendsManager.GetFriends(user).Select(u => u.ToApplicationUserModel()).ToList();
             }
             else
@@ -86,7 +87,7 @@ namespace WAVC_WebApi.Controllers
         [HttpPost]
         [Route("Login")]
         //POST : /api/ApplicationUser/Login
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel model) //TO CHECK AND COMPARE WITH Controllers\Identity\LoginController!
         {
 
             ApplicationUser user = IsValidEmail(model.UserNameOrEmail) 
@@ -116,7 +117,7 @@ namespace WAVC_WebApi.Controllers
            
         }
 
-        bool IsValidEmail(string email)
+        bool IsValidEmail(string email) //TO DO: REMOVE IF METHOD ABOVE IS NOT NEEDED
         {
             try
             {
@@ -127,6 +128,7 @@ namespace WAVC_WebApi.Controllers
             {
                 return false;
             }
+
         }
     }
 }

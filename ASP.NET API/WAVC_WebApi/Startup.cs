@@ -96,7 +96,6 @@ namespace WAVC_WebApi
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
             services.AddSignalR(o => o.EnableDetailedErrors = true);
         }
 
@@ -106,6 +105,7 @@ namespace WAVC_WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
                 app.UseCors(options => {
                     options.AllowAnyOrigin();
                     options.AllowAnyMethod();
