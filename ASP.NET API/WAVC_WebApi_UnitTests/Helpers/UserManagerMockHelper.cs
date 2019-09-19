@@ -10,7 +10,7 @@ namespace WAVC_WebApi_UnitTests.Helpers
 {
     class UserManagerMockHelper
     {
-        public static Mock<UserMangerMock> VerifyUserByEmailOrUsernameSucessful(ApplicationUser correctUser, string email, string username, string password)
+        public static Mock<UserMangerMock> VerifyUserByEmailOrUsernameSuccessful(ApplicationUser correctUser, string email, string username, string password)
         {
             return new UserMangerMock.Builder()
                 .With(x =>

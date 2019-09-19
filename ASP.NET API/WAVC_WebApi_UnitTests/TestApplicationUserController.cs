@@ -18,12 +18,6 @@ namespace WAVC_WebApi_UnitTests {
 
     public class TestApplicationUserController
     {
-        private readonly ITestOutputHelper output;
-
-        public TestApplicationUserController(ITestOutputHelper output)
-        {
-            this.output = output;
-        }
 
         [Fact]
         public async Task GetUsersAsync()
@@ -34,7 +28,7 @@ namespace WAVC_WebApi_UnitTests {
             var email = "test@test.com";
             var username = "zdichu123";
 
-            var userManagerMock = UserManagerMockHelper.VerifyUserByEmailOrUsernameSucessful(correctUser, email, username, password);
+            var userManagerMock = UserManagerMockHelper.VerifyUserByEmailOrUsernameSuccessful(correctUser, email, username, password);
             var signInManagerMock = new SignInManagerMock.Builder().Build();
             var applicationSettingsMock = new ApplicationSettingsMock().Build();
             var contextMock = new DbContextInMemory().Build();
