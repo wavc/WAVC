@@ -13,7 +13,7 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 2.2.108
-    - name: Build with dotnet
-      run: dotnet build --configuration Release ASP.NET\ API/WAVC_WebApi.sln
+    - name: Build Projects
+      run dotnet build "./ASP.NET API/WAVC_WebApi.sln" --configuration Release
     - name: Unit Tests
-      run: dotnet test --configuration Release ASP.NET\ API/WAVC_WebApi_UnitTests/WAVC_WebApi_UnitTests.csproj
+      run:dotnet test "./ASP.NET API/WAVC_WebApi_UnitTests/WAVC_WebApi_UnitTests.csproj" --configuration Release
