@@ -108,8 +108,8 @@ namespace WAVC_WebApi.Controllers
            
         }
 
-        bool IsValidEmail(string email)
-        {
+       public static bool IsValidEmail(string email)
+       {
             try
             {
                 var addr = new System.Net.Mail.MailAddress(email);
@@ -119,6 +119,6 @@ namespace WAVC_WebApi.Controllers
             {
                 return false;
             }
-        }
+       }
     }
 }
