@@ -16,4 +16,10 @@ jobs:
     - name: Build Projects
       run: dotnet build "./ASP.NET API/WAVC_WebApi.sln" --configuration Release
     - name: Unit Tests
-      run: dotnet test "./ASP.NET API/WAVC_WebApi_UnitTests/WAVC_WebApi_UnitTests.csproj" --configuration Release
+      run: |
+      if [ -d "./ASP.NET API/WAVC_WebApi_UnitTests/" ]
+      then
+        dotnet test "./ASP.NET API/WAVC_WebApi_UnitTests/WAVC_WebApi_UnitTests.csproj" --configuration Release
+      else
+        echo "Test directory does not exist."
+      fi
