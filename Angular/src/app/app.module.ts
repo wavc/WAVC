@@ -22,6 +22,7 @@ import { UserService } from './shared/user.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NotificationComponent } from './messenger-page/left-box/nav-bar/notification/notification.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     RightBoxComponent,
     FriendsListElementComponent,
     FriendsListComponent,
-    NavBarComponent
+    NavBarComponent,
+    NotificationComponent
   ],
   imports: [
     BrowserAnimationsModule,
