@@ -19,9 +19,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Angular Lint
       run: |
+        pushd "./Angular"
         npm install
         npm install -g @angular/cli
-        pushd "./Angular"
         ng lint
       env:
         CI: true
