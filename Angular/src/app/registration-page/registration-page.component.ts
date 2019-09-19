@@ -25,16 +25,16 @@ export class RegistrationPageComponent implements OnInit {
           this.service.formModel.reset();
           this.toastr.success('New user created!', 'Registration successful.');
           this.router.navigateByUrl('/sign-in');
-          
+
         } else {
           res.errors.forEach(element => {
             switch (element.code) {
               case 'DuplicateUserName':
-                this.toastr.error('Username is already taken','Registration failed.');
+                this.toastr.error('Username is already taken', 'Registration failed.');
                 break;
 
               default:
-              this.toastr.error(element.description,'Registration failed.');
+                this.toastr.error(element.description, 'Registration failed.');
                 break;
             }
           });
@@ -42,7 +42,7 @@ export class RegistrationPageComponent implements OnInit {
       },
       err => {
         console.log(err);
-        this.toastr.error("Something went wrong. Please try again later");
+        this.toastr.error('Something went wrong. Please try again later');
       }
     );
   }

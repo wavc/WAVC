@@ -12,7 +12,7 @@ export class NotificationComponent implements OnInit {
   ngOnInit() {
   }
 
-  onClick(){
+  onClick() {
 
   }
 }
