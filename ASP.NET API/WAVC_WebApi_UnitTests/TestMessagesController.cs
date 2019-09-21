@@ -14,6 +14,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Xunit.Abstractions;
+using System.Linq;
 
 namespace WAVC_WebApi_UnitTests
 {
@@ -51,13 +52,23 @@ namespace WAVC_WebApi_UnitTests
             //send message to not a friend 
             var results = await messagesController.SendMessage(message);
             Assert.IsType<BadRequestObjectResult>(results);
-            BadRequestObjectResult obj = (BadRequestObjectResult)results;
-            Assert.Equal(obj.Value, MessagesController.Messages.NOT_A_FRIEND);
+            BadRequestObjectResult badRequest = (BadRequestObjectResult)results;
+            Assert.Equal(badRequest.Value, MessagesController.Messages.NOT_A_FRIEND);
 
             //send message to a friend
             DbContextUtlils.SetFriendship(ref dbContextMock, userA, userB);
             results = await messagesController.SendMessage(message);
+
             Assert.IsType<OkResult>(results);
+            Assert.Equal(dbContextMock.Messages.First().Content, messageContent);
+            
+            //try to send to non-existing user
+            var nonExistingUser = DbContextUtlils.GenerateRandomUser();
+            results = await messagesController
+                .SendMessage(new SendMessageModel() { recieverId = nonExistingUser.Id });
+            Assert.IsType<BadRequestObjectResult>(results);
+            badRequest = (BadRequestObjectResult)results;
+            Assert.Equal(badRequest.Value, MessagesController.Messages.USER_NOT_FOUND);
         }
     }
 }
