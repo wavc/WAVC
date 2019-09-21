@@ -1,8 +1,8 @@
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
-import { Router } from "@angular/router";
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -18,15 +18,15 @@ export class AuthInterceptor implements HttpInterceptor {
                 tap(
                     succ => { },
                     err => {
-                        if (err.status == 401) {
+                        if (err.status === 401) {
                             localStorage.removeItem('token');
                             this.router.navigateByUrl('/sign-in');
                         }
                     }
                 )
-            )
-        }
-        else
+            );
+        } else {
             return next.handle(req.clone());
+        }
     }
 }

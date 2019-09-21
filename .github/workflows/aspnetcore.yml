@@ -17,3 +17,4 @@ jobs:
       run: dotnet build "./ASP.NET API/WAVC_WebApi.sln" --configuration Release
     - name: Unit Tests
       run: dotnet test "./ASP.NET API/WAVC_WebApi_UnitTests/WAVC_WebApi_UnitTests.csproj" --configuration Release
+     

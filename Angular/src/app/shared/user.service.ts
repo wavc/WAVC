@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -28,17 +28,18 @@ export class UserService {
   });
 
   comparePasswords(fb: FormGroup) {
-    let confirmPswrdCtrl = fb.get('ConfirmPassword');
+    const confirmPswrdCtrl = fb.get('ConfirmPassword');
     if (confirmPswrdCtrl.errors == null || 'passwordMismatch' in confirmPswrdCtrl.errors) {
-      if (fb.get('Password').value != confirmPswrdCtrl.value)
+      if (fb.get('Password').value !== confirmPswrdCtrl.value) {
         confirmPswrdCtrl.setErrors({ passwordMismatch: true });
-      else
+      } else {
         confirmPswrdCtrl.setErrors(null);
+      }
     }
   }
 
   register() {
-    var body = {
+    const body = {
       UserName: this.formModel.value.UserName,
       FirstName: this.formModel.value.FirstName,
       LastName: this.formModel.value.LastName,

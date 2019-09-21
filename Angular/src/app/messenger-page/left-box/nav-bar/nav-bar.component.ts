@@ -14,8 +14,8 @@ export class NavBarComponent implements OnInit {
   ngOnInit() {
   }
   onLogout() {
-    console.log("loggin out");
-    
+    console.log('loggin out');
+
     localStorage.removeItem('token');
     this.router.navigateByUrl('/sign-in');
   }
