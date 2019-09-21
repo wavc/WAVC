@@ -48,18 +48,6 @@ namespace WAVC_WebApi.Controllers
             return friendRequest;
         }
 
-        // POST: api/FriendRequests
-        //[HttpPost]
-        //[Authorize]
-        //public async Task<ActionResult<FriendRequest>> PostFriendRequest(FriendRequest friendRequest)
-        //{
-        //    friendRequest.Status = FriendRequest.StatusType.New;
-        //    _context.FriendRequests.Add(friendRequest);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetFriendRequest", new { id = friendRequest.FriendRequestId }, friendRequest);
-        //}
-
         [HttpPost]
         [Authorize]
         public async Task<ActionResult<FriendRequest>> SendFriendRequest(InvitationModel model)
@@ -74,7 +62,7 @@ namespace WAVC_WebApi.Controllers
             {
                 UserId = userId,
                 FriendId = model.UserId,
-                Status = FriendRequest.StatusType.New
+                Status = FriendRequestStatus.New
             });
 
             await _context.SaveChangesAsync();
@@ -91,7 +79,7 @@ namespace WAVC_WebApi.Controllers
                 if (friendRequest == null)
                     return NotFound();
 
-                friendRequest.Status = FriendRequest.StatusType.Accepted;
+                friendRequest.Status = FriendRequestStatus.Accepted;
 
                 await _context.Relationships.AddAsync(new Relationship
                 {
