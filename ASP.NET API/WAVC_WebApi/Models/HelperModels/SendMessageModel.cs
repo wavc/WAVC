@@ -7,7 +7,6 @@ namespace WAVC_WebApi.Models.HelperModels
 {
     public class SendMessageModel
     {
-        public string recieverId { get; set; }
         public string Content { get; set; }
         public MessageType Type { get; set; }
     }

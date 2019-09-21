@@ -40,7 +40,6 @@ namespace WAVC_WebApi_UnitTests
 
             var message = new SendMessageModel()
             {
-                recieverId = userB.Id,
                 Type = MessageType.Text,
                 Content = messageContent
             };
@@ -50,22 +49,21 @@ namespace WAVC_WebApi_UnitTests
             ControllerHelper.AddNewUserClaimToController(ref baseController, userA.Id);
 
             //send message to not a friend 
-            var results = await messagesController.SendMessage(message);
+            var results = await messagesController.SendMessage(userB.Id, message);
             Assert.IsType<BadRequestObjectResult>(results);
             BadRequestObjectResult badRequest = (BadRequestObjectResult)results;
             Assert.Equal(badRequest.Value, MessagesController.Messages.NOT_A_FRIEND);
 
             //send message to a friend
             DbContextUtlils.SetFriendship(ref dbContextMock, userA, userB);
-            results = await messagesController.SendMessage(message);
+            results = await messagesController.SendMessage(userB.Id, message);
 
             Assert.IsType<OkResult>(results);
             Assert.Equal(dbContextMock.Messages.First().Content, messageContent);
             
             //try to send to non-existing user
             var nonExistingUser = DbContextUtlils.GenerateRandomUser();
-            results = await messagesController
-                .SendMessage(new SendMessageModel() { recieverId = nonExistingUser.Id });
+            results = await messagesController.SendMessage(nonExistingUser.Id, new SendMessageModel());
             Assert.IsType<BadRequestObjectResult>(results);
             badRequest = (BadRequestObjectResult)results;
             Assert.Equal(badRequest.Value, MessagesController.Messages.USER_NOT_FOUND);

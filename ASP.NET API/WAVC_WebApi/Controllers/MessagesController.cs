@@ -35,23 +35,23 @@ namespace WAVC_WebApi.Controllers
         // POST: api/Messages
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult> SendMessage(SendMessageModel messageModel)
+        [Route("{recieverId}")]
+        public async Task<ActionResult> SendMessage([FromRoute] string recieverId, [FromBody] SendMessageModel messageModel)
         {
             string userId = User.Claims.First(c => c.Type == "UserId").Value;
-            //var user = await _userManager.FindByIdAsync(userId);
 
-            var recieverUser = await _dbContext.Users.FindAsync(messageModel.recieverId);
+            var recieverUser = await _dbContext.Users.FindAsync(recieverId);
             if (recieverUser == null)
                 return BadRequest(Messages.USER_NOT_FOUND);
 
-            var relationship = await _dbContext.Relationships.FindAsync(userId, messageModel.recieverId);
+            var relationship = await _dbContext.Relationships.FindAsync(userId, recieverId);
             if (relationship == null)
                 return BadRequest(Messages.NOT_A_FRIEND);
 
             var message = new Message()
             {
                 SenderUserId = userId,
-                RecieverUserId = messageModel.recieverId,
+                RecieverUserId = recieverId,
                 Type = messageModel.Type,
                 Content = messageModel.Content
             };
