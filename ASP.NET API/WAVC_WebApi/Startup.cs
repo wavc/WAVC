@@ -39,15 +39,7 @@ namespace WAVC_WebApi
                 options.Cookie.HttpOnly = false;
             });
 
-            //Inject AppSettings to Project
-            services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
-
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
-                //bellow is temporary
-                .AddJsonOptions(
-                    options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                ); 
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -104,7 +96,6 @@ namespace WAVC_WebApi
             app.UseHttpsRedirection();
             app.UseMvc();
 
-            app.UseAuthentication();
             app.UseSignalR(routes =>
             {
                 routes.MapHub<FriendRequestHub>("/friend_request");
@@ -113,7 +104,7 @@ namespace WAVC_WebApi
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "../../Angular";
-                spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                spa.UseProxyToSpaDevelopmentServer(Configuration["ApplicationSettings:ClientUrl"]);
             });
         }
     }
