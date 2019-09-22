@@ -20,8 +20,8 @@ import { MessageSentComponent } from './messenger-page/right-box/dialog-box/mess
 import { ToastrModule } from 'ngx-toastr';
 import { UserService } from './shared/user.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
-import { AuthInterceptor } from './auth/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -51,12 +51,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     }),
     HttpClientModule
   ],
-  providers: [UserService,
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true
-  }],
+  providers: [UserService, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
