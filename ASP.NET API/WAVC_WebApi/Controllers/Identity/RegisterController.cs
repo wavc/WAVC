@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -50,12 +49,15 @@ namespace WAVC_WebApi.Controllers.Identity
             public string ConfirmPassword { get; set; }
         }
 
+        [HttpPost]
         public async Task<IActionResult> Register(InputModel input)
         {
             var user = new ApplicationUser { UserName = input.Email, Email = input.Email, Name = input.Name, Surname = input.Surname };
             var result = await _userManager.CreateAsync(user, input.Password);
             if (result.Succeeded)
             {
+                /* //Gotta add email confirmation page
+                
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail", //TO DO: account confirmation page
@@ -65,7 +67,7 @@ namespace WAVC_WebApi.Controllers.Identity
 
                 await _emailSender.SendEmailAsync(input.Email, "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
+                */
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 return Ok();
             }

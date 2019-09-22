@@ -10,8 +10,8 @@ using WAVC_WebApi.Data;
 namespace WAVC_WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190908123548_temporary-tempModel")]
-    partial class temporarytempModel
+    [Migration("20190921182936_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -191,75 +191,34 @@ namespace WAVC_WebApi.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("WAVC_WebApi.Models.FriendRequest", b =>
-                {
-                    b.Property<int>("FriendRequestId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("FriendId");
-
-                    b.Property<string>("UserId");
-
-                    b.HasKey("FriendRequestId");
-
-                    b.HasIndex("FriendId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("FriendRequests");
-                });
-
-            modelBuilder.Entity("WAVC_WebApi.Models.Message", b =>
-                {
-                    b.Property<long>("MessageId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("RecieverUserId");
-
-                    b.Property<string>("SenderUserId");
-
-                    b.HasKey("MessageId");
-
-                    b.HasIndex("RecieverUserId");
-
-                    b.HasIndex("SenderUserId");
-
-                    b.ToTable("Message");
-                });
-
             modelBuilder.Entity("WAVC_WebApi.Models.Relationship", b =>
                 {
-                    b.Property<string>("UserId");
+                    b.Property<long>("RelationshipId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("RelatedUserId");
 
-                    b.HasKey("UserId", "RelatedUserId");
+                    b.Property<int>("RelationStatus");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("RelationshipId");
 
                     b.HasIndex("RelatedUserId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Relationships");
-                });
-
-            modelBuilder.Entity("WAVC_WebApi.Models.TestModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Value");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TestModels");
                 });
 
             modelBuilder.Entity("WAVC_WebApi.Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
-                    b.Property<string>("FullName");
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Surname");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -309,41 +268,15 @@ namespace WAVC_WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("WAVC_WebApi.Models.FriendRequest", b =>
-                {
-                    b.HasOne("WAVC_WebApi.Models.ApplicationUser", "Friend")
-                        .WithMany("RelatedFriendRequests")
-                        .HasForeignKey("FriendId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("WAVC_WebApi.Models.ApplicationUser", "User")
-                        .WithMany("FriendRequests")
-                        .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("WAVC_WebApi.Models.Message", b =>
-                {
-                    b.HasOne("WAVC_WebApi.Models.ApplicationUser", "RecieverUser")
-                        .WithMany("MessagesRecieved")
-                        .HasForeignKey("RecieverUserId");
-
-                    b.HasOne("WAVC_WebApi.Models.ApplicationUser", "SenderUser")
-                        .WithMany("MessagesSent")
-                        .HasForeignKey("SenderUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("WAVC_WebApi.Models.Relationship", b =>
                 {
                     b.HasOne("WAVC_WebApi.Models.ApplicationUser", "RelatedUser")
                         .WithMany("RelatedFriends")
-                        .HasForeignKey("RelatedUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RelatedUserId");
 
                     b.HasOne("WAVC_WebApi.Models.ApplicationUser", "User")
                         .WithMany("Friends")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }
