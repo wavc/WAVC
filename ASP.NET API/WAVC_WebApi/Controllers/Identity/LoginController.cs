@@ -31,19 +31,25 @@ namespace WAVC_WebApi.Controllers.Identity
             public bool RememberMe { get; set; }
         }
 
+        [HttpPost]
         public async Task<IActionResult> SignIn(InputModel input)
         {
             var result = await _signInManager.PasswordSignInAsync(input.Email, input.Password, input.RememberMe, lockoutOnFailure: true);
             if (result.Succeeded)
             {
-                return Ok();
+                return Ok("{ \"yay\" : \"true\" }");
             }
             else
             {
                 return BadRequest();
             }
         }
-        public async Task SignOut(InputModel input)
+
+        //thanks to setting cookies to not be httpOnly we can do signing out locally
+        //thus this isn't needed, but I'm gona keep it just in case
+        [HttpPost]
+        [Route("SignOut")]
+        public async Task SignOut()
         {
             await _signInManager.SignOutAsync();
         }
