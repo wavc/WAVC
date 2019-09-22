@@ -17,32 +17,21 @@ export class RegistrationPageComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log(this.service.formModel);
+    
 
     this.service.register().subscribe(
       (res: any) => {
-        if (res.succeeded) {
           this.service.formModel.reset();
           this.toastr.success('New user created!', 'Registration successful.');
-          this.router.navigateByUrl('/sign-in');
-
-        } else {
-          res.errors.forEach(element => {
-            switch (element.code) {
-              case 'DuplicateUserName':
-                this.toastr.error('Username is already taken', 'Registration failed.');
-                break;
-
-              default:
-                this.toastr.error(element.description, 'Registration failed.');
-                break;
-            }
-          });
-        }
+          this.router.navigateByUrl('/');
       },
-      err => {
-        console.log(err);
-        this.toastr.error('Something went wrong. Please try again later');
+      (err: any) => {
+        if(err.error.errors !== undefined) {
+          for(var e in err.error.errors) { this.toastr.error(err.error.errors[e][0]) };
+        }
+        else {
+          for(var e in err.error) { this.toastr.error(err.error[e].description) };
+        }
       }
     );
   }

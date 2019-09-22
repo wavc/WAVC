@@ -19,10 +19,10 @@ import { MessageRecievedComponent } from './messenger-page/right-box/dialog-box/
 import { MessageSentComponent } from './messenger-page/right-box/dialog-box/message-sent/message-sent.component';
 import { ToastrModule } from 'ngx-toastr';
 import { UserService } from './shared/user.service';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthInterceptor } from './auth/auth.interceptor';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationComponent } from './messenger-page/left-box/nav-bar/notification/notification.component';
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [
@@ -53,12 +53,7 @@ import { NotificationComponent } from './messenger-page/left-box/nav-bar/notific
     }),
     HttpClientModule
   ],
-  providers: [UserService,
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true
-  }],
+  providers: [UserService, CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -6,11 +6,9 @@ import { MessengerPageComponent } from './messenger-page/messenger-page.componen
 import { AuthGuard } from './auth/auth.guard';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
-  { path: 'registration', component: RegistrationPageComponent },
-  { path: 'sign-in', component: LogInPageComponent },
-  { path: 'messenger', component: MessengerPageComponent, canActivate: [AuthGuard] }
-
+  {path:'', component: MessengerPageComponent, canActivate:[AuthGuard]},
+  {path:'registration', component: RegistrationPageComponent},
+  {path:'sign-in', component: LogInPageComponent}
 ];
 
 @NgModule({

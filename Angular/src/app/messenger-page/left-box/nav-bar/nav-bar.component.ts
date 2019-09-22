@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/shared/user.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -9,14 +11,12 @@ import { Router } from '@angular/router';
 export class NavBarComponent implements OnInit {
 
   notificationCounter = 0;
-  constructor(private router: Router) { }
+  constructor(private service: UserService, private router: Router, private cookieService: CookieService) { }
 
   ngOnInit() {
   }
   onLogout() {
-    console.log('loggin out');
-
-    localStorage.removeItem('token');
+    this.cookieService.delete(".AspNetCore.Identity.Application");
     this.router.navigateByUrl('/sign-in');
   }
 }
