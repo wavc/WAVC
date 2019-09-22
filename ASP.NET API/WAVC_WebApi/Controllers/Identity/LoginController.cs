@@ -37,7 +37,7 @@ namespace WAVC_WebApi.Controllers.Identity
             var result = await _signInManager.PasswordSignInAsync(input.Email, input.Password, input.RememberMe, lockoutOnFailure: true);
             if (result.Succeeded)
             {
-                return Ok();
+                return Ok("{ \"yay\" : \"true\" }");
             }
             else
             {

@@ -17,13 +17,15 @@ namespace WAVC_WebApi.Controllers
         UserManager<ApplicationUser> userManager;
         ApplicationDbContext dBContext;
         FriendsManager friendsManager;
+        private readonly ApplicationSettings _applicationSettings;
         int searchResults = 10;
 
-        public ApplicationUserController(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext)
+        public ApplicationUserController(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext, IOptions<ApplicationSettings> appSettings)
         {
             this.userManager = userManager;
             this.dBContext = dBContext;
             friendsManager = new FriendsManager(dBContext);
+            _applicationSettings = appSettings.Value;
         }
 
 
@@ -42,6 +44,8 @@ namespace WAVC_WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("[action]")]
         public async Task<List<ApplicationUserModel>> GetRequestsForUser()
         {
             var user = await userManager.GetUserAsync(HttpContext.User);
@@ -55,12 +59,16 @@ namespace WAVC_WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("[action]")]
         public async Task<ApplicationUserModel> GetCurrentFriend(string name, string surname)
         {
             var thisUser = await userManager.GetUserAsync(HttpContext.User);
             return friendsManager.GetFriends(thisUser).FirstOrDefault(x => x.Surname == x.Surname && x.Name == name).ToApplicationUserModel();
         }
 
+        [HttpGet]
+        [Route("[action]")]
         public async Task<List<ApplicationUserModel>> Search(string query)
         {
             var user = await userManager.GetUserAsync(HttpContext.User);

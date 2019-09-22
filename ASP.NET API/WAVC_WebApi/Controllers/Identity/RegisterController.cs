@@ -49,7 +49,6 @@ namespace WAVC_WebApi.Controllers.Identity
             public string ConfirmPassword { get; set; }
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Register(InputModel input)
         {
@@ -57,8 +56,8 @@ namespace WAVC_WebApi.Controllers.Identity
             var result = await _userManager.CreateAsync(user, input.Password);
             if (result.Succeeded)
             {
-
                 /* //Gotta add email confirmation page
+                
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                 var callbackUrl = Url.Page(
                     "/Account/ConfirmEmail", //TO DO: account confirmation page

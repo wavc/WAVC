@@ -54,8 +54,6 @@ namespace WAVC_WebApi
 
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<IEmailSender, EmailSender>(i =>
                 new EmailSender(
@@ -85,7 +83,7 @@ namespace WAVC_WebApi
                 options.Password.RequireNonAlphanumeric = false;
             });
 
-           services.AddSignalR(o => o.EnableDetailedErrors = true);
+            services.AddSignalR(o => o.EnableDetailedErrors = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
