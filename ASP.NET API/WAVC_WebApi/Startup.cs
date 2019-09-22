@@ -10,6 +10,7 @@ using WAVC_WebApi.Hubs;
 using WAVC_WebApi.Services;
 using WAVC_WebApi.Data;
 using WAVC_WebApi.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace WAVC_WebApi
 {
@@ -21,12 +22,23 @@ namespace WAVC_WebApi
         }
 
         public IConfiguration Configuration { get; }
-        readonly string MyCorsConfiguration = "myCorsConfiguration";
 
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.HttpOnly = Microsoft.AspNetCore.CookiePolicy.HttpOnlyPolicy.None;
+            });
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = false;
+            });
+
             //Inject AppSettings to Project
             services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
 
@@ -42,8 +54,6 @@ namespace WAVC_WebApi
 
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<IEmailSender, EmailSender>(i =>
                 new EmailSender(
@@ -55,45 +65,15 @@ namespace WAVC_WebApi
                 )
             );
 
-            services.Configure<IdentityOptions>(options => {
+            services.Configure<IdentityOptions>(options =>
+            {
                 options.Password.RequireDigit = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
             });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyCorsConfiguration,
-                    builder =>
-                    {
-                        builder.WithOrigins(Configuration["ApplicationSettings:ClientUrl"]);
-                        builder.AllowAnyMethod();
-                        builder.AllowAnyHeader();
-                    });
-            });
-
-            var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWTSecret"].ToString());
-            
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(x => {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = false;
-                x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
-
-            services.AddSignalR(o => o.EnableDetailedErrors = true);
+           services.AddSignalR(o => o.EnableDetailedErrors = true);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -118,6 +98,12 @@ namespace WAVC_WebApi
             app.UseSignalR(routes =>
             {
                 routes.MapHub<FriendRequestHub>("/friend_request");
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "../../Angular";
+                spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
             });
         }
     }
