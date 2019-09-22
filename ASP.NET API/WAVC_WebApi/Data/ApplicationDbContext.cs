@@ -64,6 +64,5 @@ namespace WAVC_WebApi.Data
             base.OnModelCreating(modelBuilder);
         }
 
-        public DbSet<WAVC_WebApi.Models.Message> Message { get; set; }
     }
 }
