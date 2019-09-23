@@ -20,7 +20,7 @@ export class LogInPageComponent implements OnInit {
   constructor(private service: UserService, private router: Router, private toastr: ToastrService, private cookieService: CookieService) { }
 
   ngOnInit() {
-    if(this.cookieService.check('.AspNetCore.Identity.Application')) {
+    if (this.cookieService.check('.AspNetCore.Identity.Application')) {
       this.router.navigateByUrl('/');
     }
   }
@@ -29,7 +29,6 @@ export class LogInPageComponent implements OnInit {
 
     this.service.login(form.value).subscribe(
       (res: any) => {
-        //localStorage.setItem('token', res.token);
         this.router.navigateByUrl('/');
       },
       err => {

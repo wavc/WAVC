@@ -17,7 +17,6 @@ export class RegistrationPageComponent implements OnInit {
   }
 
   onSubmit() {
-    
 
     this.service.register().subscribe(
       (res: any) => {
@@ -26,14 +25,13 @@ export class RegistrationPageComponent implements OnInit {
           this.router.navigateByUrl('/');
       },
       (err: any) => {
-        if(err.error.errors !== undefined) {
-          for(let e in err.error.errors) { 
-            this.toastr.error(err.error.errors[e][0]); 
+        if (err.error.errors !== undefined) {
+          for (const e of Object.keys(err.error.errors)) {
+            this.toastr.error(err.error.errors[e][0]);
           }
-        }
-        else {
-          for(let e in err.error) { 
-            this.toastr.error(err.error[e].description); 
+        } else {
+          for (const e of Object.keys(err.error)) {
+            this.toastr.error(err.error[e].description);
           }
         }
       }
