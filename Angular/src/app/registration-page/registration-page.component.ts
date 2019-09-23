@@ -27,10 +27,10 @@ export class RegistrationPageComponent implements OnInit {
       },
       (err: any) => {
         if(err.error.errors !== undefined) {
-          for(var e in err.error.errors) { this.toastr.error(err.error.errors[e][0]) };
+          for(let e in err.error.errors) { this.toastr.error(err.error.errors[e][0]) };
         }
         else {
-          for(var e in err.error) { this.toastr.error(err.error[e].description) };
+          for(let e in err.error) { this.toastr.error(err.error[e].description); }
         }
       }
     );

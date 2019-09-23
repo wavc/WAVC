@@ -16,7 +16,7 @@ export class NavBarComponent implements OnInit {
   ngOnInit() {
   }
   onLogout() {
-    this.cookieService.delete(".AspNetCore.Identity.Application");
+    this.cookieService.delete('.AspNetCore.Identity.Application');
     this.router.navigateByUrl('/sign-in');
   }
 }

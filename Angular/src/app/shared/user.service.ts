@@ -37,7 +37,7 @@ export class UserService {
   }
 
   register() {
-    var body = {
+    const body = {
       Name: this.formModel.value.FirstName,
       Surname: this.formModel.value.LastName,
       Email: this.formModel.value.Email,
