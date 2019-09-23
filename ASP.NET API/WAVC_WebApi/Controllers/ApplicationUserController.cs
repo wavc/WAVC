@@ -17,17 +17,14 @@ namespace WAVC_WebApi.Controllers
         UserManager<ApplicationUser> userManager;
         ApplicationDbContext dBContext;
         FriendsManager friendsManager;
-        private readonly ApplicationSettings _applicationSettings;
         int searchResults = 10;
 
-        public ApplicationUserController(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext, IOptions<ApplicationSettings> appSettings)
+        public ApplicationUserController(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext)
         {
             this.userManager = userManager;
             this.dBContext = dBContext;
             friendsManager = new FriendsManager(dBContext);
-            _applicationSettings = appSettings.Value;
         }
-
 
         [HttpGet]
         [Route("[action]")]
