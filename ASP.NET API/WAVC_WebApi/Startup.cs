@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 ﻿using Microsoft.AspNetCore.Builder;
-=======
-using Microsoft.AspNetCore.Builder;
->>>>>>> 8434b1e92fcf0c740db7a87999e5970ea4cc1fe8
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;

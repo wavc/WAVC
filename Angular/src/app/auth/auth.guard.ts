@@ -15,7 +15,6 @@ export class AuthGuard implements CanActivate {
     state: RouterStateSnapshot): boolean {
     if (this.cookieService.check(".AspNetCore.Identity.Application"))
       return true;
-    }
     this.router.navigateByUrl('/sign-in');
     return false;
   }
