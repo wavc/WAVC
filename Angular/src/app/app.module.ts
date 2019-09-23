@@ -20,7 +20,7 @@ import { MessageSentComponent } from './messenger-page/right-box/dialog-box/mess
 import { ToastrModule } from 'ngx-toastr';
 import { UserService } from './shared/user.service';
 import { NotificationComponent } from './messenger-page/left-box/nav-bar/notification/notification.component';
-import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CookieService } from 'ngx-cookie-service';
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { UserService } from '../shared/user.service'
+import { UserService } from '../shared/user.service';
 import { CookieService } from 'ngx-cookie-service';
 
 @Component({
@@ -20,12 +20,13 @@ export class LogInPageComponent implements OnInit {
   constructor(private service: UserService, private router: Router, private toastr: ToastrService, private cookieService: CookieService) { }
 
   ngOnInit() {
-    if (this.cookieService.check(".AspNetCore.Identity.Application"))
+    if(this.cookieService.check('.AspNetCore.Identity.Application')) {
       this.router.navigateByUrl('/');
+    }
   }
 
   onSubmit(form: NgForm) {
-    
+
     this.service.login(form.value).subscribe(
       (res: any) => {
         //localStorage.setItem('token', res.token);
