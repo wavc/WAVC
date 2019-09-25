@@ -42,7 +42,7 @@ namespace WAVC_WebApi.Hubs
             var sender = await _userManager.GetUserAsync(Context.User);
             var reciever = _dbContext.Users.Find(id);
 
-            if (reciever == null || sender == null)
+            if (reciever == null)
             {
                 // error
                 return;

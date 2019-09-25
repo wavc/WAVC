@@ -32,14 +32,8 @@ namespace WAVC_WebApi.Controllers
         public async Task<List<ApplicationUserModel>> GetFriends()
         {
             var sender = await _userManager.GetUserAsync(HttpContext.User);
-            if (sender != null)
-            {
-                return _friendsManager.GetFriends(sender).Select(u => u.ToApplicationUserModel()).ToList();
-            }
-            else
-            {
-                return new List<ApplicationUserModel>();
-            }
+
+            return _friendsManager.GetFriends(sender).Select(u => u.ToApplicationUserModel()).ToList();
         }
 
         [HttpGet]
@@ -47,14 +41,8 @@ namespace WAVC_WebApi.Controllers
         public async Task<List<ApplicationUserModel>> GetRequestsForUser()
         {
             var sender = await _userManager.GetUserAsync(HttpContext.User);
-            if (sender != null)
-            {
-                return _friendsManager.GetRequestsForUser(sender).Select(u => u.ToApplicationUserModel()).ToList();
-            }
-            else
-            {
-                return new List<ApplicationUserModel>();
-            }
+
+            return _friendsManager.GetRequestsForUser(sender).Select(u => u.ToApplicationUserModel()).ToList();
         }
 
         [HttpGet]
@@ -62,6 +50,7 @@ namespace WAVC_WebApi.Controllers
         public async Task<ApplicationUserModel> GetCurrentFriend(string name, string surname)
         {
             var sender = await _userManager.GetUserAsync(HttpContext.User);
+
             return _friendsManager.GetFriends(sender).FirstOrDefault(x => x.Surname == x.Surname && x.Name == name).ToApplicationUserModel();
         }
 
