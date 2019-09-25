@@ -10,11 +10,11 @@ namespace WAVC_WebApi
 {
     public class FriendsManager
     {
-        private DbContext dBContext;
+        private readonly DbContext _dbContext;
 
         public FriendsManager(DbContext ctx)
         {
-            dBContext = ctx;
+            _dbContext = ctx;
         }
 
         private IEnumerable<Relationship> Get(ApplicationUser user, Relationship.Status status, Expression<Func<ApplicationUser, IEnumerable<Relationship>>> property)
@@ -22,7 +22,7 @@ namespace WAVC_WebApi
             if (user == null)
                 return new List<Relationship>();
 
-            new ReferenceLoader<ApplicationUser>(user, dBContext).
+            new ReferenceLoader<ApplicationUser>(user, _dbContext).
              LoadCollection(property);
 
             var func = property.Compile();
@@ -75,9 +75,9 @@ namespace WAVC_WebApi
         {
             var request = new Relationship() { User = I, RelatedUser = friend, RelationStatus = Relationship.Status.RequestFromUser };
 
-            dBContext.Add(request);
+            _dbContext.Add(request);
 
-            await dBContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task RejectRequestAsync(ApplicationUser I, ApplicationUser friend)
@@ -90,9 +90,9 @@ namespace WAVC_WebApi
             if (request == null)
                 throw new NullReferenceException();
 
-            dBContext.Remove(request);
+            _dbContext.Remove(request);
 
-            await dBContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task AcceptRequestAsync(ApplicationUser I, ApplicationUser friend)
@@ -106,9 +106,9 @@ namespace WAVC_WebApi
                 throw new NullReferenceException();
 
             request.RelationStatus = Relationship.Status.Accepted;
-            dBContext.Update(request);
+            _dbContext.Update(request);
 
-            await dBContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> DeleteFriendAsync(ApplicationUser I, ApplicationUser friend)
@@ -121,9 +121,9 @@ namespace WAVC_WebApi
             if (a == null)
                 return false;
 
-            dBContext.Remove(a);
+            _dbContext.Remove(a);
 
-            await dBContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return true;
         }
     }

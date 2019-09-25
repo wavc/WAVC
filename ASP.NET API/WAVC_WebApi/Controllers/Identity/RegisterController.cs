@@ -13,16 +13,13 @@ namespace WAVC_WebApi.Controllers.Identity
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IEmailSender _emailSender;
 
         public RegisterController(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender)
+            SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender = emailSender;
         }
 
         [HttpPost]

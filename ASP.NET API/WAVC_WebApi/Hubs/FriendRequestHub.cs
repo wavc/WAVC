@@ -12,23 +12,23 @@ namespace WAVC_WebApi.Hubs
     [Authorize]
     public class FriendRequestHub : Hub<IFriendRequestClient>
     {
-        private readonly ApplicationDbContext dbContext;
-        private readonly UserManager<ApplicationUser> userManager;
-        private readonly FriendsManager friendsManager;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly FriendsManager _friendsManager;
 
         public FriendRequestHub(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext)
         {
-            this.dbContext = dBContext;
-            this.userManager = userManager;
-            friendsManager = new FriendsManager(dBContext);
+            _dbContext = dBContext;
+            _userManager = userManager;
+            _friendsManager = new FriendsManager(dBContext);
         }
 
         public async Task<bool> DeleteFriend(string id)
         {
-            var sender = await userManager.GetUserAsync(Context.User);
-            var reciever = dbContext.Users.Find(id);
+            var sender = await _userManager.GetUserAsync(Context.User);
+            var reciever = _dbContext.Users.Find(id);
 
-            var result = await friendsManager.DeleteFriendAsync(sender, reciever);
+            var result = await _friendsManager.DeleteFriendAsync(sender, reciever);
             if (!result)
             {
                 return false;
@@ -39,8 +39,8 @@ namespace WAVC_WebApi.Hubs
 
         public async Task SendFriendRequest(string id)
         {
-            var sender = await userManager.GetUserAsync(Context.User);
-            var reciever = dbContext.Users.Find(id);
+            var sender = await _userManager.GetUserAsync(Context.User);
+            var reciever = _dbContext.Users.Find(id);
 
             if (reciever == null || sender == null)
             {
@@ -48,38 +48,38 @@ namespace WAVC_WebApi.Hubs
                 return;
             }
 
-            if (friendsManager.GetRequestsForUser(sender).Contains(reciever))
+            if (_friendsManager.GetRequestsForUser(sender).Contains(reciever))
             {
                 // selected already sent request - treat it as accept
                 await SendFriendRequestResponse(reciever.Id, true);
                 return;
             }
 
-            if (friendsManager.GetUserRequests(sender).Contains(reciever))
+            if (_friendsManager.GetUserRequests(sender).Contains(reciever))
             {
                 // user already sent request - do nothing
                 return;
             }
 
-            await friendsManager.CreateRequestAsync(sender, reciever);
+            await _friendsManager.CreateRequestAsync(sender, reciever);
 
             await Clients.User(reciever.Id).RecieveFriendRequest(sender.Id, sender.Name, sender.Surname);
         }
 
         public async Task SendFriendRequestResponse(string id, bool accept)
         {
-            var sender = await userManager.GetUserAsync(Context.User);
-            var reciever = dbContext.Users.Find(id);
+            var sender = await _userManager.GetUserAsync(Context.User);
+            var reciever = _dbContext.Users.Find(id);
             try
             {
                 if (accept)
                 {
-                    await friendsManager.AcceptRequestAsync(sender, reciever);
+                    await _friendsManager.AcceptRequestAsync(sender, reciever);
                     await Clients.User(reciever.Id).RecieveFriendRequestResponse(sender.Id, sender.Name, sender.Surname);
                 }
                 else
                 {
-                    await friendsManager.RejectRequestAsync(sender, reciever);
+                    await _friendsManager.RejectRequestAsync(sender, reciever);
                 }
             }
             catch (ArgumentNullException)

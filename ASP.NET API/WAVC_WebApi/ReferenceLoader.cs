@@ -8,29 +8,29 @@ namespace WAVC_WebApi
 {
     public class ReferenceLoader<T> where T : class
     {
-        private ICollection<T> objs;
-        private T obj;
-        private DbContext ctx;
+        private readonly ICollection<T> _objs;
+        private readonly T _obj;
+        private readonly DbContext _dbContext;
 
         public ReferenceLoader(ICollection<T> objs, DbContext ctx)
         {
-            this.objs = objs;
-            this.ctx = ctx;
+            _objs = objs;
+            _dbContext = ctx;
         }
 
         public ReferenceLoader(T obj, DbContext ctx)
         {
-            this.obj = obj;
-            this.ctx = ctx;
+            _obj = obj;
+            _dbContext = ctx;
         }
 
         private ReferenceLoader<T> Load(Action<EntityEntry<T>> action)
         {
-            if (objs != null)
-                foreach (var obj in objs)
-                    action(ctx.Entry(obj));
-            else if (obj != null)
-                action(ctx.Entry(obj));
+            if (_objs != null)
+                foreach (var obj in _objs)
+                    action(_dbContext.Entry(obj));
+            else if (_obj != null)
+                action(_dbContext.Entry(_obj));
             return this;
         }
 
