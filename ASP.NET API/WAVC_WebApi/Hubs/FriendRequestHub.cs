@@ -1,96 +1,97 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Threading.Tasks;
 using WAVC_WebApi.Data;
+using WAVC_WebApi.Hubs.Interfaces;
 using WAVC_WebApi.Models;
 
 namespace WAVC_WebApi.Hubs
 {
-    public class FriendRequestHub : Hub
+    [Authorize]
+    public class FriendRequestHub : Hub<IFriendRequestClient>
     {
-        ApplicationDbContext dBContext;
-        UserManager<ApplicationUser> userManager;
-        FriendsManager friendsManager;
+        private readonly ApplicationDbContext dbContext;
+        private readonly UserManager<ApplicationUser> userManager;
+        private readonly FriendsManager friendsManager;
+
         public FriendRequestHub(UserManager<ApplicationUser> userManager, ApplicationDbContext dBContext)
         {
-            this.dBContext = dBContext;
+            this.dbContext = dBContext;
             this.userManager = userManager;
             friendsManager = new FriendsManager(dBContext);
         }
 
         public async Task<bool> DeleteFriend(string id)
         {
+            var sender = await userManager.GetUserAsync(Context.User);
+            var reciever = dbContext.Users.Find(id);
 
-            var user = await userManager.GetUserAsync(Context.User);
-            var other = dBContext.Users.Find(id);
-
-            var result = await friendsManager.DeleteFriendAsync(user, other);
+            var result = await friendsManager.DeleteFriendAsync(sender, reciever);
             if (!result)
             {
                 return false;
             }
-            await Clients.User(other.Id).SendAsync("FriendDeleted", user.Id);
+            await Clients.User(reciever.Id).FriendDeleted(sender.Id);
             return true;
         }
 
         public async Task SendFriendRequest(string id)
         {
-            var user = await userManager.GetUserAsync(Context.User);
-            var selected = dBContext.Users.Find(id);
+            var sender = await userManager.GetUserAsync(Context.User);
+            var reciever = dbContext.Users.Find(id);
 
-            if (selected == null || user == null)
+            if (reciever == null || sender == null)
             {
-                //error
+                // error
                 return;
             }
 
-            if (friendsManager.GetRequestsForUser(user).Contains(selected))
+            if (friendsManager.GetRequestsForUser(sender).Contains(reciever))
             {
-                //selected already sent request - treat it as accept
-                await SendFriendRequestResponse(selected.Id, true);
+                // selected already sent request - treat it as accept
+                await SendFriendRequestResponse(reciever.Id, true);
                 return;
             }
 
-            if (friendsManager.GetUserRequests(user).Contains(selected))
+            if (friendsManager.GetUserRequests(sender).Contains(reciever))
             {
-                //user already sent request - do nothing
+                // user already sent request - do nothing
                 return;
             }
 
-            await friendsManager.CreateRequestAsync(user, selected);
+            await friendsManager.CreateRequestAsync(sender, reciever);
 
-            await Clients.User(selected.Id).SendAsync("RecieveFriendRequest", user.Id, user.Name, user.Surname);
+            await Clients.User(reciever.Id).RecieveFriendRequest(sender.Id, sender.Name, sender.Surname);
         }
 
         public async Task SendFriendRequestResponse(string id, bool accept)
         {
-            var user = await userManager.GetUserAsync(Context.User);
-            var other = dBContext.Users.Find(id);
+            var sender = await userManager.GetUserAsync(Context.User);
+            var reciever = dbContext.Users.Find(id);
             try
             {
-
                 if (accept)
                 {
-                    await friendsManager.AcceptRequestAsync(user, other);
-                    await Clients.User(other.Id).SendAsync("RecieveFriendRequestResponse", user.Id, user.Name, user.Surname);
+                    await friendsManager.AcceptRequestAsync(sender, reciever);
+                    await Clients.User(reciever.Id).RecieveFriendRequestResponse(sender.Id, sender.Name, sender.Surname);
                 }
                 else
                 {
-                    await friendsManager.RejectRequestAsync(user, other);
+                    await friendsManager.RejectRequestAsync(sender, reciever);
                 }
             }
             catch (ArgumentNullException)
             {
-                //there is no such user
+                // there is no such user
                 return;
             }
             catch (NullReferenceException)
             {
-                //there is no request to be accepted/rejected
+                // there is no request to be accepted/rejected
                 return;
             }
-
         }
     }
 }

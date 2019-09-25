@@ -10,19 +10,19 @@ namespace WAVC_WebApi
 {
     public class FriendsManager
     {
-        DbContext dBContext;
+        private DbContext dBContext;
+
         public FriendsManager(DbContext ctx)
         {
             dBContext = ctx;
         }
 
-        IEnumerable<Relationship> Get(ApplicationUser user, Relationship.Status status, Expression<Func<ApplicationUser, IEnumerable<Relationship>>> property)
+        private IEnumerable<Relationship> Get(ApplicationUser user, Relationship.Status status, Expression<Func<ApplicationUser, IEnumerable<Relationship>>> property)
         {
             if (user == null)
                 return new List<Relationship>();
 
             new ReferenceLoader<ApplicationUser>(user, dBContext).
-             LoadCollection(property).
              LoadCollection(property);
 
             var func = property.Compile();
@@ -35,7 +35,6 @@ namespace WAVC_WebApi
 
         public List<ApplicationUser> GetFriends(ApplicationUser user)
         {
-
             var friends = Get(user, Relationship.Status.Accepted, u => u.Friends).
                 Select(r => r.RelatedUser).
                 Concat(
@@ -45,13 +44,15 @@ namespace WAVC_WebApi
 
             return friends;
         }
+
         public List<ApplicationUser> GetUserRequests(ApplicationUser user)
         {
-            var requests = Get(user, Relationship.Status.RequestFromUser, u=>u.Friends).
+            var requests = Get(user, Relationship.Status.RequestFromUser, u => u.Friends).
                 Select(r => r.RelatedUser).ToList();
 
             return requests;
         }
+
         public List<ApplicationUser> GetRequestsForUser(ApplicationUser user)
         {
             var requests = Get(user, Relationship.Status.RequestFromUser, u => u.RelatedFriends).
@@ -72,7 +73,7 @@ namespace WAVC_WebApi
 
         public async Task CreateRequestAsync(ApplicationUser I, ApplicationUser friend)
         {
-            var request = new Relationship() { User = I, RelatedUser = friend, RelationStatus=Relationship.Status.RequestFromUser };
+            var request = new Relationship() { User = I, RelatedUser = friend, RelationStatus = Relationship.Status.RequestFromUser };
 
             dBContext.Add(request);
 
@@ -93,6 +94,7 @@ namespace WAVC_WebApi
 
             await dBContext.SaveChangesAsync();
         }
+
         public async Task AcceptRequestAsync(ApplicationUser I, ApplicationUser friend)
         {
             if (I == null || friend == null)
@@ -108,6 +110,7 @@ namespace WAVC_WebApi
 
             await dBContext.SaveChangesAsync();
         }
+
         public async Task<bool> DeleteFriendAsync(ApplicationUser I, ApplicationUser friend)
         {
             var a = Get(I, Relationship.Status.Accepted, u => u.Friends).

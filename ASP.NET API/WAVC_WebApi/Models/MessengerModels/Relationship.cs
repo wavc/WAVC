@@ -1,7 +1,7 @@
 ﻿namespace WAVC_WebApi.Models
 {
     public class Relationship
-    { 
+    {
         public long RelationshipId { get; set; }
 
         public string UserId { get; set; }

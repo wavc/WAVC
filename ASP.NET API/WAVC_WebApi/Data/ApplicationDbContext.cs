@@ -54,7 +54,6 @@ namespace WAVC_WebApi.Data
                 .WithMany(su => su.MessagesRecieved)
                 .HasForeignKey(m => m.RecieverUserId);
 
-
             base.OnModelCreating(modelBuilder);
         }*/
     }

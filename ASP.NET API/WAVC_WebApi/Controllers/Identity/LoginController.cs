@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using WAVC_WebApi.Models;
+using WAVC_WebApi.Models.AuthenticationModels;
 
 namespace WAVC_WebApi.Controllers.Identity
 {
@@ -17,36 +17,20 @@ namespace WAVC_WebApi.Controllers.Identity
             _signInManager = signInManager;
         }
 
-        public class InputModel
-        {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
-
-            [Required]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-
-            [Display(Name = "Remember me?")]
-            public bool RememberMe { get; set; }
-        }
-
         [HttpPost]
-        public async Task<IActionResult> SignIn(InputModel input)
+        public async Task<IActionResult> SignIn(LoginModel input)
         {
             var result = await _signInManager.PasswordSignInAsync(input.Email, input.Password, input.RememberMe, lockoutOnFailure: true);
-            if (result.Succeeded)
-            {
-                return Ok("{ \"yay\" : \"true\" }");
-            }
-            else
+            if (!result.Succeeded)
             {
                 return BadRequest();
             }
+
+            return Ok();
         }
 
-        //thanks to setting cookies to not be httpOnly we can do signing out locally
-        //thus this isn't needed, but I'm gona keep it just in case
+        // thanks to setting cookies to not be httpOnly we can do signing out locally
+        // thus this isn't needed, but I'm gona keep it just in case
         [HttpPost]
         [Route("SignOut")]
         public async Task SignOut()

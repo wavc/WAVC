@@ -4,10 +4,11 @@
     {
         public long MessageId { get; set; }
 
-        //Suggest changing to Relationship
+        // Suggest changing to Relationship
         public string SenderUserId { get; set; }
-        public ApplicationUser  SenderUser { get; set; }
+
+        public ApplicationUser SenderUser { get; set; }
         public string RecieverUserId { get; set; }
-        public ApplicationUser  RecieverUser{ get; set; }
+        public ApplicationUser RecieverUser { get; set; }
     }
 }

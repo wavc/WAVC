@@ -5,13 +5,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using WAVC_WebApi.Models;
 
 namespace WAVC_WebApi_UnitTests.Mocks
 {
-    public class SignInManagerMock:SignInManager<ApplicationUser>
+    public class SignInManagerMock : SignInManager<ApplicationUser>
     {
         public SignInManagerMock()
         : base(new Mock<UserMangerMock>().Object,
@@ -20,7 +18,7 @@ namespace WAVC_WebApi_UnitTests.Mocks
             new Mock<IOptions<IdentityOptions>>().Object,
             new Mock<ILogger<SignInManager<ApplicationUser>>>().Object,
             new Mock<IAuthenticationSchemeProvider>().Object)
-        { 
+        {
         }
 
         public class Builder
@@ -32,11 +30,11 @@ namespace WAVC_WebApi_UnitTests.Mocks
                 mock(_mock);
                 return this;
             }
+
             public Mock<SignInManagerMock> Build()
             {
                 return _mock;
             }
-
         }
     }
 }
