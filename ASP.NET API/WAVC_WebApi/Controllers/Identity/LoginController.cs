@@ -28,14 +28,5 @@ namespace WAVC_WebApi.Controllers.Identity
 
             return Ok();
         }
-
-        // thanks to setting cookies to not be httpOnly we can do signing out locally
-        // thus this isn't needed, but I'm gona keep it just in case
-        [HttpPost]
-        [Route("SignOut")]
-        public async Task SignOut()
-        {
-            await _signInManager.SignOutAsync();
-        }
     }
 }

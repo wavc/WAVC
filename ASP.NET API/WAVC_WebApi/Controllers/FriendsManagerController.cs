@@ -13,14 +13,14 @@ namespace WAVC_WebApi.Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class FriendsManagerController : ControllerBase
+    public class FriendsController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _dbContext;
         private readonly FriendsManager _friendsManager;
         private readonly int _searchResults = 10;
 
-        public FriendsManagerController(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
+        public FriendsController(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _dbContext = dbContext;
@@ -28,12 +28,11 @@ namespace WAVC_WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("Friends")]
         public async Task<List<ApplicationUserModel>> GetFriends()
         {
             var sender = await _userManager.GetUserAsync(HttpContext.User);
 
-            return _friendsManager.GetFriends(sender).Select(u => u.ToApplicationUserModel()).ToList();
+            return _friendsManager.GetFriends(sender).Select(u => new ApplicationUserModel(u)).ToList();
         }
 
         [HttpGet]
@@ -42,16 +41,16 @@ namespace WAVC_WebApi.Controllers
         {
             var sender = await _userManager.GetUserAsync(HttpContext.User);
 
-            return _friendsManager.GetRequestsForUser(sender).Select(u => u.ToApplicationUserModel()).ToList();
+            return _friendsManager.GetRequestsForUser(sender).Select(u => new ApplicationUserModel(u)).ToList();
         }
 
         [HttpGet]
-        [Route("CurrentFriend")]
-        public async Task<ApplicationUserModel> GetCurrentFriend(string name, string surname)
+        [Route("FriendId")]
+        public async Task<string> GetFriendId(string name, string surname)
         {
             var sender = await _userManager.GetUserAsync(HttpContext.User);
 
-            return _friendsManager.GetFriends(sender).FirstOrDefault(x => x.Surname == x.Surname && x.Name == name).ToApplicationUserModel();
+            return _friendsManager.GetFriends(sender).FirstOrDefault(x => x.Surname == x.Surname && x.Name == name).Id;
         }
 
         [HttpGet]
@@ -70,7 +69,7 @@ namespace WAVC_WebApi.Controllers
                 OrderBy(x => x.comparisonResult).
                 Take(_searchResults).
                 Where(x => x.comparisonResult >= 0).
-                Select(x => x.user.ToApplicationUserModel()).ToList();
+                Select(x => new ApplicationUserModel(x.user)).ToList();
 
             return queryResult;
         }
