@@ -10,8 +10,8 @@ using WAVC_WebApi.Data;
 namespace WAVC_WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190915190009_addStatusToFR")]
-    partial class addStatusToFR
+    [Migration("20190930152000_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

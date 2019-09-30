@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,8 +29,6 @@ namespace WAVC_WebApi
         }
 
         public IConfiguration Configuration { get; }
-        readonly string MyCorsConfiguration = "myCorsConfiguration";
-
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -57,16 +56,6 @@ namespace WAVC_WebApi
                 options.Password.RequireNonAlphanumeric = false;
             });
 
-            services.AddCors(options =>
-            {
-                options.AddPolicy(MyCorsConfiguration,
-                    builder =>
-                    {
-                        builder.WithOrigins(Configuration["ApplicationSettings:ClientUrl"]);
-                        builder.AllowAnyMethod();
-                        builder.AllowAnyHeader();
-                    });
-            });
 
             var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWTSecret"].ToString());
             
@@ -78,7 +67,7 @@ namespace WAVC_WebApi
             }).AddJwtBearer(x => {
                 x.RequireHttpsMetadata = false;
                 x.SaveToken = false;
-                x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
@@ -95,11 +84,14 @@ namespace WAVC_WebApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseCors(options => {
-                    options.AllowAnyOrigin();
-                    options.AllowAnyMethod();
-                    options.AllowAnyHeader();
-                    });
+                app.UseDatabaseErrorPage();
+                //app.UseSpa(spa =>
+                //{
+                //    spa.Options.SourcePath = "../../Angular";
+                //    spa.UseAngularCliServer(npmScript: "start");
+                //    spa.Options.StartupTimeout = TimeSpan.FromSeconds(600);
+                //});
+
             }
             else
             {
