@@ -35,13 +35,14 @@ namespace WAVC_WebApi
         {
             //Inject AppSettings to Project
             services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
+            services.Configure<JwtAuthentication>(Configuration.GetSection("JwtAuthentication"));
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 //bellow is temporary
                 .AddJsonOptions(
                     options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                ); 
+                );
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -58,7 +59,7 @@ namespace WAVC_WebApi
 
 
             var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWTSecret"].ToString());
-            
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -76,13 +77,23 @@ namespace WAVC_WebApi
                     ClockSkew = TimeSpan.Zero
                 };
             });
-        }
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("MyCors", builder =>
+                {
+                    builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
+                });
+            });
+        }
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
+                app.UseCors("MyCors");
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
                 //app.UseSpa(spa =>
@@ -92,13 +103,14 @@ namespace WAVC_WebApi
                 //    spa.Options.StartupTimeout = TimeSpan.FromSeconds(600);
                 //});
 
+
             }
             else
             {
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+           
             app.UseAuthentication();
             app.UseHttpsRedirection();
             app.UseMvc();
