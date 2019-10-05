@@ -33,42 +33,36 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
         //POST : /api/ApplicationUser/Login
         public async Task<IActionResult> Login(LoginModel model)
         {
-
-            ApplicationUser user = await _userManager.FindByEmailAsync(model.UserNameOrEmail);
+            ApplicationUser user = await _userManager.FindByEmailAsync(model.Email);
 
             if (user == null || await _userManager.CheckPasswordAsync(user, model.Password) == false)
                 return BadRequest(new { message = "Username or password is incorrect." });
 
+            string token = GenerateToken(user);
+
+            return Ok(new { token });
+
+        }
+
+        private string GenerateToken(ApplicationUser user)
+        {
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim("UserId", user.Id.ToString())
-                }),
+                    {
+                        new Claim("UserId", user.Id.ToString())
+                    }),
 
                 Expires = DateTime.UtcNow.AddHours(6),
                 SigningCredentials = new SigningCredentials(
-                    new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_applicationSettings.JWTSecret)),
-                    SecurityAlgorithms.HmacSha256Signature)
+                                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_applicationSettings.JWTSecret)),
+                                SecurityAlgorithms.HmacSha256Signature)
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             var token = tokenHandler.WriteToken(securityToken);
 
-            return Ok(new { token });
-
-        }
-        public static bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
+            return token;
         }
     }
 }

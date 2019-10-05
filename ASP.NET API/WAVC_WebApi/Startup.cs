@@ -35,7 +35,6 @@ namespace WAVC_WebApi
         {
             //Inject AppSettings to Project
             services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
-            services.Configure<JwtAuthentication>(Configuration.GetSection("JwtAuthentication"));
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
