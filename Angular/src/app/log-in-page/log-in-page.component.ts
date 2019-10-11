@@ -21,7 +21,7 @@ export class LogInPageComponent implements OnInit {
   ngOnInit() {
     if (localStorage.getItem('token') != null) {
       this.router.navigateByUrl('/messenger');
-    };
+    }
   }
 
   onSubmit(form: NgForm) {

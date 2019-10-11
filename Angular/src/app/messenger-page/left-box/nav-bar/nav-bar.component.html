@@ -10,14 +10,13 @@
         <button type="button" class="btn btn-primary ml-3 dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
           aria-expanded="false">
           <i class="fas fa-bell"></i>
-          <span [hidden]="!notificationCounter" class="ml-2 badge badge-danger">4</span>
+          <span [hidden]="!friendRequests.length" class="ml-2 badge badge-danger">{{ friendRequests.length }}</span>
         </button>
         <div class="dropdown-menu">
           <h5 class="dropdown-header">Friend Requests</h5>
-          <app-notification></app-notification>
-          <app-notification></app-notification>
-          <app-notification></app-notification>
-          <app-notification></app-notification>
+          <div *ngFor="let friendRequest of friendRequests">
+            <app-notification [user]="friendRequest"></app-notification>
+          </div>
         </div>
       </div>
     </div>
