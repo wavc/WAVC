@@ -16,7 +16,7 @@ export class NavBarComponent implements OnInit {
   constructor(private router: Router, public signalRService: SignalRService) { }
 
   ngOnInit() {
-    //TODO Firstly get a static list of FR from DB by calling GET api/firendrequests
+    // TODO Firstly get a static list of FR from DB by calling GET api/firendrequests
     // and then attach(bellow) signalR to handle all new changes
     this.signalRConnection = this.signalRService.startConnection('/FriendRequest');
     this.signalRConnection.on('FriendRequestSent', (user) => {
