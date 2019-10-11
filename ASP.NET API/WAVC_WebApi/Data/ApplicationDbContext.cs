@@ -19,16 +19,12 @@ namespace WAVC_WebApi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Relationship>().HasKey(r => new { r.UserId, r.RelatedUserId });
-            //modelBuilder.Entity<Relationship>().HasOne(r => r.User).WithMany(u => u.Friends).OnDelete(DeleteBehavior.Restrict);
-            //modelBuilder.Entity<Relationship>().HasOne(r => r.RelatedUser).WithMany(u => u.RelatedFriends).OnDelete(DeleteBehavior.Restrict);
-
-
-            //modelBuilder.Entity<Relationship>()
-            //    .HasOne(r => r.User).WithMany(u => u.Friends).OnDelete(DeleteBehavior.Restrict);
-
-            //modelBuilder.Entity<Relationship>()
-            //    .HasOne(r => r.RelatedUser).WithMany(u => u.RelatedFriends).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Relationship>()
+                .HasKey(r => new { r.UserId, r.RelatedUserId });
+            modelBuilder.Entity<Relationship>()
+                .HasOne(r => r.User)
+                .WithMany(u => u.Friends)
+                .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(modelBuilder);
         }

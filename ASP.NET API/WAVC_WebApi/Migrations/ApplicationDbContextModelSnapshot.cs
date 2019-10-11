@@ -218,15 +218,9 @@ namespace WAVC_WebApi.Migrations
 
                     b.Property<int>("Status");
 
-                    b.Property<string>("UserId1");
-
                     b.HasKey("UserId", "RelatedUserId");
 
-                    b.HasAlternateKey("UserId");
-
                     b.HasIndex("RelatedUserId");
-
-                    b.HasIndex("UserId1");
 
                     b.ToTable("Relationships");
                 });
@@ -307,7 +301,8 @@ namespace WAVC_WebApi.Migrations
 
                     b.HasOne("WAVC_WebApi.Models.ApplicationUser", "User")
                         .WithMany("Friends")
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }

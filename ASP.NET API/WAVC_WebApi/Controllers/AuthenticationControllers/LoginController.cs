@@ -50,7 +50,8 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                     {
-                        new Claim("UserId", user.Id.ToString())
+                        new Claim(ClaimTypes.Name, user.Id),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id)
                     }),
 
                 Expires = DateTime.UtcNow.AddHours(6),
