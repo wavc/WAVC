@@ -56,7 +56,7 @@ namespace WAVC_WebApi.Controllers
                 return BadRequest();
             }
 
-            if (sender.Equals(reciever))
+            if (sender.Id == reciever.Id)
             {
                 //TODO handle if sender wants to send FR to oneself
                 return BadRequest();

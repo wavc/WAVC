@@ -23,8 +23,6 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationComponent } from './messenger-page/left-box/nav-bar/notification/notification.component';
-// import { IApplicationUserModel } from './models/IApplicationUserModel'
-
 
 @NgModule({
   declarations: [
@@ -43,7 +41,6 @@ import { NotificationComponent } from './messenger-page/left-box/nav-bar/notific
     FriendsListComponent,
     NavBarComponent,
     NotificationComponent,
-    // IApplicationUserModel
   ],
   imports: [
     // signalR,
