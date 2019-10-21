@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WAVC_WebApi.Migrations
 {
-    public partial class i : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,8 @@ namespace WAVC_WebApi.Migrations
                     LockoutEnabled = table.Column<bool>(nullable: false),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
-                    FullName = table.Column<string>(nullable: true)
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -156,26 +157,27 @@ namespace WAVC_WebApi.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FriendRequests",
+                name: "Message",
                 columns: table => new
                 {
-                    FriendRequestId = table.Column<int>(nullable: false)
+                    MessageId = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(nullable: true),
-                    FriendId = table.Column<string>(nullable: true)
+                    SenderUserId = table.Column<string>(nullable: true),
+                    RecieverUserId = table.Column<string>(nullable: true),
+                    Content = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FriendRequests", x => x.FriendRequestId);
+                    table.PrimaryKey("PK_Message", x => x.MessageId);
                     table.ForeignKey(
-                        name: "FK_FriendRequests_AspNetUsers_FriendId",
-                        column: x => x.FriendId,
+                        name: "FK_Message_AspNetUsers_RecieverUserId",
+                        column: x => x.RecieverUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_FriendRequests_AspNetUsers_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Message_AspNetUsers_SenderUserId",
+                        column: x => x.SenderUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -186,7 +188,8 @@ namespace WAVC_WebApi.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
-                    RelatedUserId = table.Column<string>(nullable: false)
+                    RelatedUserId = table.Column<string>(nullable: false),
+                    Status = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -245,14 +248,14 @@ namespace WAVC_WebApi.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_FriendId",
-                table: "FriendRequests",
-                column: "FriendId");
+                name: "IX_Message_RecieverUserId",
+                table: "Message",
+                column: "RecieverUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FriendRequests_UserId",
-                table: "FriendRequests",
-                column: "UserId");
+                name: "IX_Message_SenderUserId",
+                table: "Message",
+                column: "SenderUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Relationships_RelatedUserId",
@@ -278,7 +281,7 @@ namespace WAVC_WebApi.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "FriendRequests");
+                name: "Message");
 
             migrationBuilder.DropTable(
                 name: "Relationships");

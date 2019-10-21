@@ -8,10 +8,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190930165356_delete-fr.cs" />
+    <Compile Remove="Migrations\20190930165356_delete-fr.Designer.cs" />
+    <Compile Remove="Migrations\20190930170417_delete-fr2.cs" />
+    <Compile Remove="Migrations\20190930170417_delete-fr2.Designer.cs" />
+    <Compile Remove="Migrations\20190930170838_delete-fr3.cs" />
+    <Compile Remove="Migrations\20190930170838_delete-fr3.Designer.cs" />
+    <Compile Remove="Migrations\20191005104355_remove-ifs.cs" />
+    <Compile Remove="Migrations\20191005104355_remove-ifs.Designer.cs" />
+    <Compile Remove="Migrations\20191005105416_add-restrictions.cs" />
+    <Compile Remove="Migrations\20191005105416_add-restrictions.Designer.cs" />
+    <Compile Remove="Migrations\20191005105957_whatafuuuck.cs" />
+    <Compile Remove="Migrations\20191005105957_whatafuuuck.Designer.cs" />
+    <Compile Remove="Migrations\20191007213842_init.cs" />
+    <Compile Remove="Migrations\20191007213842_init.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.7.12" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.9.5" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.0.0" />
     <PackageReference Include="Moq" Version="4.13.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
   </ItemGroup>

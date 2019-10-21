@@ -1,134 +1,83 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WAVC_WebApi.Data;
+using WAVC_WebApi.Hubs;
+using WAVC_WebApi.Hubs.Interfaces;
 using WAVC_WebApi.Models;
-using WAVC_WebApi.Models.MiscellaneousModels;
+using WAVC_WebApi.Models.HelperModels;
 
 namespace WAVC_WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class FriendRequestsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
-        private UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IHubContext<FriendRequestHub, IFriendRequestClient> _friendRequestHubContext;
 
-        public FriendRequestsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public FriendRequestsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHubContext<FriendRequestHub, IFriendRequestClient> hubContext)
         {
-            _context = context;
+            _dbContext = context;
             _userManager = userManager;
+            _friendRequestHubContext = hubContext;
         }
 
 
         // GET: api/FriendRequests
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FriendRequest>>> GetFriendRequests()
+        public async Task<ActionResult<IEnumerable<Object>>> GetFriendRequests()
         {
-            return await _context.FriendRequests.ToListAsync();
-        }
+            var user = await _userManager.FindByIdAsync(User.Identity.Name);
+            //TODO return a list of user's friends' requests
 
-        // GET: api/FriendRequests/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<FriendRequest>> GetFriendRequest(int id)
-        {
-            var friendRequest = await _context.FriendRequests.FindAsync(id);
-
-            if (friendRequest == null)
-            {
-                return NotFound();
-            }
-
-            return friendRequest;
-        }
-
-        // POST: api/FriendRequests
-        //[HttpPost]
-        //[Authorize]
-        //public async Task<ActionResult<FriendRequest>> PostFriendRequest(FriendRequest friendRequest)
-        //{
-        //    friendRequest.Status = FriendRequest.StatusType.New;
-        //    _context.FriendRequests.Add(friendRequest);
-        //    await _context.SaveChangesAsync();
-
-        //    return CreatedAtAction("GetFriendRequest", new { id = friendRequest.FriendRequestId }, friendRequest);
-        //}
-
-        [HttpPost]
-        [Authorize]
-        public async Task<ActionResult<FriendRequest>> SendFriendRequest(InvitationModel model)
-        {
-            string userId = User.Claims.First(c => c.Type == "UserId").Value;
-            var user = await _userManager.FindByIdAsync(userId);
-
-            if (userId == model.UserId)
-                return BadRequest("User cannot send friend request to oneself");
-
-            await _context.FriendRequests.AddAsync(new FriendRequest
-            {
-                UserId = userId,
-                FriendId = model.UserId,
-                Status = FriendRequest.StatusType.New
-            });
-
-            await _context.SaveChangesAsync();
             return Ok();
         }
 
-        [HttpPost("{id}/accept")]
-        public async Task<ActionResult<FriendRequest>> AcceptFriendRequest(int id)
+        [HttpPost]
+        [Route("{id}")]
+        //POST api/FriendRequest/{id}
+        public async Task<IActionResult> SendFriendRequest(string id)
         {
-            try
+            var sender = await _userManager.FindByIdAsync(User.Identity.Name);
+
+            var reciever = await _userManager.FindByIdAsync(id);
+            if (reciever == null)
             {
-                var friendRequest = await _context.FriendRequests.FindAsync(id);
-
-                if (friendRequest == null)
-                    return NotFound();
-
-                friendRequest.Status = FriendRequest.StatusType.Accepted;
-
-                await _context.Relationships.AddAsync(new Relationship
-                {
-                    UserId = friendRequest.UserId,
-                    RelatedUserId = friendRequest.FriendId,
-                });
-
-                _context.FriendRequests.Update(friendRequest);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception)
-            {
+                //TODO handle if reciver does not exist
                 return BadRequest();
             }
 
-            return Ok();
-        }
-
-        // DELETE: api/FriendRequests/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<FriendRequest>> DeleteFriendRequest(int id)
-        {
-            var friendRequest = await _context.FriendRequests.FindAsync(id);
-            if (friendRequest == null)
+            if (sender.Id == reciever.Id)
             {
-                return NotFound();
+                //TODO handle if sender wants to send FR to oneself
+                return BadRequest();
             }
 
-            _context.FriendRequests.Remove(friendRequest);
-            await _context.SaveChangesAsync();
+            //TODO check if there is already a Relationship in a database
+            //Code bellow will throw an exception but only if there is a relationship
+            //with this particual key order. Check if relationship(reciver.id, sender.id)
+            //exists.
 
-            return friendRequest;
-        }
+            await _dbContext.Relationships.AddAsync(new Relationship()
+            {
+                User = sender,
+                RelatedUser = reciever,
+                Status = Relationship.StatusType.New
+            });
 
-        private bool FriendRequestExists(int id)
-        {
-            return _context.FriendRequests.Any(e => e.FriendRequestId == id);
+            await _dbContext.SaveChangesAsync();
+            await _friendRequestHubContext.Clients.User(id).FriendRequestSent(new ApplicationUserModel(sender));
+
+            return Ok();
         }
     }
 }

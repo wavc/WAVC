@@ -15,13 +15,13 @@ namespace WAVC_WebApi.Models
         }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        [InverseProperty("User")]
         public  virtual ICollection<Relationship> Friends { get; set; }
+        [InverseProperty("RelatedUser")]
         public  virtual ICollection<Relationship> RelatedFriends { get; set; }
-
-        public virtual ICollection<FriendRequest> FriendRequests { get; set; }
-        public virtual ICollection<FriendRequest> RelatedFriendRequests { get; set; }
-
+        [InverseProperty("SenderUser")]
         public virtual ICollection<Message> MessagesSent { get; set; }
+        [InverseProperty("RecieverUser")]
         public virtual ICollection<Message> MessagesRecieved { get; set; }
     }
 }

@@ -40,9 +40,10 @@ import { NotificationComponent } from './messenger-page/left-box/nav-bar/notific
     FriendsListElementComponent,
     FriendsListComponent,
     NavBarComponent,
-    NotificationComponent
+    NotificationComponent,
   ],
   imports: [
+    // signalR,
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,

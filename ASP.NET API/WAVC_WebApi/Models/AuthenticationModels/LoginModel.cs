@@ -7,7 +7,7 @@ namespace WAVC_WebApi.Models
 {
     public class LoginModel
     {
-        public string UserNameOrEmail { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
 
     }
