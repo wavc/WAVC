@@ -23,6 +23,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationComponent } from './messenger-page/left-box/nav-bar/notification/notification.component';
+import { SearchListElementComponent } from './messenger-page/left-box/friends-list/search-list-element/search-list-element.component';
 
 @NgModule({
   declarations: [
@@ -38,9 +39,11 @@ import { NotificationComponent } from './messenger-page/left-box/nav-bar/notific
     HeaderBarComponent,
     RightBoxComponent,
     FriendsListElementComponent,
+    SearchListElementComponent,
     FriendsListComponent,
     NavBarComponent,
     NotificationComponent,
+    SearchListElementComponent,
   ],
   imports: [
     // signalR,

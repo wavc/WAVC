@@ -1,0 +1,11 @@
+<div class="list-group-item d-flex align-items-start">
+    <img src="assets/cat.jpg" class="rounded-circle profile-picture" />
+    <div class="d-flex flex-column w-100 mx-2">
+        <div class="d-flex justify-content-between">
+            <h6 class="mb-1">{{searchResult.firstName}} {{searchResult.lastName}}</h6>
+        </div>
+    </div>
+        <button class="btn btn-default" (click)="sendRequest()" *ngIf="displayRequestButton">
+            <i class="fas fa-check text-success"></i>Request
+        </button>
+</div>

@@ -1,6 +1,6 @@
 <div class="vh-100 w-100 d-flex flex-column mb-0">
-    <app-nav-bar class="flex-shrink-0"></app-nav-bar>
+    <app-nav-bar class="flex-shrink-0" (friendSearchListChange)="notifyFriendList($event)"></app-nav-bar>
     <div class="scrollbar scrollbar-primary overflow-auto">
-        <app-friends-list></app-friends-list>
+        <app-friends-list [friendSearchList]="friendSearchList"></app-friends-list>
     </div>
 </div>

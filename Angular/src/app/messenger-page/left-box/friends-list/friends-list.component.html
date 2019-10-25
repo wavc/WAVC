@@ -1,22 +1,14 @@
+<div *ngIf="friendSearchList.length > 0">Search results</div>
 <div class="list-group mr-2">
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
+    <div *ngFor="let element of friendSearchList">
+        <app-search-list-element [searchResult]="element"></app-search-list-element>
+    </div>
+</div>
+<div *ngIf="friendSearchList.length > 0">Conversation list</div>
+<div class="list-group mr-2">
+    <!--<div *ngFor="let friend of friendSearchList">
+        <app-friends-list-element [friend]="friend"></app-friends-list-element>
+    </div>-->
     <app-friends-list-element></app-friends-list-element>
     <app-friends-list-element></app-friends-list-element>
     <app-friends-list-element></app-friends-list-element>

@@ -19,7 +19,7 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
 
         [HttpPost]
         //POST : /api/Register
-        public async Task<Object> PostApplicationUserAsync(RegistrationModel model)
+        public async Task<IActionResult> PostApplicationUserAsync(RegistrationModel model)
         {
             var applicationUser = new ApplicationUser()
             {

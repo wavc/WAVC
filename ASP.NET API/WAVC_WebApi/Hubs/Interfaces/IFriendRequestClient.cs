@@ -9,7 +9,7 @@ namespace WAVC_WebApi.Hubs.Interfaces
     public interface IFriendRequestClient
     {
         Task FriendDeleted(string id);
-        Task SendFreiendRequestResponse(string id, string name, string surname);
+        Task SendFreiendRequestResponse(ApplicationUserModel model);
         Task FriendRequestSent(ApplicationUserModel model);
     }
 }
