@@ -9,14 +9,14 @@ import { ApplicationUserModel } from 'src/app/models/application-user.model';
   styleUrls: ['./friends-list.component.css']
 })
 export class FriendsListComponent implements OnInit {
-  //friends: ApplicationUserModel[];
+  // friends: ApplicationUserModel[];
   @Input() friendSearchList: ApplicationUserModel[];
   constructor(private service: UserService) { }
 
   ngOnInit() {
     this.service.getFriendsList().subscribe((list: ApplicationUserModel[]) => {
-      //this.friends = list;
-      console.log("friend list: ");
+      // this.friends = list;
+      console.log('friend list: ');
       console.log(list);
     });
   }

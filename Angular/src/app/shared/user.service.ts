@@ -59,21 +59,21 @@ export class UserService {
   getFriendsList() {
     return this.http.get(this.BaseURI + '/Friends');
   }
-  
+
 
   getFriendRequestsList() {
     return this.http.get(this.BaseURI + '/FriendRequests');
   }
 
-  getSearchResults(query : string) {
+  getSearchResults(query: string) {
     return this.http.get(this.BaseURI + '/FriendRequests/Search?query=' + query);
   }
 
-  sendFriendRequest(id : string) {
+  sendFriendRequest(id: string) {
     return this.http.post(this.BaseURI + '/FriendRequests/' + id, null);
   }
 
-  sendFriendRequestResponse(id : string, accept: boolean) {
+  sendFriendRequestResponse(id: string, accept: boolean) {
     return this.http.post(this.BaseURI + '/FriendRequests/Response/' + id + '/' + accept, null);
   }
 }

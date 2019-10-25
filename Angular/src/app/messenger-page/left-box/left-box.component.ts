@@ -7,7 +7,7 @@ import { ApplicationUserModel } from 'src/app/models/application-user.model';
   styleUrls: ['./left-box.component.css']
 })
 export class LeftBoxComponent implements OnInit {
-  friendSearchList : ApplicationUserModel[]  = [];
+  friendSearchList: ApplicationUserModel[] = [];
   constructor() { }
 
   ngOnInit() {

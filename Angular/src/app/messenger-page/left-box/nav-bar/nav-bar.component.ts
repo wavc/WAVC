@@ -12,7 +12,7 @@ import { UserService } from 'src/app/shared/user.service';
 export class NavBarComponent implements OnInit {
   signalRConnection: signalR.HubConnection;
   friendRequests: ApplicationUserModel[] = [];
-  queryMinLength: number = 2;
+  queryMinLength = 2;
   @Output() friendSearchListChange: EventEmitter<ApplicationUserModel[]> = new EventEmitter<ApplicationUserModel[]>();
 
   constructor(private service: UserService, private router: Router, public signalRService: SignalRService) { }
@@ -27,12 +27,12 @@ export class NavBarComponent implements OnInit {
       this.friendRequests.push(user);
     });
     this.signalRConnection.on('SendFreiendRequestResponse', (user: ApplicationUserModel) => {
-      console.log("New Friend: " + user.firstName + " " + user.lastName);
+      console.log('New Friend: ' + user.firstName + ' ' + user.lastName);
     });
   }
 
   deleteNotification($event: ApplicationUserModel) {
-    this.friendRequests = this.friendRequests.filter(u => u != $event);
+    this.friendRequests = this.friendRequests.filter(u => u !== $event);
   }
 
   onLogout() {
@@ -42,13 +42,12 @@ export class NavBarComponent implements OnInit {
   }
 
   search($event) {
-    var query = (document.getElementById("search") as HTMLInputElement).value;
+    const query = (document.getElementById('search') as HTMLInputElement).value;
     if (query.length >= this.queryMinLength) {
       this.service.getSearchResults(query).subscribe((list: ApplicationUserModel[]) => {
         this.friendSearchListChange.emit(list);
       });
-    }
-    else{
+    } else {
       this.friendSearchListChange.emit([]);
     }
 

@@ -9,7 +9,7 @@ import { UserService } from 'src/app/shared/user.service';
 })
 export class SearchListElementComponent implements OnInit {
   @Input() searchResult: ApplicationUserModel;
-  displayRequestButton: boolean = true;
+  displayRequestButton = true;
 
   constructor(private service: UserService) { }
 
@@ -18,7 +18,7 @@ export class SearchListElementComponent implements OnInit {
 
   sendRequest() {
     this.service.sendFriendRequest(this.searchResult.id).subscribe( () => {
-      console.log("request sent succesfully");
+      console.log('request sent succesfully');
       this.displayRequestButton = false;
     }, err => {
       console.log(err);

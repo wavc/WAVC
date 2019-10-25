@@ -20,7 +20,7 @@ export class NotificationComponent implements OnInit {
     this.service.sendFriendRequestResponse(this.user.id, true).subscribe(() => {
       this.delete.emit(this.user);
     }, err => {
-      alert("Failed to accept friend request " + err);
+      alert('Failed to accept friend request ' + err);
     }
     );
   }
@@ -29,7 +29,7 @@ export class NotificationComponent implements OnInit {
     this.service.sendFriendRequestResponse(this.user.id, false).subscribe(() => {
       this.delete.emit(this.user);
     }, err => {
-      alert("Failed to reject friend request " + err);
+      alert('Failed to reject friend request ' + err);
     });
   }
 }
