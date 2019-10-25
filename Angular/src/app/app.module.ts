@@ -43,7 +43,6 @@ import { SearchListElementComponent } from './messenger-page/left-box/friends-li
     FriendsListComponent,
     NavBarComponent,
     NotificationComponent,
-    SearchListElementComponent,
   ],
   imports: [
     // signalR,
