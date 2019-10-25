@@ -38,7 +38,6 @@ namespace WAVC_WebApi.Controllers
         public async Task<IEnumerable<ApplicationUserModel>> GetFriendRequests()
         {
             var sender = await _userManager.GetUserAsync(HttpContext.User);
-            //TODO return a list of user's friends' requests
 
             return _friendsManager.GetRequestsForUser(sender).Select(u => new ApplicationUserModel(u)).ToList();
         }
@@ -54,12 +53,14 @@ namespace WAVC_WebApi.Controllers
             if (reciever == null)
             {
                 //TODO handle if reciver does not exist
+                //how to handle it? It shouldn't happen, so I guess returning BadRequest is enough
                 return BadRequest();
             }
 
             if (sender.Id == reciever.Id)
             {
                 //TODO handle if sender wants to send FR to oneself
+                //how to handle it? It shouldn't happen, so I guess returning BadRequest is enough
                 return BadRequest();
             }
 

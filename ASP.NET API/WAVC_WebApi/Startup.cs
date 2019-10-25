@@ -119,9 +119,6 @@ namespace WAVC_WebApi
                 app.UseDatabaseErrorPage();
 
                 //app.UseCors("MyCors");
-
-                //If you want to use SPA runner uncomment code bellow 
-
             }
             else
             {
@@ -136,6 +133,10 @@ namespace WAVC_WebApi
             });
 
             app.UseMvc();
+
+            //If you want to use SPA runner uncomment code bellow 
+            //it has to be below UseMvc to work properly
+
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "../../Angular";
