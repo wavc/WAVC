@@ -2,10 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using WAVC_WebApi.Data;
 using WAVC_WebApi.Hubs;
@@ -30,7 +28,6 @@ namespace WAVC_WebApi.Controllers
             _userManager = userManager;
             _friendRequestHubContext = hubContext;
         }
-
 
         // GET: api/FriendRequests
         [HttpGet]

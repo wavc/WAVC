@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using WAVC_WebApi.Data;
+using System.Threading.Tasks;
 using WAVC_WebApi.Models;
 
 namespace WAVC_WebApi.Controllers.AuthenticationControllers
@@ -37,12 +28,10 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
 
             if (user == null || await _userManager.CheckPasswordAsync(user, model.Password) == false)
                 return BadRequest(new { message = "Username or password is incorrect." });
-            
+
             string token = new TokenGenerator(_applicationSettings.JWTSecret).GenerateToken(user);
 
             return Ok(new { token });
-
         }
-
     }
 }

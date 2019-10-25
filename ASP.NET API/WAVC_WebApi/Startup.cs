@@ -118,8 +118,16 @@ namespace WAVC_WebApi
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
 
-                //app.UseCors("MyCors");
+                app.UseCors("MyCors");
                 
+                //If you want to use SPA runner uncomment code bellow 
+
+                //app.UseSpa(spa =>
+                //{
+                //    spa.Options.SourcePath = "../../Angular";
+                //    spa.UseAngularCliServer(npmScript: "start");
+                //    spa.Options.StartupTimeout = TimeSpan.FromSeconds(600);
+                //});
             }
             else
             {
@@ -134,13 +142,6 @@ namespace WAVC_WebApi
             });
 
             app.UseMvc();
-            //If you want to use SPA runner uncomment code bellow 
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "../../Angular";
-                spa.UseProxyToSpaDevelopmentServer(Configuration["ApplicationSettings:ClientUrl"]);
-            });
         }
     }
 }

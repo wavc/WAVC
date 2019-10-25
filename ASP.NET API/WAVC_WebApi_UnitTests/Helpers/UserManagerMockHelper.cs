@@ -1,14 +1,11 @@
 ﻿using Moq;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using WAVC_WebApi.Models;
 using WAVC_WebApi_UnitTests.Mocks;
 
 namespace WAVC_WebApi_UnitTests.Helpers
 {
-    class UserManagerMockHelper
+    internal class UserManagerMockHelper
     {
         public static Mock<UserMangerMock> VerifyUserByEmailOrUsernameSuccessful(ApplicationUser correctUser, string email, string username, string password)
         {

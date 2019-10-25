@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace WAVC_WebApi.Models.HelperModels
+﻿namespace WAVC_WebApi.Models.HelperModels
 {
     public class ApplicationUserModel
     {
@@ -19,9 +14,9 @@ namespace WAVC_WebApi.Models.HelperModels
             LastName = user.LastName;
             ProfilePictureUrl = "";
         }
+
         public ApplicationUserModel()
         {
-
         }
     }
 }
