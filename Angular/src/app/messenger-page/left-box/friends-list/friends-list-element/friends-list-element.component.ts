@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./friends-list-element.component.css']
 })
 export class FriendsListElementComponent implements OnInit {
+  // @Input() friend : ApplicationUserModel;
 
   constructor() { }
 
