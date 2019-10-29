@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WAVC_WebApi.Data;
 
 namespace WAVC_WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191012203137_add-msg")]
+    partial class addmsg
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,19 +191,6 @@ namespace WAVC_WebApi.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("WAVC_WebApi.Models.ApplicationUserConversation", b =>
-                {
-                    b.Property<string>("UserId");
-
-                    b.Property<int>("ConversationId");
-
-                    b.HasKey("UserId", "ConversationId");
-
-                    b.HasIndex("ConversationId");
-
-                    b.ToTable("ApplicationUserConversations");
-                });
-
             modelBuilder.Entity("WAVC_WebApi.Models.Conversation", b =>
                 {
                     b.Property<int>("ConversationId")
@@ -221,15 +210,15 @@ namespace WAVC_WebApi.Migrations
 
                     b.Property<string>("Content");
 
-                    b.Property<int>("ConversationId");
-
                     b.Property<int>("MessageType");
+
+                    b.Property<string>("RecieverUserId");
 
                     b.Property<string>("SenderUserId");
 
                     b.HasKey("MessageId");
 
-                    b.HasIndex("ConversationId");
+                    b.HasIndex("RecieverUserId");
 
                     b.HasIndex("SenderUserId");
 
@@ -255,9 +244,13 @@ namespace WAVC_WebApi.Migrations
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
+                    b.Property<int?>("ConversationId");
+
                     b.Property<string>("FirstName");
 
                     b.Property<string>("LastName");
+
+                    b.HasIndex("ConversationId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -307,28 +300,14 @@ namespace WAVC_WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("WAVC_WebApi.Models.ApplicationUserConversation", b =>
-                {
-                    b.HasOne("WAVC_WebApi.Models.Conversation", "Conversation")
-                        .WithMany("ApplicationUserConversation")
-                        .HasForeignKey("ConversationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("WAVC_WebApi.Models.ApplicationUser", "User")
-                        .WithMany("ApplicationUserConversation")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("WAVC_WebApi.Models.Message", b =>
                 {
-                    b.HasOne("WAVC_WebApi.Models.Conversation", "Conversation")
-                        .WithMany("Messages")
-                        .HasForeignKey("ConversationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("WAVC_WebApi.Models.ApplicationUser", "RecieverUser")
+                        .WithMany("MessagesRecieved")
+                        .HasForeignKey("RecieverUserId");
 
                     b.HasOne("WAVC_WebApi.Models.ApplicationUser", "SenderUser")
-                        .WithMany()
+                        .WithMany("MessagesSent")
                         .HasForeignKey("SenderUserId");
                 });
 
@@ -343,6 +322,13 @@ namespace WAVC_WebApi.Migrations
                         .WithMany("Friends")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("WAVC_WebApi.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("WAVC_WebApi.Models.Conversation")
+                        .WithMany("Users")
+                        .HasForeignKey("ConversationId");
                 });
 #pragma warning restore 612, 618
         }

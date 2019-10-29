@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WAVC_WebApi.Data;
 
 namespace WAVC_WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191012212602_xfs")]
+    partial class xfs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,7 +201,7 @@ namespace WAVC_WebApi.Migrations
 
                     b.HasIndex("ConversationId");
 
-                    b.ToTable("ApplicationUserConversations");
+                    b.ToTable("ApplicationUserConversation");
                 });
 
             modelBuilder.Entity("WAVC_WebApi.Models.Conversation", b =>

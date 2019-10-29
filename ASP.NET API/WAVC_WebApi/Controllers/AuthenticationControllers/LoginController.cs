@@ -39,8 +39,8 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
                 return BadRequest(new { message = "Username or password is incorrect." });
 
             string token = GenerateToken(user);
-
-            return Ok(new { token });
+            string myId = user.Id;
+            return Ok(new { token, myId });
 
         }
 
@@ -64,6 +64,6 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
             var token = tokenHandler.WriteToken(securityToken);
 
             return token;
-        }
+        }   
     }
 }

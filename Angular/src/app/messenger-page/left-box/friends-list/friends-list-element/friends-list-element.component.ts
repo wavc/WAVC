@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ConversationModel } from 'src/app/models/conversation.model';
 
 @Component({
   selector: 'app-friends-list-element',
@@ -7,8 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class FriendsListElementComponent implements OnInit {
 
+  @Input() conversation: ConversationModel;
   constructor() { }
-
   ngOnInit() {
   }
 
