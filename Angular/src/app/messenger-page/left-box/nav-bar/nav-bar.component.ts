@@ -41,14 +41,19 @@ export class NavBarComponent implements OnInit {
     });
     this.getProfile();
   }
+<<<<<<< HEAD
 
   deleteNotification($event: ApplicationUserModel) {
     this.friendRequests = this.friendRequests.filter(u => u !== $event);
   }
 
+=======
+  
+>>>>>>> chat wip
   onLogout() {
     console.log('logging out');
     localStorage.removeItem('token');
+    localStorage.removeItem('myId');
     this.router.navigateByUrl('/sign-in');
   }
 

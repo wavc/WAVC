@@ -9,7 +9,6 @@ import { ApplicationUserModel } from 'src/app/models/application-user.model';
 export class LeftBoxComponent implements OnInit {
   friendSearchList: ApplicationUserModel[] = [];
   constructor() { }
-
   ngOnInit() {
   }
 

@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Globals } from 'src/app/shared/globals';
+import { ConversationModel } from 'src/app/models/conversation.model';
+import { ChatService } from 'src/app/services/chat.service';
 
 @Component({
   selector: 'app-header-bar',
@@ -7,9 +10,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderBarComponent implements OnInit {
 
-  constructor() { }
+  
+  private conversation: ConversationModel;
 
-  ngOnInit() {
+  constructor(private chatService: ChatService) {
   }
 
+  ngOnInit() {
+    this.chatService.currentConversation
+    .subscribe((data) => this.conversation = data);
+  }
 }

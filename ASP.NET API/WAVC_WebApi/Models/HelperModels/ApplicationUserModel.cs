@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WAVC_WebApi.Models.HelperModels
+namespace WAVC_WebApi.Models
 {
     public class ApplicationUserModel
     {

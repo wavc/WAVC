@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../shared/user.service';
+import { Globals } from '../shared/globals';
 
 @Component({
   selector: 'app-log-in-page',
@@ -16,7 +17,7 @@ export class LogInPageComponent implements OnInit {
     Password: ''
   };
 
-  constructor(private service: UserService, private router: Router, private toastr: ToastrService) { }
+  constructor(private service: UserService, private router: Router, private toastr: ToastrService, public globals: Globals) { }
 
   ngOnInit() {
     if (localStorage.getItem('token') != null) {
@@ -28,6 +29,8 @@ export class LogInPageComponent implements OnInit {
     this.service.login(form.value).subscribe(
       (res: any) => {
         localStorage.setItem('token', res.token);
+        localStorage.setItem('myId', res.myId);
+        this.globals.myId = res.myId;
         this.router.navigateByUrl('/messenger');
       },
       err => {
