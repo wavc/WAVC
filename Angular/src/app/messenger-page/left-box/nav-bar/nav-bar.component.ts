@@ -17,11 +17,16 @@ export class NavBarComponent implements OnInit {
   signalRConnection: signalR.HubConnection;
   friendRequests: ApplicationUserModel[] = [];
   queryMinLength = 2;
-  profile = { firstName: "", lastName: "", profilePictureUrl: ""} as ApplicationUserModel;
+  profile = { firstName: '', lastName: '', profilePictureUrl: ''} as ApplicationUserModel;
   profilePic: string;
   @Output() friendSearchListChange: EventEmitter<ApplicationUserModel[]> = new EventEmitter<ApplicationUserModel[]>();
 
-  constructor(private profileService: ProfileService, private service: UserService, private router: Router, public signalRService: SignalRService, private modalService: NgbModal) { }
+  constructor(
+    private profileService: ProfileService,
+    private service: UserService,
+    private router: Router,
+    public signalRService: SignalRService,
+    private modalService: NgbModal) { }
 
   ngOnInit() {
     this.service.getFriendRequestsList().subscribe((list: ApplicationUserModel[]) => {
@@ -38,7 +43,7 @@ export class NavBarComponent implements OnInit {
     this.profileService.getProfile().subscribe(profile => {
       this.profile = profile;
       this.profilePic = profile.profilePictureUrl;
-    })
+    });
   }
 
   deleteNotification($event: ApplicationUserModel) {
@@ -67,7 +72,7 @@ export class NavBarComponent implements OnInit {
     const modalRef = this.modalService.open(ProfileEditorModalComponent);
     modalRef.componentInstance.profile = this.profile;
     await modalRef.result;
-    //add time to query to force image refresh
-    this.profile.profilePictureUrl = this.profilePic + "?t=" +  new Date().getTime();
+    // add time to query to force image refresh
+    this.profile.profilePictureUrl = this.profilePic + '?t=' +  new Date().getTime();
   }
 }
