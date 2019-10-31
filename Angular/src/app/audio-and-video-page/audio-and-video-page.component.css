@@ -1,0 +1,23 @@
+#video_container {
+    max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    overflow: hidden;
+}
+
+#video_container > * {
+    display: inline-block;
+    max-width: 100%;
+}
+
+#video_container video {
+    max-width : 100%;
+}
+
+#settings {
+    display: none;
+}
+
+#settings_button:checked + #settings {
+    display: block;
+}

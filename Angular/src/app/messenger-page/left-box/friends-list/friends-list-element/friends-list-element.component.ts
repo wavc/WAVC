@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { ApplicationUserModel } from 'src/app/models/application-user.model';
 
 @Component({
   selector: 'app-friends-list-element',
@@ -6,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./friends-list-element.component.css']
 })
 export class FriendsListElementComponent implements OnInit {
-  // @Input() friend : ApplicationUserModel;
+  @Input() friend : ApplicationUserModel;
 
   constructor() { }
 

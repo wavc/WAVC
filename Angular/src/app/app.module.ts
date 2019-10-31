@@ -27,6 +27,8 @@ import { NotificationComponent } from './messenger-page/left-box/nav-bar/notific
 import { SearchListElementComponent } from './messenger-page/left-box/friends-list/search-list-element/search-list-element.component';
 import { ProfileEditorModalComponent } from './messenger-page/left-box/nav-bar/profile-editor-modal/profile-editor-modal.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AudioAndVideoPageComponent } from './audio-and-video-page/audio-and-video-page.component';
+
 
 @NgModule({
   declarations: [
@@ -47,6 +49,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NavBarComponent,
     NotificationComponent,
     ProfileEditorModalComponent,
+    AudioAndVideoPageComponent,
   ],
   imports: [
     // signalR,

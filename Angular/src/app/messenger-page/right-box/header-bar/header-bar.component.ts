@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { currentConversation } from 'src/app/services/global-data.service';
 
 @Component({
   selector: 'app-header-bar',
@@ -12,4 +13,7 @@ export class HeaderBarComponent implements OnInit {
   ngOnInit() {
   }
 
+  StartAudio() {
+    let wnd = window.open("/call/" + currentConversation.value, "", "modal=yes,width=400,height=300");
+  }
 }
