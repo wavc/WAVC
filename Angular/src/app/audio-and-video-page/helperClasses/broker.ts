@@ -8,6 +8,7 @@ export class Broker {
     callsFunc;
     Call;
     connection: HubConnection;
+    UserId: string;
     constructor(Id, callsFunc, Call, onNameChange) {
         this.Id = Id;
         this.callsFunc = callsFunc;
@@ -18,8 +19,7 @@ export class Broker {
             if (user.peerId == this.Id) {
                 this.myName = user.name;
                 onNameChange(this.myName);
-            } else {
-                console.log("new user: " + user.name);
+            } else if(user.id == this.UserId) {
                 this.Call(user);
             }
         });
@@ -35,9 +35,10 @@ export class Broker {
             this.connection.invoke("Quit", this.Id);
         };
     }
-    async StartConnection(CallId: number) {
+    async StartConnection(UserId: string, CallId: number) {
         await this.connection.start();
-        var res = await this.connection.invoke("NewUser", this.Id, CallId) as boolean;
+        this.UserId = UserId;
+        var res = await this.connection.invoke("NewUser", UserId, this.Id, CallId) as boolean;
         if(!res) {
             alert("Something went wrong with sending new user info");
         }

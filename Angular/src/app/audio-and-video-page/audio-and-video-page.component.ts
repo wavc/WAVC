@@ -4,6 +4,7 @@ import { Media } from './helperClasses/media';
 import { Broker } from './helperClasses/broker';
 import { Util } from './helperClasses/util';
 import { PeerConnection } from './helperClasses/peerConnection';
+import { ProfileService } from '../services/profile.service';
 @Component({
   selector: 'app-audio-and-video-page',
   templateUrl: './audio-and-video-page.component.html',
@@ -14,13 +15,17 @@ export class AudioAndVideoPageComponent implements OnInit {
   peerCon: PeerConnection;
   broker: Broker;
   callId: number;
-  constructor(private route: ActivatedRoute) { }
+  userId: string;
+  constructor(private route: ActivatedRoute, private profileSerivce: ProfileService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.callId = params.id;
     });
-    this.Start();
+    this.profileSerivce.getProfile().subscribe(profile => {
+      this.userId = profile.id;
+      this.Start();
+    })
   }
   MakeUpdateButtonVisible() {
     document.getElementById("update_button").removeAttribute("hidden");
@@ -61,7 +66,7 @@ export class AudioAndVideoPageComponent implements OnInit {
 
     this.media.onUpdateSettings = () => this.peerCon.UpdateCall;
 
-    this.broker = new Broker(await this.peerCon.PeerId, () => this.peerCon.calls, (arg) => this.peerCon.MakeCall(arg, null, null), (val) => this.peerCon.UpdateMyName(val));
-    await this.broker.StartConnection(this.callId);
+    this.broker = new Broker(await this.peerCon.PeerId, () => this.peerCon.calls, (arg) => this.peerCon.MakeCallAllTypes(arg), (name) => this.peerCon.UpdateMyName(name));
+    await this.broker.StartConnection(this.userId, this.callId);
   }
 }

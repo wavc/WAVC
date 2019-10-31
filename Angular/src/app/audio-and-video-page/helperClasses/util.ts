@@ -12,7 +12,7 @@ export class Util {
     }
     static AddRadio(deviceList, device_name, CheckCondt)
     {
-        if(deviceList.length>1)
+        if(deviceList.length>0)
         {
             var deviceSelecter = document.getElementById(device_name + "_select");
             deviceSelecter.innerHTML += "<h6>" + device_name + " devices </h6>";

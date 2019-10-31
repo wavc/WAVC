@@ -7,7 +7,7 @@ import * as Collections from 'typescript-collections';
 })
 
 export class SignalRService {
-  private readonly BaseUrl = 'https://localhost:44395/signalR';
+  private readonly BaseUrl = '/signalR';
   private connectionHubs = new Collections.Dictionary<string, signalR.HubConnection>();
 
   constructor() { }

@@ -14,24 +14,21 @@ namespace WAVC_WebApi.Hubs
         ApplicationDbContext context;
         UserManager<ApplicationUser> userManager;
         FriendsManager friendsManager;
-        Random random;
 
         public ConnectPeers(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
             this.context = context;
             this.userManager = userManager;
             friendsManager = new FriendsManager(context);
-            random = new Random();
         }
-        public async Task<bool> NewUser(string peerId, int call)
+        public async Task<bool> NewUser(string userId, string peerId, int call)
         {
             try
             {
-                var user = await userManager.GetUserAsync(Context.User);
+                var user = await userManager.FindByIdAsync(userId);
                 var recepient = friendsManager.GetFriends(user)[call];
                 var name = user.UserName;
-                var id = random.Next();
-                await Clients.User(recepient.Id).SendAsync("NewUserInfo", new { name, peerId, id });
+                await Clients.All.SendAsync("NewUserInfo", new { name, peerId, recepient.Id });
                 return true;
 
             } catch

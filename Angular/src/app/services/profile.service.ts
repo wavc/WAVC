@@ -11,7 +11,7 @@ export class ProfileService {
 
   constructor(private fb: FormBuilder, private http: HttpClient) { }
 
-  readonly BaseURI = 'https://localhost:44395/api';
+  readonly BaseURI = '/api';
 
   saveProfile(formData: FormData): Observable<HttpEvent<any>> {
     return this.http.post(this.BaseURI + '/Profile', formData, { reportProgress: true, observe: 'events' });

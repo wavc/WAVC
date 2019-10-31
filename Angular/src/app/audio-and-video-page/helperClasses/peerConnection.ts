@@ -4,7 +4,7 @@ import { Stream } from 'stream';
 
 export class PeerConnection {
     peer: Peer;
-    calls: {localVideoCall: Peer.MediaConnection, localAudioCall: Peer.MediaConnection, remoteVideoCall: Peer.MediaConnection,remoteAudioCall: Peer.MediaConnection}[] = [];
+    calls: { localVideoCall: Peer.MediaConnection, localAudioCall: Peer.MediaConnection, remoteVideoCall: Peer.MediaConnection, remoteAudioCall: Peer.MediaConnection, name: string }[] = [];
     myName: string = '';
     stream: { video: MediaStream, audio: MediaStream };
     isSendingAudio: boolean;
@@ -18,9 +18,9 @@ export class PeerConnection {
 
         var me = this;
         this.peer.on('call', function (call) {
-            if (me.calls[call.peer] == undefined)
-                me.calls[call.peer] = { localVideoCall: null, localAudioCall: null, remoteVideoCall: null, remoteAudioCall: null };
-
+            if (me.calls[call.peer] == undefined) {
+                me.calls[call.peer] = { localVideoCall: null, localAudioCall: null, remoteVideoCall: null, remoteAudioCall: null, name: null };
+            }
             me.SetUpCall(call);
         });
         this.peer.on('close', () => { console.log("closed"); });
@@ -29,7 +29,7 @@ export class PeerConnection {
     }
     get PeerId() {
         var promise = new Promise((r) => {
-           Util.WaitForObject(this.peer, p => p.id === undefined, (p) => {
+            Util.WaitForObject(this.peer, p => p.id === undefined, (p) => {
                 r(p.id);
             });
         });
@@ -38,6 +38,7 @@ export class PeerConnection {
     SetUpCall(call) {
         var me = this;
         call.on('stream', function (remoteStream) {
+            console.log(call.metadata);
             if (call.metadata.type == "video") {
                 if (me.calls[call.peer].remoteVideoCall != null)
                     me.calls[call.peer].remoteVideoCall.close();
@@ -49,12 +50,17 @@ export class PeerConnection {
                 me.calls[call.peer].remoteAudioCall = call;
             }
 
-            //resolve who is calling
-            var remoteName;
-            if (me.myName == call.metadata.caller)
-                remoteName = call.metadata.recipient;
-            else
-                remoteName = call.metadata.caller;
+            if (me.calls[call.peer].name == null) {
+                //resolve who is calling
+                var remoteName;
+                if (me.myName == call.metadata.caller)
+                    remoteName = call.metadata.recipient;
+                else
+                    remoteName = call.metadata.caller;
+                me.calls[call.peer].name = remoteName;
+                me.MakeCallAllTypes({name: remoteName, peerId: call.peer});
+            }
+
             //display stream
             me.HandleRemoteVideo(remoteStream, call.id, remoteName);
         });
@@ -75,15 +81,21 @@ export class PeerConnection {
         });
     }
     UpdateCall() {
-        //???
-        /*for (var i = 0; i < this.calls.length; i++) {
-            this.MakeCall({ peerId: this.videoCalls[i].peer }, this.stream.video, "video");
+        for (var key in this.calls) {
+            this.MakeCallAllTypes({ name: this.calls[key].name, peerId: key });
         }
-        for (var i = 0; i < this.audioCalls.length; i++) {
-            this.MakeCall({ peerId: this.audioCalls[i].peer }, this.stream.audio, "audio");
-        }*/
     }
-    MakeCall(user, stream, type) {
+    MakeCallAllTypes(user: { name: string, peerId: string }) {
+        console.log("MakeCallAllTypes");
+        console.log(this.stream);
+        if (this.stream.audio != null)
+            this.MakeCall(user, this.stream.audio, 'audio');
+        if (this.stream.video != null)
+            this.MakeCall(user, this.stream.video, 'video');
+    }
+
+
+    MakeCall(user: { name: string, peerId: string }, stream: MediaStream, type: string) {
         var call = this.peer.call(user.peerId, stream, { metadata: { caller: this.myName, recipient: user.name, type: type } });
         this.SetUpCall(call);
     }

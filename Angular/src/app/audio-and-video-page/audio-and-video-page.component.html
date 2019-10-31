@@ -1,5 +1,5 @@
 <label for="settings_button">
-    <span class="glyphicon glyphicon-cog"></span>
+    <i class="fas fa-cog"></i>
 </label>
 <input id="settings_button" type="checkbox" hidden checked />
 <div id="settings">
@@ -7,11 +7,16 @@
     <div id="video_select"></div>
     <input id="update_button" type="button" value="Update" (click)="media.UpdateSettings()" hidden />
     <input type="button" value="Stop" (click)="media.StopVideo()" />
-    <input type="checkbox" value="Preview Audio" (input)="media.PreviewAudio(event.target.checked)" />
+    <input id="preview_audio" type="checkbox"(input)="media.PreviewAudio($event.target.checked)" /> <label for="preview_audio">Preview Audio</label>
     <div>
         My Preview <br />
         <video id="camera_preview" autoplay playinline></video>
     </div>
 </div>
+<!--<i class="fas fa-microphone"></i>
+<i class="fas fa-video"></i>
+
+<i class="fas fa-microphone-slash"></i>
+<i class="fas fa-video-slash"></i>-->
 <div id="video_container">
 </div>

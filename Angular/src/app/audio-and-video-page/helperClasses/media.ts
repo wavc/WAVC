@@ -31,7 +31,7 @@ export class Media {
                             this.videoDevices.push([deviceList[i].deviceId, deviceList[i].label]);
                     }
                 }
-                this.addDeviceOption(this.audioDevices, "audio", (i) => i == this.audioDevices.length);
+                this.addDeviceOption(this.audioDevices, "audio", (i) => i == 0);
                 this.addDeviceOption(this.videoDevices, "video", (i) => i == 0);
                 if (this.audioDevices.length > 1 || this.videoDevices.length > 1) {
                     this.makeUpdateButton();
@@ -39,7 +39,8 @@ export class Media {
             }).
             catch((msg) => console.log(msg));
 
-        await this.UpdateVideo({ video: true });
+            await this.UpdateVideo({ video: true });
+            await this.UpdateAudio({ audio: true });
     }
     StopVideo() {
         if (this.myStream.video != null) {
@@ -61,24 +62,21 @@ export class Media {
         this.StopVideo();
         var stream = await navigator.mediaDevices.getUserMedia(constraints);
         this.myStream.video = stream;
-        //remove old stream
+        // always preview
         Media.RemoveTracks((this.localVideo.srcObject as MediaStream).getVideoTracks(), this.localVideo.srcObject);
-        //add new stream
         Media.AddTracks(stream.getTracks(), this.localVideo.srcObject);
     }
     async UpdateAudio(constraints) {
         this.StopAudio();
         var stream = await navigator.mediaDevices.getUserMedia(constraints);
         this.myStream.audio = stream;
-        //add to preview is checkbox was set
+        //add to preview if checkbox was set
         this.PreviewAudio(this.isPreviewAudioOn);
     }
 
     PreviewAudio(on) {
+        Media.RemoveTracks((this.localVideo.srcObject as MediaStream).getAudioTracks(), this.localVideo.srcObject, false);
         if (on) {
-            Media.RemoveTracks((this.localVideo.srcObject as MediaStream).getAudioTracks(), this.localVideo.srcObject, false)
-        }
-        else {
             Media.AddTracks(this.myStream.audio.getTracks(), this.localVideo.srcObject);
         }
         this.isPreviewAudioOn = on;
