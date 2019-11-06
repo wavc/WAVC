@@ -42,6 +42,10 @@ namespace WAVC_WebApi.Controllers
             user.LastName = userModel.LastName;
             if(userModel.ProfilePictureUrl != null)
             {
+                if(user.ProfilePictureUrl != "/images/profiles/default.jpg")
+                {
+                    System.IO.File.Delete("wwwroot/" + user.ProfilePictureUrl);
+                }
                 user.ProfilePictureUrl = "/images/profiles/" + user.Id + Path.GetExtension(userModel.ProfilePictureUrl.FileName);
 
                 await SaveFileAsync(user.ProfilePictureUrl, userModel.ProfilePictureUrl);
