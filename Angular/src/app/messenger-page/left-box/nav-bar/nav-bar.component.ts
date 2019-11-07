@@ -4,6 +4,10 @@ import * as signalR from '@aspnet/signalr';
 import { SignalRService } from '../../../services/signal-r.service';
 import { ApplicationUserModel } from '../../../models/application-user.model';
 import { UserService } from 'src/app/shared/user.service';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ProfileEditorModalComponent } from './profile-editor-modal/profile-editor-modal.component';
+import { ProfileService } from 'src/app/services/profile.service';
+
 @Component({
   selector: 'app-nav-bar',
   templateUrl: './nav-bar.component.html',
@@ -13,9 +17,15 @@ export class NavBarComponent implements OnInit {
   signalRConnection: signalR.HubConnection;
   friendRequests: ApplicationUserModel[] = [];
   queryMinLength = 2;
+  profile = { firstName: '', lastName: '', profilePictureUrl: ''} as ApplicationUserModel;
   @Output() friendSearchListChange: EventEmitter<ApplicationUserModel[]> = new EventEmitter<ApplicationUserModel[]>();
 
-  constructor(private service: UserService, private router: Router, public signalRService: SignalRService) { }
+  constructor(
+    private profileService: ProfileService,
+    private service: UserService,
+    private router: Router,
+    public signalRService: SignalRService,
+    private modalService: NgbModal) { }
 
   ngOnInit() {
     this.service.getFriendRequestsList().subscribe((list: ApplicationUserModel[]) => {
@@ -29,6 +39,7 @@ export class NavBarComponent implements OnInit {
     this.signalRConnection.on('SendFreiendRequestResponse', (user: ApplicationUserModel) => {
       console.log('New Friend: ' + user.firstName + ' ' + user.lastName);
     });
+    this.getProfile();
   }
 
   deleteNotification($event: ApplicationUserModel) {
@@ -51,5 +62,19 @@ export class NavBarComponent implements OnInit {
       this.friendSearchListChange.emit([]);
     }
 
+  }
+
+  async openProfileEditor() {
+    const modalRef = this.modalService.open(ProfileEditorModalComponent);
+    modalRef.componentInstance.profile = this.profile;
+    await modalRef.result;
+    // add time to query to force image refresh
+    this.getProfile();
+  }
+
+  getProfile() {
+    this.profileService.getProfile().subscribe(profile => {
+      this.profile = profile;
+    });
   }
 }

@@ -27,6 +27,7 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
                 Email = model.Email,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
+                ProfilePictureUrl = "/images/profiles/default.jpg"
             };
 
             try

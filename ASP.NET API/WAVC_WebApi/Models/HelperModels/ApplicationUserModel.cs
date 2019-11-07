@@ -1,5 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.StaticFiles;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +21,7 @@ namespace WAVC_WebApi.Models.HelperModels
             Id = user.Id;
             FirstName = user.FirstName;
             LastName = user.LastName;
-            ProfilePictureUrl = "";
+            ProfilePictureUrl = user.ProfilePictureUrl;
         }
         public ApplicationUserModel()
         {

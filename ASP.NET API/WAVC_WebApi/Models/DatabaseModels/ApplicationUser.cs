@@ -15,6 +15,7 @@ namespace WAVC_WebApi.Models
         }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string ProfilePictureUrl { get; set; }
         [InverseProperty("User")]
         public  virtual ICollection<Relationship> Friends { get; set; }
         [InverseProperty("RelatedUser")]

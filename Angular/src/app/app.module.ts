@@ -19,11 +19,14 @@ import { MessageRecievedComponent } from './messenger-page/right-box/dialog-box/
 import { MessageSentComponent } from './messenger-page/right-box/dialog-box/message-sent/message-sent.component';
 import { ToastrModule } from 'ngx-toastr';
 import { UserService } from './shared/user.service';
+import { ProfileService } from './services/profile.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './auth/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NotificationComponent } from './messenger-page/left-box/nav-bar/notification/notification.component';
 import { SearchListElementComponent } from './messenger-page/left-box/friends-list/search-list-element/search-list-element.component';
+import { ProfileEditorModalComponent } from './messenger-page/left-box/nav-bar/profile-editor-modal/profile-editor-modal.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -43,6 +46,7 @@ import { SearchListElementComponent } from './messenger-page/left-box/friends-li
     FriendsListComponent,
     NavBarComponent,
     NotificationComponent,
+    ProfileEditorModalComponent,
   ],
   imports: [
     // signalR,
@@ -54,14 +58,16 @@ import { SearchListElementComponent } from './messenger-page/left-box/friends-li
     ToastrModule.forRoot({
       progressBar: true
     }),
-    HttpClientModule
+    HttpClientModule,
+    NgbModule
   ],
-  providers: [UserService,
+  providers: [UserService, ProfileService,
   {
     provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
     multi: true
   }],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ProfileEditorModalComponent]
 })
 export class AppModule { }

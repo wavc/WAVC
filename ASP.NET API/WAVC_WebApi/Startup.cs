@@ -132,7 +132,8 @@ namespace WAVC_WebApi
                 routes.MapHub<FriendRequestHub>("/signalR/FriendRequest");
             });
 
-            app.UseMvc();
+            app.UseMvc(); 
+            app.UseStaticFiles();
 
             //If you want to use SPA runner uncomment code bellow 
             //it has to be below UseMvc to work properly
