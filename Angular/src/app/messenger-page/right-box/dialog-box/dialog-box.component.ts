@@ -13,7 +13,7 @@ export class DialogBoxComponent implements OnInit, AfterViewChecked {
 
   private currentConversationId;
   private messages: Record<number, Array<MessageModel>>;
-  
+
   constructor(private chatService: ChatService, private globals: Globals) { }
 
   ngOnInit() {
@@ -26,15 +26,16 @@ export class DialogBoxComponent implements OnInit, AfterViewChecked {
   }
 
   private subscribeMessages() {
-    this.chatService.messages.subscribe(data=> {
+    this.chatService.messages.subscribe(data => {
       this.messages = data;
     });
   }
 
   private subscribeCurrentConversationId() {
     this.chatService.currentConversation.subscribe(data => {
-      if(data !== undefined)
+      if (data !== undefined) {
         this.currentConversationId = data.conversationId;
+      }
     });
   }
 

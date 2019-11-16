@@ -10,36 +10,36 @@ import { SignalRService } from './signal-r.service';
     providedIn: 'root'
 })
 export class ChatService {
-    private _currentConversation = new BehaviorSubject<ConversationModel>(undefined);
-    public readonly currentConversation = this._currentConversation.asObservable();
+    private currentConversationSubject = new BehaviorSubject<ConversationModel>(undefined);
+    public readonly currentConversation = this.currentConversationSubject.asObservable();
     private currentConversationSubscribed;
 
-    private _conversations = new BehaviorSubject<ConversationModel[]>([]);
-    public readonly conversations = this._conversations.asObservable();
+    private conversationSubject = new BehaviorSubject<ConversationModel[]>([]);
+    public readonly conversations = this.conversationSubject.asObservable();
     private conversationsSubscribed;
 
     private signalRConnection: signalR.HubConnection;
 
-    private _messages = new BehaviorSubject<Record<number, Array<MessageModel>>>({});
-    public readonly messages = this._messages.asObservable();
+    private messagesSubject = new BehaviorSubject<Record<number, Array<MessageModel>>>({});
+    public readonly messages = this.messagesSubject.asObservable();
 
     constructor(private apiService: ApiService, private signalRService: SignalRService) {
         this.setupConversations();
     }
 
     public setCurrentConversation(conversation: ConversationModel) {
-        this._currentConversation.next(conversation);
+        this.currentConversationSubject.next(conversation);
 
     }
 
     public pushConversationUp(id: number) {
-        let conversations = this._conversations.getValue();
-        let i = conversations.findIndex(c => c.conversationId === id);
+        const conversations = this.conversationSubject.getValue();
+        const i = conversations.findIndex(c => c.conversationId === id);
 
         if (i > 0) {
-            let currentConversation = conversations.splice(i, 1)[0];
+            const currentConversation = conversations.splice(i, 1)[0];
             conversations.unshift(currentConversation);
-            this._conversations.next(conversations);
+            this.conversationSubject.next(conversations);
         }
     }
 
@@ -62,8 +62,8 @@ export class ChatService {
     private async fetchStaticConversations() {
         await this.apiService.getConversationList().toPromise()
             .then((data: ConversationModel[]) => {
-                this._conversations.next(data);
-                this._currentConversation.next(data[0]);
+                this.conversationSubject.next(data);
+                this.currentConversationSubject.next(data[0]);
             });
     }
 
@@ -71,7 +71,7 @@ export class ChatService {
         if (typeof this.conversationsSubscribed === 'undefined') {
             return;
         }
-        this._conversations.getValue().forEach((conversation) => {
+        this.conversationSubject.getValue().forEach((conversation) => {
             this.fetchMessagesByConversationId(conversation.conversationId);
         });
     }
@@ -84,30 +84,30 @@ export class ChatService {
     }
 
     private addMessageToDialog(conversationId: number, message: any) {
-        let records = this._messages.getValue();
+        const records = this.messagesSubject.getValue();
 
-        if (typeof records[conversationId] === "undefined") {
+        if (typeof records[conversationId] === 'undefined') {
             records[conversationId] = [];
         }
-        let newMsg = this.createMessageModel(conversationId, message);
+        const newMsg = this.createMessageModel(conversationId, message);
         records[conversationId].push(newMsg);
-        this._messages.next(records);
+        this.messagesSubject.next(records);
         this.setConversationLastMessage(conversationId, message);
     }
     private setConversationLastMessage(conversationId: number, message: any) {
-        let conversations = this._conversations.getValue();
+        const conversations = this.conversationSubject.getValue();
         conversations.find(conv => conv.conversationId === conversationId).lastMessage = message;
-        this._conversations.next(conversations);
+        this.conversationSubject.next(conversations);
     }
 
     private setConversationRead(conversationId: number, value: boolean) {
-        let conversations = this._conversations.getValue();
+        const conversations = this.conversationSubject.getValue();
         conversations.find(conv => conv.conversationId === conversationId).wasRead = value;
-        this._conversations.next(conversations);
+        this.conversationSubject.next(conversations);
     }
 
     private createMessageModel(conversationId: number, message: any) {
-        let newMsg = new MessageModel();
+        const newMsg = new MessageModel();
         newMsg.conversationId = conversationId;
         newMsg.content = message.content;
         newMsg.senderUserId = message.senderId;
@@ -124,8 +124,9 @@ export class ChatService {
             .on('MessageSent', (conversationId, messageModel) => {
                 this.addMessageToDialog(conversationId, messageModel);
                 this.pushConversationUp(conversationId);
-                if (conversationId != this._currentConversation.getValue().conversationId)
+                if (conversationId !== this.currentConversationSubject.getValue().conversationId) {
                     this.setConversationRead(conversationId, false);
+                }
             });
     }
 }

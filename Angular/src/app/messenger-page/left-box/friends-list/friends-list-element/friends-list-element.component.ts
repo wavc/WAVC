@@ -10,10 +10,10 @@ import { Globals } from 'src/app/shared/globals';
 export class FriendsListElementComponent implements OnInit {
   isActive = false;
   @Input() conversation: ConversationModel;
-  private getNameOfLastSender = function(){
+  private getNameOfLastSender = function() {
     return this.conversation.users
-    .find(user=>user.id == this.conversation.lastMessage.senderId).firstName;
-  }
+      .find(user => user.id === this.conversation.lastMessage.senderId).firstName;
+  };
   constructor(private globals: Globals) { }
   ngOnInit() {
   }

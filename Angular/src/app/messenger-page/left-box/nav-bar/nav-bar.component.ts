@@ -24,7 +24,7 @@ export class NavBarComponent implements OnInit {
       console.log(this.friendRequests);
     });
   }
-  
+
   onLogout() {
     console.log('logging out');
 

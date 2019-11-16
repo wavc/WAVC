@@ -10,19 +10,19 @@ export class ApiService {
 
   constructor(public globals: Globals, private http: HttpClient) { }
 
-  getAllMessagesForConversation(conversationId :number){
-    return this.http.get(this.BaseUrl+ `/Messages/${conversationId}`);
+  getAllMessagesForConversation(conversationId: number) {
+    return this.http.get(this.BaseUrl + `/Messages/${conversationId}`);
   }
 
-  sendTextMessage(conversationId:number,message: string) {
+  sendTextMessage(conversationId: number, message: string) {
     const body = {
-      conversationId: conversationId,
+      conversationId,
       content: message
-    }
-    return this.http.post(this.BaseUrl + '/Messages',  body);
+    };
+    return this.http.post(this.BaseUrl + '/Messages', body);
   }
 
   getConversationList() {
-    return this.http.get(this.BaseUrl + "/Conversations")
+    return this.http.get(this.BaseUrl + '/Conversations');
   }
 }
