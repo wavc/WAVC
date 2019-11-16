@@ -74,22 +74,24 @@ namespace WAVC_WebApi.Controllers
                 //TODO something went wrong
                 return BadRequest();
             }
+            await CreateConversationForUsers(users);
+            
+            return Ok();
+        }
 
+        public async Task CreateConversationForUsers(List<ApplicationUser> users)
+        {
             var conversation = new Conversation();
             foreach (var user in users)
-            {
                 await _dbContext.ApplicationUserConversations
                     .AddAsync(new ApplicationUserConversation()
                     {
                         Conversation = conversation,
                         User = user
                     });
-            }
 
             await _dbContext.Conversations.AddAsync(conversation);
             await _dbContext.SaveChangesAsync();
-
-            return Ok();
         }
 
         [HttpPost]

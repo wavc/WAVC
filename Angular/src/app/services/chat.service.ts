@@ -29,6 +29,7 @@ export class ChatService {
 
     public setCurrentConversation(conversation: ConversationModel) {
         this.currentConversationSubject.next(conversation);
+        console.log(this.conversationSubject.getValue());
 
     }
 

@@ -41,19 +41,11 @@ export class NavBarComponent implements OnInit {
     });
     this.getProfile();
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
 
   deleteNotification($event: ApplicationUserModel) {
     this.friendRequests = this.friendRequests.filter(u => u !== $event);
   }
 
-=======
-  
->>>>>>> chat wip
-=======
-
->>>>>>> fix linter
   onLogout() {
     console.log('logging out');
     localStorage.removeItem('token');

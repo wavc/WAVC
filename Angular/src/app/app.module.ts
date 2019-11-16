@@ -63,16 +63,11 @@ import { ChatService } from './services/chat.service';
       progressBar: true
     }),
     HttpClientModule,
-<<<<<<< HEAD
     NgbModule
-=======
->>>>>>> fix linter
   ],
   providers: [
     UserService,
     ProfileService,
-    PickerModule,
-    EmojiModule,
     ChatService,
     UserService,
     Globals,

@@ -8,21 +8,19 @@ import { Globals } from 'src/app/shared/globals';
   styleUrls: ['./friends-list-element.component.css']
 })
 export class FriendsListElementComponent implements OnInit {
-<<<<<<< HEAD
-  // @Input() friend : ApplicationUserModel;
-
-=======
   isActive = false;
->>>>>>> enhance chat functionalities
   @Input() conversation: ConversationModel;
-  private getNameOfLastSender = function() {
+  private getNameOfLastSender = () => {
+    // if (typeof this.conversation.lastMessage === 'undefined') {
+      return "";
+    // }
     return this.conversation.users
-      .find(user => user.id === this.conversation.lastMessage.senderId).firstName;
-  };
+      .find(user => user.id === this.conversation.lastMessage.senderUserId).firstName;
+  }
   constructor(private globals: Globals) { }
   ngOnInit() {
   }
   onClick() {
     this.isActive = true;
-  }
+    }
 }

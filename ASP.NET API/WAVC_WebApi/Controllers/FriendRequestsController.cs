@@ -23,6 +23,7 @@ namespace WAVC_WebApi.Controllers
         private readonly FriendsManager _friendsManager;
         private readonly IHubContext<FriendRequestHub, IFriendRequestClient> _friendRequestHubContext;
         private readonly int _searchResults = 10;
+        private readonly ConversationsController _conversationsController;
 
         public FriendRequestsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHubContext<FriendRequestHub, IFriendRequestClient> hubContext)
         {
@@ -30,6 +31,7 @@ namespace WAVC_WebApi.Controllers
             _userManager = userManager;
             _friendRequestHubContext = hubContext;
             _friendsManager = new FriendsManager(context);
+            _conversationsController = new ConversationsController(_userManager, _dbContext);
         }
 
         // GET: api/FriendRequests
@@ -99,6 +101,7 @@ namespace WAVC_WebApi.Controllers
             {
                 if (accept)
                 {
+                    await _conversationsController.CreateConversationForUsers(new List<ApplicationUser>{sender, reciever});
                     await _friendsManager.AcceptRequestAsync(sender, reciever);
                     await _friendRequestHubContext.Clients.User(reciever.Id).SendFreiendRequestResponse(new ApplicationUserModel(sender));
                 }
