@@ -52,7 +52,7 @@ export class FriendsListComponent implements OnInit {
   }
 
   changeConversation(event, index: number) {
-    this.children.forEach(child =>child.isActive = false);
+    this.children.forEach(child => child.isActive = false);
     this.chatService.setCurrentConversation(this.conversations[index]);
   }
 >>>>>>> chat wip

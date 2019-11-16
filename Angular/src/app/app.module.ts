@@ -15,7 +15,6 @@ import { RightBoxComponent } from './messenger-page/right-box/right-box.componen
 import { HeaderBarComponent } from './messenger-page/right-box/header-bar/header-bar.component';
 import { DialogBoxComponent } from './messenger-page/right-box/dialog-box/dialog-box.component';
 import { SenderBarComponent } from './messenger-page/right-box/sender-bar/sender-bar.component';
-import { EmojiPickerComponent } from './messenger-page/right-box/sender-bar/emoji-picker/emoji-picker.component';
 import { MessageRecievedComponent } from './messenger-page/right-box/dialog-box/message-recieved/message-recieved.component';
 import { MessageSentComponent } from './messenger-page/right-box/dialog-box/message-sent/message-sent.component';
 import { ToastrModule } from 'ngx-toastr';
@@ -30,8 +29,6 @@ import { ProfileEditorModalComponent } from './messenger-page/left-box/nav-bar/p
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SendMessageModalComponent } from './messenger-page/left-box/nav-bar/send-message-modal/send-message-modal.component';
 import { Globals } from './shared/globals';
-import { PickerModule } from '@ctrl/ngx-emoji-mart';
-import { EmojiModule } from '@ctrl/ngx-emoji-mart/ngx-emoji';
 import { ChatService } from './services/chat.service';
 
 @NgModule({
@@ -54,7 +51,7 @@ import { ChatService } from './services/chat.service';
     NotificationComponent,
     ProfileEditorModalComponent,
     SendMessageModalComponent,
-    EmojiPickerComponent
+
   ],
   imports: [
     BrowserAnimationsModule,
@@ -66,7 +63,10 @@ import { ChatService } from './services/chat.service';
       progressBar: true
     }),
     HttpClientModule,
+<<<<<<< HEAD
     NgbModule
+=======
+>>>>>>> fix linter
   ],
   providers: [
     UserService,

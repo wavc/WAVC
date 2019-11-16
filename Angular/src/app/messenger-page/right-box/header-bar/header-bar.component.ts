@@ -10,7 +10,7 @@ import { ChatService } from 'src/app/services/chat.service';
 })
 export class HeaderBarComponent implements OnInit {
 
-  
+
   private conversation: ConversationModel;
 
   constructor(private chatService: ChatService) {
