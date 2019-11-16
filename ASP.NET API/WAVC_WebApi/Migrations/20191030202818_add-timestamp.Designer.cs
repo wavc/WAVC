@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WAVC_WebApi.Data;
 
 namespace WAVC_WebApi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20191030202818_add-timestamp")]
+    partial class addtimestamp
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,12 +229,6 @@ namespace WAVC_WebApi.Migrations
 
                     b.Property<string>("SenderUserId");
 
-                    b.Property<DateTime>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
-
-                    b.Property<bool>("WasRead");
-
                     b.HasKey("MessageId");
 
                     b.HasIndex("ConversationId");
@@ -329,7 +325,7 @@ namespace WAVC_WebApi.Migrations
             modelBuilder.Entity("WAVC_WebApi.Models.Message", b =>
                 {
                     b.HasOne("WAVC_WebApi.Models.Conversation", "Conversation")
-                        .WithMany()
+                        .WithMany("Messages")
                         .HasForeignKey("ConversationId")
                         .OnDelete(DeleteBehavior.Cascade);
 

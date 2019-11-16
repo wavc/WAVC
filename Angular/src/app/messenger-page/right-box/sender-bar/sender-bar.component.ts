@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Globals } from 'src/app/shared/globals';
 import { ApiService } from 'src/app/services/api.service';
+import { ChatService } from 'src/app/services/chat.service';
+import { ConversationModel } from 'src/app/models/conversation.model';
 
 @Component({
   selector: 'app-sender-bar',
@@ -8,16 +10,19 @@ import { ApiService } from 'src/app/services/api.service';
   styleUrls: ['./sender-bar.component.css']
 })
 export class SenderBarComponent implements OnInit {
-  constructor(public globals: Globals, private apiService: ApiService) { }
+  constructor(private chatService:ChatService, private apiService: ApiService) { }
+
+  private conversation: ConversationModel;
 
   ngOnInit() {
+    this.chatService.currentConversation
+    .subscribe((data) => this.conversation = data);
   }
-
-
+  
   sendMessage(messageInput: any) {
     if (messageInput.value == "") //TODO do not allow whitespace strings - regex?
       return;
-    this.apiService.sendTextMessage(messageInput.value)
+    this.apiService.sendTextMessage(this.conversation.conversationId, messageInput.value)
       .subscribe();
     messageInput.value = "";
   }

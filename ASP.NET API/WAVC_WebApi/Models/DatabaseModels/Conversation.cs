@@ -10,7 +10,6 @@ namespace WAVC_WebApi.Models
     {
         [Key]
         public int ConversationId { get; set; }
-        public List<Message> Messages { get; set; }
         public virtual ICollection<ApplicationUserConversation> ApplicationUserConversation { get; set; }
     }
 } 

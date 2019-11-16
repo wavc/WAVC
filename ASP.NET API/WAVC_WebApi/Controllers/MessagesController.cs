@@ -38,9 +38,10 @@ namespace WAVC_WebApi.Controllers
             //var conversation = await _dbContext.Conversations.FindAsync(conversationId);
 
             var messages = _dbContext.Messages.Where(m => m.ConversationId == conversationId);
+            //var m = messages.First();
 
             var messageModels = messages.Select(m => new MessageModel(m));
-
+                
             return Ok(messageModels);
         }
 
