@@ -9,5 +9,7 @@ namespace WAVC_WebApi.Hubs.Interfaces
     public interface IMessagesClient
     {
         Task MessageSent(int conversationId, MessageModel message);
+        Task MessageRead(int messageId);
+        Task NotifyMessageRead(int messageId);
     }
 }

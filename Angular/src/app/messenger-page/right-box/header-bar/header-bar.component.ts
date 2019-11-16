@@ -18,6 +18,6 @@ export class HeaderBarComponent implements OnInit {
 
   ngOnInit() {
     this.chatService.currentConversation
-    .subscribe((data) => this.conversation = data);
+    .subscribe(data => this.conversation = data);
   }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -23,6 +24,8 @@ namespace WAVC_WebApi.Models
         public Conversation Conversation { get; set; }
         public string Content { get; set; }
         public Type MessageType { get; set; }
-        //public DateTime Timestamp { get; set; }
+        public bool WasRead { get; set; }
+        [Timestamp]
+        public DateTime Timestamp { get; set; }
     }
 }

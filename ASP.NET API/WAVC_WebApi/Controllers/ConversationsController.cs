@@ -41,7 +41,7 @@ namespace WAVC_WebApi.Controllers
                 conversationModels.Add(new ConversationModel()
                 {
                     ConversationId = conv.ConversationId,
-                    LastMessage = "example last message",
+                    WasRead = true,
                     Users = _dbContext.ApplicationUserConversations
                     .Where(auc => auc.ConversationId == conv.ConversationId
                             && auc.UserId != user.Id)

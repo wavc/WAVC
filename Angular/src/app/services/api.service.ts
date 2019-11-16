@@ -14,9 +14,9 @@ export class ApiService {
     return this.http.get(this.BaseUrl+ `/Messages/${conversationId}`);
   }
 
-  sendTextMessage(message: string) {
+  sendTextMessage(conversationId:number,message: string) {
     const body = {
-      conversationId: this.globals.conversationId,
+      conversationId: conversationId,
       content: message
     }
     return this.http.post(this.BaseUrl + '/Messages',  body);

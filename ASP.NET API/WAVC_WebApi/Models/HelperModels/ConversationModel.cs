@@ -8,7 +8,7 @@ namespace WAVC_WebApi.Models
     public class ConversationModel
     {
         public int ConversationId { get; set; }
-        public string LastMessage { get; set; }
+        public bool WasRead { get; set; }
         public List<ApplicationUserModel> Users { get; set; }
     }
 }
