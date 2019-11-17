@@ -10,12 +10,18 @@ import { Globals } from 'src/app/shared/globals';
 export class FriendsListElementComponent implements OnInit {
   isActive = false;
   @Input() conversation: ConversationModel;
+
+  //TO BE NAPRAWIONE!!!
   private getNameOfLastSender = () => {
-    // if (typeof this.conversation.lastMessage === 'undefined') {
-      return "";
-    // }
-    return this.conversation.users
-      .find(user => user.id === this.conversation.lastMessage.senderUserId).firstName;
+    
+    const lastUser = this.conversation.users
+    .find(user => user.id === this.conversation.lastMessage.senderUserId);
+    return (typeof lastUser !== 'undefined') ? lastUser.firstName: "";
+  }
+
+  private getProfilePictureLink = () =>{
+    const user = this.conversation.users[0];
+    return user.profilePictureUrl;
   }
   constructor(private globals: Globals) { }
   ngOnInit() {

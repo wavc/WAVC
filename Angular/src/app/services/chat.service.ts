@@ -18,7 +18,8 @@ export class ChatService {
     public readonly conversations = this.conversationSubject.asObservable();
     private conversationsSubscribed;
 
-    private signalRConnection: signalR.HubConnection;
+    private signalRConnectionMessages: signalR.HubConnection;
+    private signalRConnectionConversations: signalR.HubConnection;
 
     private messagesSubject = new BehaviorSubject<Record<number, Array<MessageModel>>>({});
     public readonly messages = this.messagesSubject.asObservable();
@@ -116,12 +117,26 @@ export class ChatService {
     }
 
     private async attachDynamicData() {
+        this.attachConversationsToSignalR();
         this.attachMessagesToSignalR();
     }
+    private async attachConversationsToSignalR() {
+        this.signalRConnectionConversations = this.signalRService.startConnection('/Conversations');
+        this.signalRConnectionConversations
+        .on('SendNewConversation', (conversation)=>{
+            console.log("Dostalem konwersacje!!!!");
+            console.log(conversation);
+            let oldConversationList = this.conversationSubject.getValue();
+            oldConversationList.unshift(conversation);
+            this.conversationSubject.next(oldConversationList);
+            
+            this.signalRConnectionMessages.send("JoinConversation", conversation.conversationId);
+        });
 
+    }
     private async attachMessagesToSignalR() {
-        this.signalRConnection = this.signalRService.startConnection('/Messages');
-        this.signalRConnection
+        this.signalRConnectionMessages = this.signalRService.startConnection('/Messages');
+        this.signalRConnectionMessages
             .on('MessageSent', (conversationId, messageModel) => {
                 this.addMessageToDialog(conversationId, messageModel);
                 this.pushConversationUp(conversationId);

@@ -131,6 +131,7 @@ namespace WAVC_WebApi
             {
                 routes.MapHub<FriendRequestHub>("/signalR/FriendRequest");
                 routes.MapHub<MessagesHub>("/signalR/Messages");
+                routes.MapHub<ConversationHub>("/signalR/Conversations");
             });
 
             app.UseMvc(); 

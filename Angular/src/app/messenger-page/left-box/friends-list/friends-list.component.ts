@@ -2,7 +2,6 @@ import { ApplicationUserModel } from 'src/app/models/application-user.model';
 import { Component, OnInit, EventEmitter, Output, Renderer, ViewChild, ViewChildren, Input } from '@angular/core';
 import { ApiService } from 'src/app/services/api.service';
 import { ConversationModel } from 'src/app/models/conversation.model';
-import { Globals } from 'src/app/shared/globals';
 import { ChatService } from 'src/app/services/chat.service';
 import { UserService } from 'src/app/shared/user.service';
 import { FriendsListElementComponent } from './friends-list-element/friends-list-element.component';
@@ -18,7 +17,7 @@ export class FriendsListComponent implements OnInit {
   @ViewChildren(FriendsListElementComponent) children;
   private conversations: Array<ConversationModel> = [];
 
-  constructor(private userService: UserService, private apiService: ApiService, public globals: Globals, private chatService: ChatService) { }
+  constructor(private userService: UserService, private apiService: ApiService, private chatService: ChatService) { }
 
   ngOnInit() {
     this.userService.getFriendsList().subscribe((list: ApplicationUserModel[]) => {

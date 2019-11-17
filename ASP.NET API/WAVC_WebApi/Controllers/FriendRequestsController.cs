@@ -21,17 +21,23 @@ namespace WAVC_WebApi.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FriendsManager _friendsManager;
-        private readonly IHubContext<FriendRequestHub, IFriendRequestClient> _friendRequestHubContext;
+        private readonly IHubContext<FriendRequestHub, IFriendRequestClient> _friendRequestFriendRequestHubContext;
+        private readonly IHubContext<MessagesHub, IMessagesClient> _messageHubContext;
+        private readonly IHubContext<ConversationHub, IConversationClient> _conversationHubContext;
         private readonly int _searchResults = 10;
         private readonly ConversationsController _conversationsController;
 
-        public FriendRequestsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHubContext<FriendRequestHub, IFriendRequestClient> hubContext)
+        public FriendRequestsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHubContext<FriendRequestHub, 
+            IFriendRequestClient> friendRequestHubContext, IHubContext<ConversationHub, IConversationClient> conversationHubContext, IHubContext<MessagesHub, IMessagesClient> messageHubContext)
         {
             _dbContext = context;
             _userManager = userManager;
-            _friendRequestHubContext = hubContext;
+            _friendRequestFriendRequestHubContext = friendRequestHubContext;
+            _conversationHubContext = conversationHubContext;
+            _messageHubContext = messageHubContext;
             _friendsManager = new FriendsManager(context);
             _conversationsController = new ConversationsController(_userManager, _dbContext);
+
         }
 
         // GET: api/FriendRequests
@@ -86,7 +92,7 @@ namespace WAVC_WebApi.Controllers
             });
 
             await _dbContext.SaveChangesAsync();
-            await _friendRequestHubContext.Clients.User(id).FriendRequestSent(new ApplicationUserModel(sender));
+            await _friendRequestFriendRequestHubContext.Clients.User(id).FriendRequestSent(new ApplicationUserModel(sender));
 
             return Ok();
         }
@@ -101,9 +107,16 @@ namespace WAVC_WebApi.Controllers
             {
                 if (accept)
                 {
-                    await _conversationsController.CreateConversationForUsers(new List<ApplicationUser>{sender, reciever});
+                    var conversation = await _conversationsController.CreateConversationForUsers(new List<ApplicationUser>{sender, reciever});
                     await _friendsManager.AcceptRequestAsync(sender, reciever);
-                    await _friendRequestHubContext.Clients.User(reciever.Id).SendFreiendRequestResponse(new ApplicationUserModel(sender));
+                    await _friendRequestFriendRequestHubContext.Clients.User(reciever.Id).SendFreiendRequestResponse(new ApplicationUserModel(sender));
+                    await NotifyUsersAboutNewConversation(conversation.ConversationId,
+                        new List<ApplicationUserModel>
+                            {
+                                new ApplicationUserModel(sender),
+                                new ApplicationUserModel(reciever)
+
+                            });
                 }
                 else
                 {
@@ -122,7 +135,7 @@ namespace WAVC_WebApi.Controllers
             }
             return Ok();
         }
-
+        
         [HttpGet]
         [Route("[action]")]
         public async Task<List<ApplicationUserModel>> Search(string query)
@@ -142,6 +155,21 @@ namespace WAVC_WebApi.Controllers
                 Select(x => new ApplicationUserModel(x.user)).ToList();
 
             return queryResult;
+        }
+        public async Task NotifyUsersAboutNewConversation(int conversationId, List<ApplicationUserModel> users)
+        {
+
+            foreach (var userModel in users)
+            {
+                var conversationModel = new ConversationModel()
+                {
+                    ConversationId = conversationId,
+                    Users = users.Where(u=>u.Id != userModel.Id).ToList(),
+                    WasRead = true
+                };
+                
+                await _conversationHubContext.Clients.User(userModel.Id).SendNewConversation(conversationModel);
+            }
         }
     }
 }

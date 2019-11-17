@@ -79,7 +79,7 @@ namespace WAVC_WebApi.Controllers
             return Ok();
         }
 
-        public async Task CreateConversationForUsers(List<ApplicationUser> users)
+        public async Task<Conversation> CreateConversationForUsers(List<ApplicationUser> users)
         {
             var conversation = new Conversation();
             foreach (var user in users)
@@ -92,6 +92,8 @@ namespace WAVC_WebApi.Controllers
 
             await _dbContext.Conversations.AddAsync(conversation);
             await _dbContext.SaveChangesAsync();
+
+            return conversation;
         }
 
         [HttpPost]

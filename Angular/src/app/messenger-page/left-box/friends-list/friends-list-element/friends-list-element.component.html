@@ -1,27 +1,30 @@
 <a class="d-flex align-items-start">
-    <img src="assets/cat.jpg" class="rounded-circle profile-picture" />
-    <div class="d-flex flex-column w-100 mx-2" [ngClass]="conversation.wasRead ? 'font-weight-light': 'font-weight-bold'">
-      <div class="d-flex justify-content-between">
-        <h6 class="mb-1">
-          {{conversation.users[0].firstName + " " + conversation.users[0].lastName}}
-        </h6>
-        <i class="fas fa-ellipsis-h"></i>
-      </div>
-      <div class="container p-0">
-        <div class="row">
-          <div class="col-9">
-            <div *ngIf="conversation.lastMessage!==undefined" class="text-truncate">
-              <span *ngIf="globals.myId==conversation.lastMessage.senderId">You:&nbsp;</span>
-              <span *ngIf="globals.myId!=conversation.lastMessage.senderId">{{getNameOfLastSender()}}:&nbsp;
-              </span>
-              <span>{{conversation.lastMessage.content}}</span>
-            </div>
+  <img src={{getProfilePictureLink()}} class="rounded-circle profile-picture" />
+  <div class="d-flex flex-column w-100 mx-2" [ngClass]="conversation.wasRead ? 'font-weight-light': 'font-weight-bold'">
+    <div class="d-flex justify-content-between">
+      <h6 class="mb-1">
+        {{conversation.users[0].firstName + " " + conversation.users[0].lastName}}
+      </h6>
+      <i class="fas fa-ellipsis-h"></i>
+    </div>
+    <div class="container p-0">
+      <div class="row">
+        <div class="col-9">
+          <div *ngIf="conversation.lastMessage!==undefined" class="text-truncate">
+            <span *ngIf="globals.myId==conversation.lastMessage.senderId">You:&nbsp;</span>
+            <span *ngIf="globals.myId!=conversation.lastMessage.senderId">{{getNameOfLastSender()}}:&nbsp;
+            </span>
+            <span>{{conversation.lastMessage.content}}</span>
           </div>
-          <div class="col-3">
-            <small class="text-muted align-self-end">Read:&nbsp;</small>
-            <small class="text-muted"> 3 days ago</small>
+          <div *ngIf="conversation.lastMessage===undefined" class="text-truncate">
+            <span>"Send a new message to your friend"</span>
           </div>
+        </div>
+        <div class="col-3">
+          <small class="text-muted align-self-end">Read:&nbsp;</small>
+          <small class="text-muted"> 3 days ago</small>
         </div>
       </div>
     </div>
-  </a>
+  </div>
+</a>
