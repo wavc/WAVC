@@ -11,15 +11,15 @@ export class FriendsListElementComponent implements OnInit {
   isActive = false;
   @Input() conversation: ConversationModel;
 
-  //TO BE NAPRAWIONE!!!
+  // TO BE NAPRAWIONE!!!
   private getNameOfLastSender = () => {
-    
+
     const lastUser = this.conversation.users
     .find(user => user.id === this.conversation.lastMessage.senderUserId);
-    return (typeof lastUser !== 'undefined') ? lastUser.firstName: "";
+    return (typeof lastUser !== 'undefined') ? lastUser.firstName : '';
   }
 
-  private getProfilePictureLink = () =>{
+  private getProfilePictureLink = () => {
     const user = this.conversation.users[0];
     return user.profilePictureUrl;
   }

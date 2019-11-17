@@ -27,7 +27,7 @@ export class FriendsListComponent implements OnInit {
     this.chatService.conversations.subscribe(data => this.conversations = data);
   }
 
-  changeConversation(event:any, index: number) {
+  changeConversation(event: any, index: number) {
     console.log(this.conversations);
     this.children.forEach(child => child.isActive = false);
     this.chatService.setCurrentConversation(this.conversations[index]);

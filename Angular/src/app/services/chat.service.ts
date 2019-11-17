@@ -123,14 +123,14 @@ export class ChatService {
     private async attachConversationsToSignalR() {
         this.signalRConnectionConversations = this.signalRService.startConnection('/Conversations');
         this.signalRConnectionConversations
-        .on('SendNewConversation', (conversation)=>{
-            console.log("Dostalem konwersacje!!!!");
+        .on('SendNewConversation', (conversation) => {
+            console.log('Dostalem konwersacje!!!!');
             console.log(conversation);
-            let oldConversationList = this.conversationSubject.getValue();
+            const oldConversationList = this.conversationSubject.getValue();
             oldConversationList.unshift(conversation);
             this.conversationSubject.next(oldConversationList);
-            
-            this.signalRConnectionMessages.send("JoinConversation", conversation.conversationId);
+
+            this.signalRConnectionMessages.send('JoinConversation', conversation.conversationId);
         });
 
     }
