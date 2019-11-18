@@ -21,7 +21,7 @@ namespace WAVC_WebApi.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FriendsManager _friendsManager;
-        private readonly IHubContext<FriendRequestHub, IFriendRequestClient> _friendRequestFriendRequestHubContext;
+        private readonly IHubContext<FriendRequestHub, IFriendRequestClient> _friendRequestHubContext;
         private readonly IHubContext<MessagesHub, IMessagesClient> _messageHubContext;
         private readonly IHubContext<ConversationHub, IConversationClient> _conversationHubContext;
         private readonly int _searchResults = 10;
@@ -32,7 +32,7 @@ namespace WAVC_WebApi.Controllers
         {
             _dbContext = context;
             _userManager = userManager;
-            _friendRequestFriendRequestHubContext = friendRequestHubContext;
+            _friendRequestHubContext = friendRequestHubContext;
             _conversationHubContext = conversationHubContext;
             _messageHubContext = messageHubContext;
             _friendsManager = new FriendsManager(context);
@@ -92,7 +92,7 @@ namespace WAVC_WebApi.Controllers
             });
 
             await _dbContext.SaveChangesAsync();
-            await _friendRequestFriendRequestHubContext.Clients.User(id).FriendRequestSent(new ApplicationUserModel(sender));
+            await _friendRequestHubContext.Clients.User(id).FriendRequestSent(new ApplicationUserModel(sender));
 
             return Ok();
         }
@@ -109,7 +109,7 @@ namespace WAVC_WebApi.Controllers
                 {
                     var conversation = await _conversationsController.CreateConversationForUsers(new List<ApplicationUser>{sender, reciever});
                     await _friendsManager.AcceptRequestAsync(sender, reciever);
-                    await _friendRequestFriendRequestHubContext.Clients.User(reciever.Id).SendFreiendRequestResponse(new ApplicationUserModel(sender));
+                    await _friendRequestHubContext.Clients.User(reciever.Id).SendFreiendRequestResponse(new ApplicationUserModel(sender));
                     await NotifyUsersAboutNewConversation(conversation.ConversationId,
                         new List<ApplicationUserModel>
                             {
@@ -143,22 +143,21 @@ namespace WAVC_WebApi.Controllers
             var sender = await _userManager.GetUserAsync(HttpContext.User);
 
             var users = _dbContext.Users.ToList();
-            var queryResult = _friendsManager.GetOthers(sender, users).
-                Select(u => new
+            var queryResult = _friendsManager.GetOthers(sender, users)
+                .Select(u => new
                 {
                     user = u,
-                    comparisonResult = (u.FirstName + " " + u.LastName).IndexOf(query)
-                }).
-                OrderBy(x => x.comparisonResult).
-                Take(_searchResults).
-                Where(x => x.comparisonResult >= 0).
-                Select(x => new ApplicationUserModel(x.user)).ToList();
+                    lowerName = $"{u.FirstName} {u.LastName}".ToLower()
+                })
+                .Where(u => u.lowerName.Contains(query.ToLower(), StringComparison.Ordinal))
+                .OrderBy(x => x.lowerName.IndexOf(query.ToLower(), StringComparison.Ordinal))
+                .Take(_searchResults)
+                .Select(x => new ApplicationUserModel(x.user)).ToList();
 
             return queryResult;
         }
         public async Task NotifyUsersAboutNewConversation(int conversationId, List<ApplicationUserModel> users)
         {
-
             foreach (var userModel in users)
             {
                 var conversationModel = new ConversationModel()

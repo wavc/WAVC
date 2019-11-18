@@ -20,12 +20,13 @@ export class SenderBarComponent implements OnInit {
   }
 
   sendMessage(messageInput: any) {
-    if (messageInput.value === '') { // TODO do not allow whitespace strings - regex?
+
+    const messageText = messageInput.value.trim();
+    if (messageText === '') { 
       return;
     }
-    console.log('APPI');
-    console.log(this.conversation);
-    this.apiService.sendTextMessage(this.conversation.conversationId, messageInput.value)
+
+    this.apiService.sendTextMessage(this.conversation.conversationId, messageText)
       .subscribe();
     messageInput.value = '';
   }

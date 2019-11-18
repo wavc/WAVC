@@ -42,6 +42,16 @@ namespace WAVC_WebApi.Hubs
 
         public async Task JoinConversation(int conversationId)
         {
+            var user = await _userManager.FindByIdAsync(Context.User.Identity.Name);
+
+
+            if (!_dbContext.ApplicationUserConversations
+                .Where(auc => auc.ConversationId == conversationId)
+                .Any(auc => auc.UserId == user.Id))
+            {
+                return;
+            }
+
             await Groups.AddToGroupAsync(Context.ConnectionId, conversationId.ToString());
         }
     }

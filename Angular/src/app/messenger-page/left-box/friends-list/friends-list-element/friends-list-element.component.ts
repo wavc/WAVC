@@ -11,11 +11,10 @@ export class FriendsListElementComponent implements OnInit {
   isActive = false;
   @Input() conversation: ConversationModel;
 
-  // TO BE NAPRAWIONE!!!
   private getNameOfLastSender = () => {
-
     const lastUser = this.conversation.users
-    .find(user => user.id === this.conversation.lastMessage.senderUserId);
+      .find(user => user.id === this.conversation.lastMessage.senderUserId);
+
     return (typeof lastUser !== 'undefined') ? lastUser.firstName : '';
   }
 
@@ -28,5 +27,5 @@ export class FriendsListElementComponent implements OnInit {
   }
   onClick() {
     this.isActive = true;
-    }
+  }
 }

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WAVC_WebApi.Data;
 using WAVC_WebApi.Hubs;
 using WAVC_WebApi.Hubs.Interfaces;
@@ -22,9 +23,9 @@ namespace WAVC_WebApi.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _dbContext;
 
-        public MessagesController(IHubContext<MessagesHub, IMessagesClient> messagesHubContex, UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
+        public MessagesController(IHubContext<MessagesHub, IMessagesClient> messagesHubContext, UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
         {
-            _messagesHubContext = messagesHubContex;
+            _messagesHubContext = messagesHubContext;
             _userManager = userManager;
             _dbContext = dbContext;
         }
@@ -35,11 +36,15 @@ namespace WAVC_WebApi.Controllers
         public async Task<IActionResult> GetAllMessagesForConversationAsync(int conversationId)
         {
             var user = await _userManager.FindByIdAsync(User.Identity.Name);
-            //var conversation = await _dbContext.Conversations.FindAsync(conversationId);
+            
+            if (!_dbContext.ApplicationUserConversations
+                .Where(auc => auc.ConversationId == conversationId)
+                .Any(auc => auc.UserId == user.Id))
+            {
+                return BadRequest();
+            }
 
             var messages = _dbContext.Messages.Where(m => m.ConversationId == conversationId);
-            //var m = messages.First();
-
             var messageModels = messages.Select(m => new MessageModel(m));
                 
             return Ok(messageModels);
@@ -53,6 +58,13 @@ namespace WAVC_WebApi.Controllers
             var senderUser = await _userManager.FindByIdAsync(User.Identity.Name);
 
             if (conversation == null)
+            {
+                return BadRequest();
+            }
+
+            if (!_dbContext.ApplicationUserConversations
+                .Where(auc => auc.ConversationId == conversation.ConversationId)
+                .Any(auc => auc.UserId == senderUser.Id))
             {
                 return BadRequest();
             }
