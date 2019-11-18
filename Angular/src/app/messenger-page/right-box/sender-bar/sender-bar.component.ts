@@ -22,7 +22,7 @@ export class SenderBarComponent implements OnInit {
   sendMessage(messageInput: any) {
 
     const messageText = messageInput.value.trim();
-    if (messageText === '') { 
+    if (messageText === '') {
       return;
     }
 
