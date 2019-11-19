@@ -21,24 +21,33 @@ namespace WAVC_WebApi.Hubs
             this.userManager = userManager;
             friendsManager = new FriendsManager(context);
         }
-        public async Task<bool> NewUser(string userId, string peerId, int call)
+        public async Task<bool> NewUser(string userId, string peerId, string call)
         {
             try
             {
                 var user = await userManager.FindByIdAsync(userId);
-                var recepient = friendsManager.GetFriends(user)[call];
                 var name = user.UserName;
-                await Clients.All.SendAsync("NewUserInfo", new { name, peerId, recepient.Id });
-                return true;
+
+                foreach(var recepient in getRecepients(user, call))
+                {
+                    await Clients.All.SendAsync("NewUserInfo", new { name, peerId, recepient.Id });
+                }
 
             } catch
             {
                 return false;
             }
+            return true;
         }
         public async Task Quit(string peerId)
         {
             await Clients.Others.SendAsync("UserQuit", peerId);
+        }
+
+        IEnumerable<ApplicationUser> getRecepients(ApplicationUser sender, string id)
+        {
+            //temp
+            return friendsManager.GetFriends(sender).Where(f => f.Id == id);
         }
     }
 }

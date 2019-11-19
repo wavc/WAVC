@@ -35,7 +35,7 @@ export class Broker {
             this.connection.invoke("Quit", this.Id);
         };
     }
-    async StartConnection(UserId: string, CallId: number) {
+    async StartConnection(UserId: string, CallId: string) {
         await this.connection.start();
         this.UserId = UserId;
         var res = await this.connection.invoke("NewUser", UserId, this.Id, CallId) as boolean;

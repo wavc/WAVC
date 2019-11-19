@@ -16,13 +16,14 @@ export class FriendsListComponent implements OnInit {
 
   ngOnInit() {
     this.service.getFriendsList().subscribe((list: ApplicationUserModel[]) => {
+      currentConversation.value = list[0].id;
       this.friends = list;
       console.log('friend list: ');
       console.log(list);
     });
   }
-  changeConversation(index: number) {
-    currentConversation.value = index;
-    console.log(index);
+  changeConversation(id: string) {
+    currentConversation.value = id;
+    console.log(id);
   }
 }

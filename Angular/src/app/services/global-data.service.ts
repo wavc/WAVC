@@ -1,1 +1,1 @@
-export const currentConversation = { value: 0 }; 
+export const currentConversation = { value: "" }; 

@@ -14,13 +14,14 @@ export class AudioAndVideoPageComponent implements OnInit {
   media: Media;
   peerCon: PeerConnection;
   broker: Broker;
-  callId: number;
+  callId: string;
   userId: string;
   constructor(private route: ActivatedRoute, private profileSerivce: ProfileService) { }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.callId = params.id;
+      console.log(params.id)
     });
     this.profileSerivce.getProfile().subscribe(profile => {
       this.userId = profile.id;
