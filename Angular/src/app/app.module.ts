@@ -27,6 +27,9 @@ import { NotificationComponent } from './messenger-page/left-box/nav-bar/notific
 import { SearchListElementComponent } from './messenger-page/left-box/friends-list/search-list-element/search-list-element.component';
 import { ProfileEditorModalComponent } from './messenger-page/left-box/nav-bar/profile-editor-modal/profile-editor-modal.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { SendMessageModalComponent } from './messenger-page/left-box/nav-bar/send-message-modal/send-message-modal.component';
+import { Globals } from './shared/globals';
+import { ChatService } from './services/chat.service';
 
 @NgModule({
   declarations: [
@@ -47,9 +50,10 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     NavBarComponent,
     NotificationComponent,
     ProfileEditorModalComponent,
+    SendMessageModalComponent,
+
   ],
   imports: [
-    // signalR,
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
@@ -61,12 +65,17 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     HttpClientModule,
     NgbModule
   ],
-  providers: [UserService, ProfileService,
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true
-  }],
+  providers: [
+    UserService,
+    ProfileService,
+    ChatService,
+    UserService,
+    Globals,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }],
   bootstrap: [AppComponent],
   entryComponents: [ProfileEditorModalComponent]
 })

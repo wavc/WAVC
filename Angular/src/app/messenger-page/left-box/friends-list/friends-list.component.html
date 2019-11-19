@@ -5,13 +5,7 @@
     </div>
 </div>
 <div *ngIf="friendSearchList.length > 0">Conversation list</div>
-<div class="list-group mr-2">
-    <!--<div *ngFor="let friend of friendSearchList">
-        <app-friends-list-element [friend]="friend"></app-friends-list-element>
-    </div>-->
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
-    <app-friends-list-element></app-friends-list-element>
+<div class="list-group mr-2" *ngFor="let conversation of conversations; let i = index;" (click)="changeConversation($event, i)">
+    <app-friends-list-element [conversation]=conversation class="list-group-item list-group-item-action">
+    </app-friends-list-element>
 </div>

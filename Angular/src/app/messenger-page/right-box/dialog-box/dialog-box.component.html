@@ -1,22 +1,8 @@
-
-    <app-message-recieved></app-message-recieved>
-    <app-message-recieved></app-message-recieved>
-    <app-message-sent></app-message-sent>
-    <app-message-recieved></app-message-recieved>
-    <app-message-sent></app-message-sent>
-    <app-message-recieved></app-message-recieved>
-    <app-message-sent></app-message-sent>
-    <app-message-recieved></app-message-recieved>
-    <app-message-sent></app-message-sent>
-    <app-message-sent></app-message-sent>
-    <app-message-sent></app-message-sent>
-    <app-message-recieved></app-message-recieved>
-    <app-message-sent></app-message-sent>
-    <app-message-recieved></app-message-recieved>
-    <app-message-sent></app-message-sent>
-    <app-message-sent></app-message-sent>
-    <app-message-recieved></app-message-recieved>
-    <app-message-sent></app-message-sent>
-    <app-message-recieved></app-message-recieved>
-    <app-message-sent></app-message-sent>
-    <app-message-sent></app-message-sent>
+<div #dialogBox class="scrollbar scrollbar-primary overflow-auto">
+    <div *ngIf="currentConversationId!==undefined">
+        <div  *ngFor="let message of messages[currentConversationId]">
+            <app-message-recieved *ngIf="message.senderUserId != globals.myId" [message]=message></app-message-recieved>
+            <app-message-sent *ngIf="message.senderUserId == globals.myId" [message]=message></app-message-sent>
+        </div>
+    </div>
+</div>
