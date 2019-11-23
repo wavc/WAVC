@@ -85,14 +85,13 @@ export class ChatService {
             });
     }
 
-    private addMessageToDialog(conversationId: number, message: any) {
+    private addMessageToDialog(conversationId: number, message: MessageModel) {
         const records = this.messagesSubject.getValue();
 
         if (typeof records[conversationId] === 'undefined') {
             records[conversationId] = [];
         }
-        const newMsg = this.createMessageModel(conversationId, message);
-        records[conversationId].push(newMsg);
+        records[conversationId].push(message);
         this.messagesSubject.next(records);
         this.setConversationLastMessage(conversationId, message);
     }
@@ -109,10 +108,11 @@ export class ChatService {
     }
 
     private createMessageModel(conversationId: number, message: any) {
+        // ommits type
         const newMsg = new MessageModel();
         newMsg.conversationId = conversationId;
         newMsg.content = message.content;
-        newMsg.senderUserId = message.senderId;
+        newMsg.senderId = message.senderId;
         return newMsg;
     }
 

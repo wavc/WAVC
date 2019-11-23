@@ -1,0 +1,7 @@
+@import '../../shared.scss';
+label {
+    margin: 0;
+}
+#progress-bar {
+    height: 100%;
+}

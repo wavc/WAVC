@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { MessageModel } from 'src/app/models/message.model';
+import { MessageModel, MessageType } from 'src/app/models/message.model';
 
 @Component({
   selector: 'app-message-sent',
@@ -11,6 +11,12 @@ export class MessageSentComponent implements OnInit {
   constructor() { }
   @Input() message: MessageModel;
   ngOnInit() {
+    console.log(this.message);
+  }
+
+  splitMessageIntoFilenames(msg: string): string[]
+  {
+    return msg.split('|');
   }
 
 }
