@@ -4,10 +4,9 @@
         </div>
         <div *ngIf="message.type === 2">
                 <div *ngFor="let file of message.content.split('|')">
-                        <a href="/conversations/{{message.conversationId}}/{{file}}" download><i class="fas fa-file"></i>  {{file}}</a>
-
+                        <a href="/conversations/{{message.conversationId}}/{{file}}" download>
+                                <i class="fas fa-file"></i> {{file}}
+                        </a>
                 </div>
         </div>
-
-
 </div>

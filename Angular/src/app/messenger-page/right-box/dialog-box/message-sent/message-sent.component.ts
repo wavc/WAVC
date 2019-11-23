@@ -11,12 +11,5 @@ export class MessageSentComponent implements OnInit {
   constructor() { }
   @Input() message: MessageModel;
   ngOnInit() {
-    console.log(this.message);
   }
-
-  splitMessageIntoFilenames(msg: string): string[]
-  {
-    return msg.split('|');
-  }
-
 }

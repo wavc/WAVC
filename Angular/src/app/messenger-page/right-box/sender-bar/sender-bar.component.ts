@@ -37,7 +37,7 @@ export class SenderBarComponent implements OnInit {
     this.overlayText = document.getElementById('overlay_text');
     this.fileInfo = document.getElementById('file-info');
     this.filesInput = document.getElementById('files') as HTMLInputElement;
-    this.filesInput.addEventListener("change", () => this.ShowFileList());
+    this.filesInput.addEventListener('change', () => this.ShowFileList());
     this.dragenter = (e) => this.StartedDragging(e);
     this.dragleave = (e) => this.EndedDragging(e);
     this.dragover = (e) => this.PreventOpen(e);
@@ -49,9 +49,9 @@ export class SenderBarComponent implements OnInit {
   }
 
   ShowFileList() {
-    this.fileInfo.classList.remove("hide_element");
-    this.fileArray = this.fileArray.concat(this.FileListToArray(this.filesInput.files).map((file, i) => { 
-      return { id: i, name: file.name, size: this.DisplaySize(file.size), file}
+    this.fileInfo.classList.remove('hide_element');
+    this.fileArray = this.fileArray.concat(this.FileListToArray(this.filesInput.files).map((file, i) => {
+      return { id: i, name: file.name, size: this.DisplaySize(file.size), file };
     }));
   }
 
@@ -100,16 +100,16 @@ export class SenderBarComponent implements OnInit {
     this.EndedDragging(e);
 
     this.filesInput.files = e.dataTransfer.files;
-    this.filesInput.dispatchEvent(new Event("change"));
+    this.filesInput.dispatchEvent(new Event('change'));
   }
 
   SaveFiles() {
     const form = document.getElementById('files-form') as HTMLFormElement;
-    var totalSize = 0;
+    const totalSize = this.FileListToArray(this.filesInput.files)
+      .map(f => f.size)
+      .reduce((prev, next) => prev + next);
     this.filesInput.files = this.ArrayToFileList(this.fileArray.map(f => f.file));
-    for (var i = 0; i < this.filesInput.files.length; i++) {
-      totalSize += this.filesInput.files[i].size;
-    }
+
     this.apiService.sendFile(this.conversation.conversationId, new FormData(form)).subscribe((event) => {
       switch (event.type) {
         case HttpEventType.UploadProgress:
@@ -117,49 +117,49 @@ export class SenderBarComponent implements OnInit {
           break;
         case HttpEventType.Response:
           this.progressBar = 0;
-          this.fileInfo.classList.add("hide_element");
+          this.fileInfo.classList.add('hide_element');
           this.fileArray = [];
           break;
         case HttpEventType.Sent:
         case HttpEventType.ResponseHeader:
           break;
         default:
-          console.log(event);
-          alert('Unhandled event: ' + event.type);
+          console.log('Unhandled event: ' + event.type);
       }
     });
   }
   FileListToArray(fileList: FileList): File[] {
     return Array.prototype.slice.call(fileList);
-  } 
-  ArrayToFileList(fileArray: File[]): FileList
-  {
-      var dt = new DataTransfer();
-      fileArray.forEach(file => {
-        dt.items.add(file);
-      });
-      return dt.files;
+  }
+  ArrayToFileList(fileArray: File[]): FileList {
+    const dt = new DataTransfer();
+    fileArray.forEach(file => {
+      dt.items.add(file);
+    });
+    return dt.files;
   }
   DisplaySize(bytes: number) {
-    var prefix = "B";
-    var giga = 1000000000, mega = 1000000, kilo = 1000;
-    var gigaPrefix = "G", megaPrefix = "M", kiloPrefix = "K";
-    var result = bytes;
+    const giga = 1000000000;
+    const gigaPrefix = 'G';
+    const mega = 1000000;
+    const megaPrefix = 'M';
+    const kilo = 1000;
+    const kiloPrefix = 'K';
+    let prefix = 'B';
+    let result = bytes;
     if (bytes >= giga / 2) {
       prefix = gigaPrefix + prefix;
       result /= giga;
-      result = Math.round(result)
-    }
-    else if (bytes >= mega / 2) {
+      result = Math.round(result);
+    } else if (bytes >= mega / 2) {
       prefix = megaPrefix + prefix;
       result /= mega;
-      result = Math.round(result)
-    }
-    else if (bytes > kilo / 2) {
+      result = Math.round(result);
+    } else if (bytes > kilo / 2) {
       prefix = kiloPrefix + prefix;
       result /= kilo;
-      result = Math.round(result)
+      result = Math.round(result);
     }
-    return result + " " + prefix;
+    return result + ' ' + prefix;
   }
 }

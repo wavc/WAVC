@@ -82,8 +82,11 @@ export class ProfileEditorModalComponent implements OnInit, OnDestroy {
         case HttpEventType.Response:
           this.modal.close();
           break;
+        case HttpEventType.Sent:
+        case HttpEventType.ResponseHeader:
+          break;
         default:
-          return 'Unhandled event: ${event.type}';
+          console.log('Unhandled event: ' + event.type);
       }
     });
   }

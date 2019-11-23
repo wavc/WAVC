@@ -70,9 +70,11 @@ namespace WAVC_WebApi.Controllers
         public async Task<IActionResult> SendFileMessageAsync([FromForm]IEnumerable<IFormFile> files, [FromRoute] int id)
         {
             var user = await _userManager.GetUserAsync(HttpContext.User);
+            //I chose separator as "|"  because it can't be used in a filename
+            var fileNamesAsString = files.Aggregate("", (s, f) => s + (string.IsNullOrEmpty(s) ? "" : "|") + f.FileName);
             var message = new MessageModel() { 
                 ConversationId = id, 
-                Content= GetFileNamesAsString(files, "|")
+                Content= fileNamesAsString
             };
 
             var result = await SaveMessageAsync(message, user, Message.Type.File);
@@ -84,11 +86,6 @@ namespace WAVC_WebApi.Controllers
                 await file.SaveFileAsync("conversations/" + id + "/" + file.FileName);
             }
             return Ok();
-        }
-
-        private string GetFileNamesAsString(IEnumerable<IFormFile> files, string separator)
-        {
-            return files.Aggregate("", (s, f) => s + (string.IsNullOrEmpty(s) ? "" : separator) + f.FileName);
         }
 
         private async Task<bool> SaveMessageAsync(MessageModel messageModel, ApplicationUser user, Message.Type type)

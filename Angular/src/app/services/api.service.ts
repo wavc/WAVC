@@ -29,6 +29,6 @@ export class ApiService {
   }
 
   sendFile(conversationId: number, formData: FormData): Observable<HttpEvent<any>> {
-    return this.http.post(this.BaseUrl + '/Messages/Files/'+conversationId, formData, { reportProgress: true, observe: 'events' });
+    return this.http.post(this.BaseUrl + '/Messages/Files/' + conversationId, formData, { reportProgress: true, observe: 'events' });
   }
 }

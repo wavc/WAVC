@@ -4,12 +4,11 @@ export class MessageModel {
     content: string;
     senderId: string;
     type: MessageType;
-    timestamp: any
+    timestamp: any;
     constructor() {}
 }
 
-export enum MessageType
-{
+export enum MessageType {
     Text,
     Photo,
     File,
