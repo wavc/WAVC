@@ -85,14 +85,13 @@ export class ChatService {
             });
     }
 
-    private addMessageToDialog(conversationId: number, message: any) {
+    private addMessageToDialog(conversationId: number, message: MessageModel) {
         const records = this.messagesSubject.getValue();
 
         if (typeof records[conversationId] === 'undefined') {
             records[conversationId] = [];
         }
-        const newMsg = this.createMessageModel(conversationId, message);
-        records[conversationId].push(newMsg);
+        records[conversationId].push(message);
         this.messagesSubject.next(records);
         this.setConversationLastMessage(conversationId, message);
     }
@@ -108,14 +107,6 @@ export class ChatService {
         this.conversationSubject.next(conversations);
     }
 
-    private createMessageModel(conversationId: number, message: any) {
-        const newMsg = new MessageModel();
-        newMsg.conversationId = conversationId;
-        newMsg.content = message.content;
-        newMsg.senderUserId = message.senderId;
-        return newMsg;
-    }
-
     private async attachDynamicData() {
         this.attachConversationsToSignalR();
         this.attachMessagesToSignalR();
@@ -123,15 +114,15 @@ export class ChatService {
     private async attachConversationsToSignalR() {
         this.signalRConnectionConversations = this.signalRService.startConnection('/Conversations');
         this.signalRConnectionConversations
-        .on('SendNewConversation', (conversation) => {
-            console.log('Dostalem konwersacje!!!!');
-            console.log(conversation);
-            const oldConversationList = this.conversationSubject.getValue();
-            oldConversationList.unshift(conversation);
-            this.conversationSubject.next(oldConversationList);
+            .on('SendNewConversation', (conversation) => {
+                console.log('Dostalem konwersacje!!!!');
+                console.log(conversation);
+                const oldConversationList = this.conversationSubject.getValue();
+                oldConversationList.unshift(conversation);
+                this.conversationSubject.next(oldConversationList);
 
-            this.signalRConnectionMessages.send('JoinConversation', conversation.conversationId);
-        });
+                this.signalRConnectionMessages.send('JoinConversation', conversation.conversationId);
+            });
 
     }
     private async attachMessagesToSignalR() {

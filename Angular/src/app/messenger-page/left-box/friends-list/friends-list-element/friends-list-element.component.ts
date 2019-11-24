@@ -13,7 +13,7 @@ export class FriendsListElementComponent implements OnInit {
 
   private getNameOfLastSender = () => {
     const lastUser = this.conversation.users
-      .find(user => user.id === this.conversation.lastMessage.senderUserId);
+      .find(user => user.id === this.conversation.lastMessage.senderId);
 
     return (typeof lastUser !== 'undefined') ? lastUser.firstName : '';
   }
