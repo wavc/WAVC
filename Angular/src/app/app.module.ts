@@ -30,8 +30,14 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { SendMessageModalComponent } from './messenger-page/left-box/nav-bar/send-message-modal/send-message-modal.component';
 import { Globals } from './shared/globals';
 import { ChatService } from './services/chat.service';
+<<<<<<< HEAD
 import { BodyEvents } from './services/body-events.service';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+=======
+import { VirtualBoardComponent } from './virtual-board/virtual-board.component';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { Ng5SliderModule } from 'ng5-slider';
+>>>>>>> vb proto
 
 @NgModule({
   declarations: [
@@ -53,6 +59,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     NotificationComponent,
     ProfileEditorModalComponent,
     SendMessageModalComponent,
+    VirtualBoardComponent,
 
   ],
   imports: [
@@ -66,7 +73,9 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
       progressBar: true
     }),
     HttpClientModule,
-    NgbModule
+    NgbModule,
+    ColorPickerModule,
+    Ng5SliderModule
   ],
   providers: [
     UserService,

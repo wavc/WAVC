@@ -30,7 +30,7 @@ export class SignalRService {
     connection
       .start()
       .then(() => console.log('Connected to SignalR Successfully!'))
-      .catch((error) => console.error(error.toString()));
+      .catch((error) => console.error(error));
 
     this.connectionHubs.setValue(url, connection);
     return connection;

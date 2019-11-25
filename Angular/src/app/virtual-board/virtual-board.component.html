@@ -1,0 +1,57 @@
+<div class="container-fluid vh-100 d-flex flex-column p-0">
+
+    <nav class="navbar navbar-light bg-light border-bottom border-secondary btn-toolbar d-flex justify-content-between"
+        role="toolbar">
+        <h2>Virtual Board</h2>
+        <div class="btn-group btn-group-toggle mr-2" role="group" aria-label="First group">
+            <button name="rectangle" type="button" class="btn btn-outline-primary"
+                (click)="onToolButtonClicked($event)">
+                <i class="far fa-square"></i>
+            </button>
+            <button name="ellipse" type="button" class="btn btn-outline-primary" (click)="onToolButtonClicked($event)">
+                <i class="far fa-circle"></i>
+            </button>
+            <button name="pen" type="button" class="btn btn-outline-primary" (click)="onToolButtonClicked($event)">
+                <i class="fas fa-pen"></i>
+            </button>
+            <button name="line" type="button" class="btn btn-outline-primary" (click)="onToolButtonClicked($event)">
+                <i class="fas fa-ruler"></i>
+            </button>
+            <button name="filler" type="button" class="btn btn-outline-primary" (click)="onToolButtonClicked($event)">
+                <i class="fas fa-fill-drip"></i>
+            </button>
+        </div>
+        <div class="btn-group mr-2" role="group" aria-label="Second group">
+            <button name="hand" type="button" class="btn btn-outline-primary" (click)="onToolButtonClicked($event)">
+                <i class="fas fa-mouse-pointer"></i>
+            </button>
+            <button name="eraser" type="button" class="btn btn-outline-primary" (click)="onToolButtonClicked($event)">
+                <i class="fas fa-eraser"></i>
+            </button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Third group">
+            <button type="button" class="btn btn-outline-primary" [style.color]="colorStroke" [cpPosition]="bottom"
+                cpOutputFormat="rgba" [cpPositionOffset]="'50%'" [cpPositionRelativeToArrow]="true"
+                cpAlphaChannel="always" [(colorPicker)]="colorStroke"
+                (colorPickerClose)="OnStrokeColorChanged(colorStroke)">Stroke Color
+            </button>
+
+            <button type="button" class="btn btn-outline-primary" [style.color]="colorFill" [cpPosition]="bottom"
+                cpOutputFormat="rgba" [cpPositionOffset]="'50%'" [cpPositionRelativeToArrow]="true"
+                cpAlphaChannel="always" [(colorPicker)]="colorFill"
+                (colorPickerClose)="OnFillerColorChanged(colorFill)">Fill Color
+            </button>
+        </div>
+        <div class="btn-group w-25">
+            <span>Stroke Width: </span>
+            <ng5-slider [(value)]="value" [options]="sliderOptions" (valueChange)="onSliderValueChange($event)">
+            </ng5-slider>
+        </div>
+        <button type="button" class="btn btn-outline-primary" (click)="onDownloadButtonClicked()">
+            <i class="fas fa-download"></i>
+        </button>
+    </nav>
+    <div class="row flex-grow-1">
+        <canvas class="border border-danger w-100 h-100" id="main-canvas"></canvas>
+    </div>
+</div>

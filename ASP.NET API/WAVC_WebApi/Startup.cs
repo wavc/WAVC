@@ -132,6 +132,10 @@ namespace WAVC_WebApi
                 routes.MapHub<FriendRequestHub>("/signalR/FriendRequest");
                 routes.MapHub<MessagesHub>("/signalR/Messages");
                 routes.MapHub<ConversationHub>("/signalR/Conversations");
+                routes.MapHub<VirtualBoardHub>("/signalR/VirtualBoard", options =>
+                    {
+                        options.ApplicationMaxBufferSize = 1024 * 1024;
+                    });
             });
 
             app.UseStaticFiles(new StaticFileOptions()
