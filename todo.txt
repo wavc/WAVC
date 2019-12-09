@@ -1,3 +1,0 @@
-update audio and video seperately
-check if everything works from 2 different devices
-make nice UI
