@@ -26,7 +26,7 @@ namespace WAVC_WebApi.Hubs
             try
             {
                 var user = await userManager.FindByIdAsync(userId);
-                var name = user.UserName;
+                var name = user.FirstName + " " + user.LastName;
 
                 foreach(var recepient in getRecepients(user, call))
                 {

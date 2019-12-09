@@ -24,11 +24,9 @@ export class Broker {
             }
         });
         this.connection.on("UserQuit", peerId => {
-            console.log("User " + peerId + " quitted");
-            var callsWithPeer = this.callsFunc().filter(c => c.peer == peerId);
-            if (callsWithPeer.length > 0) {
-                var callId = callsWithPeer[0].id;
-                Util.DeleteElement(callId);
+            var callWithPeer = this.callsFunc()[peerId];
+            if (callWithPeer !== undefined) {
+                Util.DeleteElement(peerId);
             }
         });
         window.onbeforeunload = () => {

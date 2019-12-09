@@ -9,7 +9,7 @@ export class PeerConnection {
     stream: { video: MediaStream, audio: MediaStream };
     isSendingAudio: boolean;
     isSendingVideo: boolean;
-    HandleRemoteVideo: (stream: Stream, id: string, name: string) => void;
+    HandleRemoteVideo: (stream: Stream, id: string, name: string, type: string) => void;
 
     constructor(stream, HandleRemoteVideo) {
         this.peer = new Peer();
@@ -36,79 +36,100 @@ export class PeerConnection {
     }
     SetUpCall(call) {
         var me = this;
-        console.log("SetUpCall");
         call.on('stream', function (remoteStream) {
-            console.log(call.metadata);
             const remoteName = me.calls[call.peer].name;
 
             if (call.metadata.type == "video") {
-                if (me.calls[call.peer].remoteVideoCall != null)
+                if (me.calls[call.peer].remoteVideoCall != null) {
+                    Util.DeleteElement(call.peer + '-' + call.metadata.type);
                     me.calls[call.peer].remoteVideoCall.close();
+                }
                 me.calls[call.peer].remoteVideoCall = call;
             }
             else if (call.metadata.type == "audio") {
-                if (me.calls[call.peer].remoteAudioCall != null)
+                if (me.calls[call.peer].remoteAudioCall != null) {
+                    Util.DeleteElement(call.peer + '-' + call.metadata.type);
                     me.calls[call.peer].remoteAudioCall.close();
+                }
                 me.calls[call.peer].remoteAudioCall = call;
             }
+
+            // display stream
+            me.HandleRemoteVideo(remoteStream, call.peer, remoteName, call.metadata.type);
+
             // if hasn't called yet
             if (me.calls[call.peer].localAudioCall == null && me.calls[call.peer].localVideoCall == null) {
                 me.MakeCallAllTypes({ name: remoteName, peerId: call.peer });
             }
-
-            // display stream
-            me.HandleRemoteVideo(remoteStream, call.id, remoteName);
         });
         call.on('close', function () {
-            console.log("Closed Stream");
             var callObj = me.calls[call.peer];
+            if(callObj.localAudioCall === call || callObj.localVideoCall === call) {
+                if (call.metadata.type == "video") {
+                    callObj.localVideoCall = null;
+                }
+                if (call.metadata.type == "audio") {
+                    callObj.localAudioCall = null;
+                }
+                return;
+            }
             if (call.metadata.type == "video") {
                 callObj.remoteVideoCall = null;
             }
             if (call.metadata.type == "audio") {
                 callObj.remoteAudioCall = null;
             }
+            Util.DeleteElement(call.peer + '-' + call.metadata.type);
             if (callObj.remoteAudioCall == null && callObj.remoteVideoCall == null && callObj.localAudioCall == null && callObj.localVideoCall == null) {
-                Util.DeleteElement(call.id);
+                Util.DeleteElement(call.peer);
                 delete me.calls[call.peer];
             }
 
         });
     }
-    UpdateCall() {
+    UpdateCall(needsUpdate = {audio:true, video:true}) {
+        console.log(needsUpdate);
         for (var key in this.calls) {
-            this.MakeCallAllTypes({ name: this.calls[key].name, peerId: key });
+            this.MakeCallAllTypes({ name: this.calls[key].name, peerId: key }, needsUpdate);
         }
     }
-    MakeCallAllTypes(user: { name: string, peerId: string }) {
-        console.log("MakeCallAllTypes");
-        console.log(this.stream);
-        if (this.stream.audio != null)
-            this.MakeCall(user, this.stream.audio, 'audio');
-        if (this.stream.video != null)
-            this.MakeCall(user, this.stream.video, 'video');
+    MakeCallAllTypes(user: { name: string, peerId: any }, needsUpdate = {audio:true, video:true}) {
+        if(needsUpdate.audio) {
+            if (this.stream.audio != null)
+                this.MakeCall(user, this.stream.audio, 'audio');
+            else if (this.calls[user.peerId] !== undefined && this.calls[user.peerId].localAudioCall !== null) {
+                this.calls[user.peerId].localAudioCall.close();
+            }
+        }
+        if(needsUpdate.video) {
+            if (this.stream.video != null)
+                this.MakeCall(user, this.stream.video, 'video');
+            else if (this.calls[user.peerId] !== undefined && this.calls[user.peerId].localVideoCall !== null) {
+                this.calls[user.peerId].localVideoCall.close();
+            }
+        }
     }
 
 
     MakeCall(user: { name: string, peerId: string }, stream: MediaStream, type: string) {
         var call = this.peer.call(user.peerId, stream, { metadata: { caller: this.myName, recipient: user.name, type: type } });
         this.SetCallName(call.peer, user.name);
-        if(type == 'video')
-            this.calls[call.peer].localVideoCall = stream;
-        else if(type == 'audio')
-            this.calls[call.peer].localAudioCall = stream;
+        if (type == 'video')
+            this.calls[call.peer as any].localVideoCall = call;
+        else if (type == 'audio')
+            this.calls[call.peer as any].localAudioCall = call;
         this.SetUpCall(call);
     }
 
-    SetCallName(id: string, remoteName: string)
-    {
+    SetCallName(id: string, remoteName: string) {
         if (this.calls[id] == undefined) {
             this.calls[id] = {
                 localVideoCall: null,
                 localAudioCall: null,
                 remoteVideoCall: null,
                 remoteAudioCall: null,
-                name: remoteName };
+                name: remoteName
+            };
         }
     }
 

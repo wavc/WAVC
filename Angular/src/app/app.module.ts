@@ -28,6 +28,7 @@ import { SearchListElementComponent } from './messenger-page/left-box/friends-li
 import { ProfileEditorModalComponent } from './messenger-page/left-box/nav-bar/profile-editor-modal/profile-editor-modal.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AudioAndVideoPageComponent } from './audio-and-video-page/audio-and-video-page.component';
+import { VideoAndAudioOptionsModalComponent } from './audio-and-video-page/video-and-audio-options-modal/video-and-audio-options-modal.component';
 
 
 @NgModule({
@@ -50,6 +51,7 @@ import { AudioAndVideoPageComponent } from './audio-and-video-page/audio-and-vid
     NotificationComponent,
     ProfileEditorModalComponent,
     AudioAndVideoPageComponent,
+    VideoAndAudioOptionsModalComponent,
   ],
   imports: [
     // signalR,

@@ -14,6 +14,6 @@ export class HeaderBarComponent implements OnInit {
   }
 
   StartAudio() {
-    let wnd = window.open("/call/" + currentConversation.value, "", "modal=yes,width=400,height=300");
+    let wnd = window.open("/call/" + currentConversation.value, "", "modal=yes,width=650,height=600");
   }
 }
