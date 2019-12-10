@@ -7,12 +7,12 @@ import * as Collections from 'typescript-collections';
 })
 
 export class SignalRService {
-  private readonly BaseUrl = 'https://localhost:44395/signalR';
+  private readonly BaseUrl = '/signalR';
   private connectionHubs = new Collections.Dictionary<string, signalR.HubConnection>();
 
   constructor() { }
 
-  public startConnection = (url: string): signalR.HubConnection => {
+  public startConnection = (url: string, callback= undefined): signalR.HubConnection => {
     const fullUrl = this.BaseUrl + url;
     console.log('Trying to establish connection to ' + fullUrl);
     if (this.connectionHubs.containsKey(fullUrl)) {
@@ -29,8 +29,8 @@ export class SignalRService {
 
     connection
       .start()
-      .then(() => console.log('Connected to SignalR Successfully!'))
-      .catch((error) => console.error(error.toString()));
+      .then(() => this.onConnected(callback))
+      .catch((error) => console.error(error));
 
     this.connectionHubs.setValue(url, connection);
     return connection;
@@ -38,5 +38,12 @@ export class SignalRService {
 
   public getConnection = (url: string) => {
     return this.connectionHubs.getValue(url);
+  }
+
+  private onConnected = (callback) => {
+    if (callback !== undefined) {
+      callback();
+      console.log('Connected to SignalR Successfully!');
+    }
   }
 }

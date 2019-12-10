@@ -1,20 +1,51 @@
+<div id="file-info" class="hide_element">
+  <div class="row">
+    <div class="col">
+      <div *ngFor="let file of fileArray" style="display: inline-block;">
+        <i class="fas fa-file"></i>
+        {{file.name}} - {{file.size}}
+        <button (click)="DeleteFile(file.id)">
+          <i class="far fa-times-circle"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <mat-progress-bar mode="determinate" [value]="progressBar"></mat-progress-bar>
+    </div>
+    <div class="col-1">
+      <button class="btn btn-primary" (click)="SaveFiles()">
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
 <div class="input-group mb-3">
   <div class="input-group-prepend">
-    <button class="btn btn-primary" type="button">
+    <label for="files" class="btn btn-primary" type="button">
       <i class="far fa-file"></i>
-    </button>
+    </label>
+    <form id="files-form">
+      <input id="files" name="files" type="file" multiple hidden />
+    </form>
     <button class="btn btn-primary" type="button">
       <i class="fas fa-photo-video"></i>
     </button>
     <button class="btn btn-primary" type="button">
-        <i class="far fa-smile-beam"></i>
+      <i class="far fa-smile-beam"></i>
     </button>
   </div>
   <input type="text" class="form-control" placeholder="Type a message here..." aria-label=""
-    aria-describedby="basic-addon1">
+    aria-describedby="basic-addon1" #messageSender (keyup.enter)="sendMessage(messageSender)">
   <div class="input-group-append">
     <button class="btn btn-primary" type="button">
       <i class="fas fa-thumbs-up"></i>
     </button>
+  </div>
+</div>
+<div id="main-overlay" class="overlay">
+  <div id="overlay_text" class="hide_element">
+    Drop Image Here
   </div>
 </div>

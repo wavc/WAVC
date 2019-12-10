@@ -1,0 +1,35 @@
+<div tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Profile</h5>
+                <button (click)="modal.close()" type="button" class="close" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="profile-form">
+                    <input name="Id" value="{{profile.id}}" hidden/>
+                    <div class="form-group">
+                        <img src="{{profile.profilePictureUrl}}" class="rounded-circle profile-picture" />
+                        <input id="profile_pic" type="file" name="ProfilePictureUrl" class="form-control" accept="image/*" />
+                    </div>
+                    <div class="form-group">
+                        <input name="FirstName" class="form-control" value="{{profile.firstName}}" />
+                        <input name="LastName" class="form-control" value="{{profile.lastName}}" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <span id="profile-save-progress"></span>
+                <button (click)="SaveProfile()" type="button" class="btn btn-primary">Save</button>
+                <button (click)="modal.close()" type="button" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="profile_overlay" class="overlay">
+    <div id="profile_overlay_text" class="hide_element">
+        Drop Image Here
+    </div>
+</div>

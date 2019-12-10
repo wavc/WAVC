@@ -4,13 +4,16 @@ import { RegistrationPageComponent } from './registration-page/registration-page
 import { LogInPageComponent } from './log-in-page/log-in-page.component';
 import { MessengerPageComponent } from './messenger-page/messenger-page.component';
 import { AuthGuard } from './auth/auth.guard';
+import { AudioAndVideoPageComponent } from './audio-and-video-page/audio-and-video-page.component';
+import { VirtualBoardComponent } from './virtual-board/virtual-board.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
   { path: 'registration', component: RegistrationPageComponent },
   { path: 'sign-in', component: LogInPageComponent },
-  { path: 'messenger', component: MessengerPageComponent, canActivate: [AuthGuard] }
-
+  { path: 'messenger', component: MessengerPageComponent, canActivate: [AuthGuard] },
+  { path: 'call/:id', component: AudioAndVideoPageComponent, canActivate: [AuthGuard] },
+  { path: 'board/:id', component: VirtualBoardComponent }
 ];
 
 @NgModule({

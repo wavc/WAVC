@@ -37,12 +37,11 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
 
             if (user == null || await _userManager.CheckPasswordAsync(user, model.Password) == false)
                 return BadRequest(new { message = "Username or password is incorrect." });
-            
+
             string token = new TokenGenerator(_applicationSettings.JWTSecret).GenerateToken(user);
 
-            return Ok(new { token });
-
+            string myId = user.Id;
+            return Ok(new { token, myId });
         }
-
     }
 }

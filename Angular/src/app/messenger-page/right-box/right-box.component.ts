@@ -11,5 +11,4 @@ export class RightBoxComponent implements OnInit {
 
   ngOnInit() {
   }
-
 }

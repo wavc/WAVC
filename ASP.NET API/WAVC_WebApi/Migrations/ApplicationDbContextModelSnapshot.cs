@@ -189,6 +189,30 @@ namespace WAVC_WebApi.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("WAVC_WebApi.Models.ApplicationUserConversation", b =>
+                {
+                    b.Property<string>("UserId");
+
+                    b.Property<int>("ConversationId");
+
+                    b.HasKey("UserId", "ConversationId");
+
+                    b.HasIndex("ConversationId");
+
+                    b.ToTable("ApplicationUserConversations");
+                });
+
+            modelBuilder.Entity("WAVC_WebApi.Models.Conversation", b =>
+                {
+                    b.Property<int>("ConversationId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.HasKey("ConversationId");
+
+                    b.ToTable("Conversations");
+                });
+
             modelBuilder.Entity("WAVC_WebApi.Models.Message", b =>
                 {
                     b.Property<long>("MessageId")
@@ -197,17 +221,25 @@ namespace WAVC_WebApi.Migrations
 
                     b.Property<string>("Content");
 
-                    b.Property<string>("RecieverUserId");
+                    b.Property<int>("ConversationId");
+
+                    b.Property<int>("MessageType");
 
                     b.Property<string>("SenderUserId");
 
+                    b.Property<DateTime>("Timestamp")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<bool>("WasRead");
+
                     b.HasKey("MessageId");
 
-                    b.HasIndex("RecieverUserId");
+                    b.HasIndex("ConversationId");
 
                     b.HasIndex("SenderUserId");
 
-                    b.ToTable("Message");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("WAVC_WebApi.Models.Relationship", b =>
@@ -232,6 +264,8 @@ namespace WAVC_WebApi.Migrations
                     b.Property<string>("FirstName");
 
                     b.Property<string>("LastName");
+
+                    b.Property<string>("ProfilePictureUrl");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -281,14 +315,28 @@ namespace WAVC_WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("WAVC_WebApi.Models.ApplicationUserConversation", b =>
+                {
+                    b.HasOne("WAVC_WebApi.Models.Conversation", "Conversation")
+                        .WithMany("ApplicationUserConversation")
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WAVC_WebApi.Models.ApplicationUser", "User")
+                        .WithMany("ApplicationUserConversation")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("WAVC_WebApi.Models.Message", b =>
                 {
-                    b.HasOne("WAVC_WebApi.Models.ApplicationUser", "RecieverUser")
-                        .WithMany("MessagesRecieved")
-                        .HasForeignKey("RecieverUserId");
+                    b.HasOne("WAVC_WebApi.Models.Conversation", "Conversation")
+                        .WithMany()
+                        .HasForeignKey("ConversationId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WAVC_WebApi.Models.ApplicationUser", "SenderUser")
-                        .WithMany("MessagesSent")
+                        .WithMany()
                         .HasForeignKey("SenderUserId");
                 });
 

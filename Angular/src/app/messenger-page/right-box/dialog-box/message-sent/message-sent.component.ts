@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { MessageModel, MessageType } from 'src/app/models/message.model';
 
 @Component({
   selector: 'app-message-sent',
@@ -8,8 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class MessageSentComponent implements OnInit {
 
   constructor() { }
-
+  @Input() message: MessageModel;
   ngOnInit() {
   }
-
 }
