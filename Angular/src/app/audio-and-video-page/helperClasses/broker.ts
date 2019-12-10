@@ -4,23 +4,27 @@ import { Util } from './util';
 
 export class Broker {
     myName: string;
-    Id: string;
+    connectionId: string;
     callsFunc;
-    Call;
+    call;
+    callId: string;
     connection: HubConnection;
-    UserId: string;
-    constructor(Id, callsFunc, Call, onNameChange) {
-        this.Id = Id;
+    userId: string;
+    constructor(connectionId, callsFunc, Call, onNameChange) {
+        this.connectionId = connectionId;
         this.callsFunc = callsFunc;
-        this.Call = Call;
+        this.call = Call;
 
-        this.connection = new signalR.HubConnectionBuilder().withUrl("/signalR/ConnectPeers").build();
+        this.connection = new signalR.HubConnectionBuilder().withUrl("/signalR/ConnectPeers", {
+            accessTokenFactory : () => localStorage.getItem('token').toString()
+          }).build();
         this.connection.on("NewUserInfo", (user) => {
-            if (user.peerId == this.Id) {
+            console.log(user);
+            if (user.peerId == this.connectionId) {
                 this.myName = user.name;
                 onNameChange(this.myName);
-            } else if(user.id == this.UserId) {
-                this.Call(user);
+            } else {
+                this.call(user);
             }
         });
         this.connection.on("UserQuit", peerId => {
@@ -30,13 +34,14 @@ export class Broker {
             }
         });
         window.onbeforeunload = () => {
-            this.connection.invoke("Quit", this.Id);
+            this.connection.invoke("Quit", this.connectionId, this.callId);
         };
     }
-    async StartConnection(UserId: string, CallId: string) {
+    async StartConnection(UserId: string, callId: string) {
         await this.connection.start();
-        this.UserId = UserId;
-        var res = await this.connection.invoke("NewUser", UserId, this.Id, CallId) as boolean;
+        this.userId = UserId;
+        this.callId = callId;
+        var res = await this.connection.invoke("NewUser", UserId, this.connectionId, callId) as boolean;
         if(!res) {
             alert("Something went wrong with sending new user info");
         }

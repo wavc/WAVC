@@ -11,9 +11,9 @@ namespace WAVC_WebApi.Hubs
 {
     public class ConnectPeers : Hub
     {
-        ApplicationDbContext context;
-        UserManager<ApplicationUser> userManager;
-        FriendsManager friendsManager;
+        private ApplicationDbContext context;
+        private UserManager<ApplicationUser> userManager;
+        private FriendsManager friendsManager;
 
         public ConnectPeers(UserManager<ApplicationUser> userManager, ApplicationDbContext context)
         {
@@ -21,33 +21,33 @@ namespace WAVC_WebApi.Hubs
             this.userManager = userManager;
             friendsManager = new FriendsManager(context);
         }
+
         public async Task<bool> NewUser(string userId, string peerId, string call)
         {
             try
             {
-                var user = await userManager.FindByIdAsync(userId);
+                var user = await userManager.FindByIdAsync(Context.User.Identity.Name);
+                if (!context.ApplicationUserConversations
+                    .Where(c => c.ConversationId == int.Parse(call))
+                    .Any(uc => uc.UserId == userId))
+                {
+                    return false;
+                }
+                await Groups.AddToGroupAsync(Context.ConnectionId, call);
                 var name = user.FirstName + " " + user.LastName;
 
-                foreach(var recepient in getRecepients(user, call))
-                {
-                    await Clients.All.SendAsync("NewUserInfo", new { name, peerId, recepient.Id });
-                }
-
-            } catch
+                await Clients.Group(call).SendAsync("NewUserInfo", new { name, peerId });
+            }
+            catch
             {
                 return false;
             }
             return true;
         }
-        public async Task Quit(string peerId)
-        {
-            await Clients.Others.SendAsync("UserQuit", peerId);
-        }
 
-        IEnumerable<ApplicationUser> getRecepients(ApplicationUser sender, string id)
+        public async Task Quit(string peerId, string call)
         {
-            //temp
-            return friendsManager.GetFriends(sender).Where(f => f.Id == id);
+            await Clients.OthersInGroup(call).SendAsync("UserQuit", peerId);
         }
     }
 }
