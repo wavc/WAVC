@@ -27,6 +27,7 @@ import { SearchListElementComponent } from './messenger-page/left-box/friends-li
 import { ProfileEditorModalComponent } from './messenger-page/left-box/nav-bar/profile-editor-modal/profile-editor-modal.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AudioAndVideoPageComponent } from './audio-and-video-page/audio-and-video-page.component';
+// tslint:disable-next-line:max-line-length
 import { VideoAndAudioOptionsModalComponent } from './audio-and-video-page/video-and-audio-options-modal/video-and-audio-options-modal.component';
 import { SendMessageModalComponent } from './messenger-page/left-box/nav-bar/send-message-modal/send-message-modal.component';
 import { Globals } from './shared/globals';

@@ -6,13 +6,25 @@ export class Media {
     localVideo: HTMLVideoElement;
     makeUpdateButton: () => void;
     isPreviewAudioOn: boolean;
-    addDeviceOption: (list: [string, string][], name: string, select: (number) => boolean) => void;
-    checkSelectedDevice: (string) => number;
+    addDeviceOption: (list: [string, string][], name: string, select: (n: number) => boolean) => void;
+    checkSelectedDevice: (str: string) => number;
 
     selectedAudioDevice: any = false;
     selectedVideoDevice: any = false;
 
     needsUpdate = { video: false, audio: false };
+
+    static AddTracks(trackList, stream) {
+        trackList.forEach(track => { track.mode = 'showing'; stream.addTrack(track); });
+    }
+    static RemoveTracks(trackList, stream, stop = false) {
+        trackList.forEach(track => {
+            if (stop) {
+                track.stop();
+            }
+            stream.removeTrack(track);
+        });
+    }
 
     constructor(makeUpdateButton, localVideo, isPreviewAudioOn, addDeviceOption, checkSelectedDevice) {
         this.localVideo = localVideo;
@@ -28,23 +40,23 @@ export class Media {
 
         navigator.mediaDevices.enumerateDevices().
             then((deviceList) => {
-                for (var i = 0; i < deviceList.length; i++) {
-                    if (deviceList[i].deviceId !== 'default') {
-                        if (deviceList[i].kind === 'audioinput')
-                            this.audioDevices.push([deviceList[i].deviceId, deviceList[i].label]);
-                        else if (deviceList[i].kind === 'videoinput')
-                            this.videoDevices.push([deviceList[i].deviceId, deviceList[i].label]);
+                for (const device of deviceList) {
+                    if (device.deviceId !== 'default') {
+                        if (device.kind === 'audioinput') {
+                            this.audioDevices.push([device.deviceId, device.label]);
+                        } else if (device.kind === 'videoinput') {
+                            this.videoDevices.push([device.deviceId, device.label]);
+                        }
                     }
                 }
-                this.addDeviceOption(this.audioDevices, "audio", (i) => i == 0);
-                this.addDeviceOption(this.videoDevices, "video", (i) => i == this.videoDevices.length);
+                this.addDeviceOption(this.audioDevices, 'audio', (i) => i === 0);
+                this.addDeviceOption(this.videoDevices, 'video', (i) => i === this.videoDevices.length);
                 if (this.audioDevices.length > 1 || this.videoDevices.length > 1) {
                     this.makeUpdateButton();
                 }
             }).
             catch((msg) => console.log(msg));
 
-        //await this.UpdateVideo({ video: true });
         await this.UpdateAudio({ audio: true });
     }
     StopVideo() {
@@ -65,18 +77,14 @@ export class Media {
     }
     async UpdateVideo(constraints) {
         this.StopVideo();
-        var stream = await navigator.mediaDevices.getUserMedia(constraints);
-        this.myStream.video = stream;
-        // always preview
+        this.myStream.video = await navigator.mediaDevices.getUserMedia(constraints);
         const localVideoTracks = (this.localVideo.srcObject as MediaStream).getVideoTracks();
         Media.RemoveTracks(localVideoTracks, this.localVideo.srcObject);
-        Media.AddTracks(stream.getTracks(), this.localVideo.srcObject);
+        Media.AddTracks(this.myStream.video.getTracks(), this.localVideo.srcObject);
     }
     async UpdateAudio(constraints) {
         this.StopAudio();
-        var stream = await navigator.mediaDevices.getUserMedia(constraints);
-        this.myStream.audio = stream;
-        //add to preview if checkbox was set
+        this.myStream.audio = await navigator.mediaDevices.getUserMedia(constraints);
         this.PreviewAudio(this.isPreviewAudioOn);
     }
 
@@ -94,21 +102,20 @@ export class Media {
     }
 
     async UpdateSettings() {
-        var audioDeviceId = this.checkSelectedDevice('audio_devices');
+        const audioDeviceId = this.checkSelectedDevice('audio_devices');
         const newSelectedAudioDevice = this.SelectDevice(audioDeviceId, this.audioDevices);
-        var videoDeviceId = this.checkSelectedDevice('video_devices');
+        const videoDeviceId = this.checkSelectedDevice('video_devices');
         const newSelectedVideoDevice = this.SelectDevice(videoDeviceId, this.videoDevices);
         this.needsUpdate = { video: false, audio: false };
 
         if (JSON.stringify(newSelectedAudioDevice) !== JSON.stringify(this.selectedAudioDevice)) {
             this.selectedAudioDevice = newSelectedAudioDevice;
             if (this.selectedAudioDevice) {
-                var constraintsAudio = {
+                const constraintsAudio = {
                     audio: this.selectedAudioDevice
                 };
                 await this.UpdateAudio(constraintsAudio);
-            }
-            else {
+            } else {
                 this.StopAudio();
             }
             this.needsUpdate.audio = true;
@@ -116,12 +123,11 @@ export class Media {
         if (JSON.stringify(newSelectedVideoDevice) !== JSON.stringify(this.selectedVideoDevice)) {
             this.selectedVideoDevice = newSelectedVideoDevice;
             if (this.selectedVideoDevice) {
-                var constraintsVideo = {
+                const constraintsVideo = {
                     video: this.selectedVideoDevice
                 };
                 await this.UpdateVideo(constraintsVideo);
-            }
-            else {
+            } else {
                 this.StopVideo();
             }
             this.needsUpdate.video = true;
@@ -129,24 +135,13 @@ export class Media {
     }
 
     SelectDevice(deviceId, deviceList) {
-        if (deviceId != -1) {
-            if (deviceId != null) {
+        if (deviceId !== -1) {
+            if (deviceId !== null) {
                 return { deviceId: { exact: deviceList[deviceId][0] } };
             } else if (deviceList.length !== 0) {
                 return { deviceId: { exact: deviceList[0][0] } };
             }
         }
-
         return false;
-    }
-
-    static AddTracks(trackList, stream) {
-        trackList.forEach(track => { track.mode = 'showing'; stream.addTrack(track); });
-    }
-    static RemoveTracks(trackList, stream, stop = false) {
-        trackList.forEach(track => {
-            if (stop) track.stop();
-            stream.removeTrack(track)
-        });
     }
 }

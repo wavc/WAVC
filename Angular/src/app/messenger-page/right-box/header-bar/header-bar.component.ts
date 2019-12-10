@@ -17,9 +17,9 @@ export class HeaderBarComponent implements OnInit {
   }
 
   StartAudio() {
-    window.open("/call/" + this.conversation.conversationId, "", "modal=yes,width=650,height=600");
+    window.open('/call/' + this.conversation.conversationId, '', 'modal=yes,width=650,height=600');
   }
-  
+
   ngOnInit() {
     this.chatService.currentConversation
     .subscribe(data => this.conversation = data);
