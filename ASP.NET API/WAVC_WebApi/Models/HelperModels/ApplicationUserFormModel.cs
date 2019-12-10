@@ -11,6 +11,6 @@ namespace WAVC_WebApi.Models.HelperModels
         public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public IFormFile ProfilePicture { get; set; }
+        public IFormFile ProfilePictureUrl { get; set; }
     }
 }

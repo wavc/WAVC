@@ -32,6 +32,8 @@
     "ngx-bootstrap-slider": "^1.7.0",
     "ngx-color-picker": "^8.2.0",
     "ngx-toastr": "^10.2.0",
+    "parcel-plugin-wrapper": "^0.2.2",
+    "peerjs": "^1.1.0",
     "paper": "^0.12.3",
     "rxjs": "~6.4.0",
     "save": "^2.4.0",

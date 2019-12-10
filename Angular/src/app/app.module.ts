@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
@@ -27,6 +26,9 @@ import { NotificationComponent } from './messenger-page/left-box/nav-bar/notific
 import { SearchListElementComponent } from './messenger-page/left-box/friends-list/search-list-element/search-list-element.component';
 import { ProfileEditorModalComponent } from './messenger-page/left-box/nav-bar/profile-editor-modal/profile-editor-modal.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { AudioAndVideoPageComponent } from './audio-and-video-page/audio-and-video-page.component';
+// tslint:disable-next-line:max-line-length
+import { VideoAndAudioOptionsModalComponent } from './audio-and-video-page/video-and-audio-options-modal/video-and-audio-options-modal.component';
 import { SendMessageModalComponent } from './messenger-page/left-box/nav-bar/send-message-modal/send-message-modal.component';
 import { Globals } from './shared/globals';
 import { ChatService } from './services/chat.service';
@@ -56,9 +58,10 @@ import { Ng5SliderModule } from 'ng5-slider';
     NavBarComponent,
     NotificationComponent,
     ProfileEditorModalComponent,
+    AudioAndVideoPageComponent,
+    VideoAndAudioOptionsModalComponent,
     SendMessageModalComponent,
     VirtualBoardComponent,
-
   ],
   imports: [
     MatProgressBarModule,

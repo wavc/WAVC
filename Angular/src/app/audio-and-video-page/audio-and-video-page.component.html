@@ -1,0 +1,33 @@
+<div class="d-flex w-100 h-100 flex-column">
+    <div style="flex: 1 0 auto;">
+        <div id="video_container" class="h-100 justify-content-center">
+        </div>
+    </div>
+    <div class="flex-shrink-0">
+        <div class="d-flex justify-content-center">
+            <div class="m-1">
+                <button data-toggle="modal" data-target="#optionsModal" class="btn btn-primary btn-circle settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+            <div class="m-1">
+                <button class="btn btn-primary btn-circle settings" (click)="ToggleAudio()">
+                    <i class="fas fa-microphone" id="microphone-icon"></i>
+                </button>
+            </div>
+            <div class="m-1">
+                <button class="btn btn-primary btn-circle settings" (click)="ToggleVideo()">
+                    <i class="fas fa-video-slash" id="video-icon"></i>
+                </button>
+            </div>
+            <div class="m-1">
+                <button class="btn btn-danger btn-circle settings" (click)="Stop()">
+                    <i class="fas fa-phone-slash"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+<app-video-and-audio-options-modal class="modal fade" id="optionsModal" [media]="media">
+</app-video-and-audio-options-modal>

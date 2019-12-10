@@ -130,6 +130,7 @@ namespace WAVC_WebApi
             app.UseSignalR(routes =>
             {
                 routes.MapHub<FriendRequestHub>("/signalR/FriendRequest");
+                routes.MapHub<ConnectPeers>("/signalR/ConnectPeers");
                 routes.MapHub<MessagesHub>("/signalR/Messages");
                 routes.MapHub<ConversationHub>("/signalR/Conversations");
                 routes.MapHub<VirtualBoardHub>("/signalR/VirtualBoard", options =>

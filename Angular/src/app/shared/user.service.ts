@@ -9,7 +9,7 @@ export class UserService {
 
   constructor(private fb: FormBuilder, private http: HttpClient) { }
 
-  readonly BaseURI = 'https://localhost:44395/api';
+  readonly BaseURI = '/api';
 
   formModel = this.fb.group({
     Email: ['', Validators.email],

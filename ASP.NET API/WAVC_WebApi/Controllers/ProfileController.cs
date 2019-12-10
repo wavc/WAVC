@@ -26,6 +26,7 @@ namespace WAVC_WebApi.Controllers
         {
             _userManager = userManager;
         }
+
         // GET: api/<controller>
         [HttpGet]
         public async Task<ApplicationUserModel> GetAsync()
@@ -41,19 +42,17 @@ namespace WAVC_WebApi.Controllers
             var user = await _userManager.GetUserAsync(HttpContext.User);
             user.FirstName = userModel.FirstName;
             user.LastName = userModel.LastName;
-            if(userModel.ProfilePicture != null)
+            if (userModel.ProfilePictureUrl != null)
             {
-                if(user.ProfilePictureUrl != "/images/profiles/default.jpg")
+                if (user.ProfilePictureUrl != "/images/profiles/default.jpg")
                 {
                     System.IO.File.Delete("wwwroot/" + user.ProfilePictureUrl);
                 }
-                user.ProfilePictureUrl = "/images/profiles/" + user.Id + Path.GetExtension(userModel.ProfilePicture.FileName);
+                user.ProfilePictureUrl = "/images/profiles/" + user.Id + Path.GetExtension(userModel.ProfilePictureUrl.FileName);
 
-                await userModel.ProfilePicture.SaveFileAsync(user.ProfilePictureUrl);
+                await userModel.ProfilePictureUrl.SaveFileAsync(user.ProfilePictureUrl);
             }
             await _userManager.UpdateAsync(user);
         }
-
-
     }
 }
