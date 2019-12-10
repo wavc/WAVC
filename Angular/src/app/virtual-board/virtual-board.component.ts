@@ -92,7 +92,7 @@ export class VirtualBoardComponent implements OnInit {
 
   private async configureSignalRConnection() {
     this.signalRConnection = this.signalRService.startConnection('/VirtualBoard', () => {
-      this.signalRConnection.send('JoinVirtualBoardSession', 10);
+      this.signalRConnection.send('JoinVirtualBoardSession', this.conversationId);
     });
 
     this.configureOnSendEntireBoard();

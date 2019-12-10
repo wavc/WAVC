@@ -49,10 +49,13 @@ namespace WAVC_WebApi.Hubs
 
         public async Task JoinVirtualBoardSession(int conversationId)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, conversationId.ToString());
-            await Clients.OthersInGroup(conversationId.ToString()).RequestSendVirtualBoard(Context.ConnectionId);
+            var user = await _userManager.FindByIdAsync(Context.User.Identity.Name);
+            var aucs = _dbContext.ApplicationUserConversations.Where(auc => auc.ConversationId == conversationId);
+            if (aucs.Any(auc => auc.UserId == user.Id))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, conversationId.ToString());
+                await Clients.OthersInGroup(conversationId.ToString()).RequestSendVirtualBoard(Context.ConnectionId);
+            }
         }
-
-
     }
 }
