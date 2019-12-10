@@ -32,6 +32,10 @@ import { Globals } from './shared/globals';
 import { ChatService } from './services/chat.service';
 import { BodyEvents } from './services/body-events.service';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { VirtualBoardComponent } from './virtual-board/virtual-board.component';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { Ng5SliderModule } from 'ng5-slider';
+
 
 @NgModule({
   declarations: [
@@ -53,6 +57,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     NotificationComponent,
     ProfileEditorModalComponent,
     SendMessageModalComponent,
+    VirtualBoardComponent,
 
   ],
   imports: [
@@ -66,7 +71,9 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
       progressBar: true
     }),
     HttpClientModule,
-    NgbModule
+    NgbModule,
+    ColorPickerModule,
+    Ng5SliderModule
   ],
   providers: [
     UserService,

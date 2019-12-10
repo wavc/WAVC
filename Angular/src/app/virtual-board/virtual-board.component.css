@@ -1,0 +1,3 @@
+.button-strict > * {
+  pointer-events: none;
+}
