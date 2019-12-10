@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using WAVC_WebApi.Data;
 using WAVC_WebApi.Hubs.Interfaces;
@@ -14,9 +15,11 @@ namespace WAVC_WebApi.Hubs
     [Authorize]
     class VirtualBoardHub : Hub<IVirtualBoardClient>
     {
+        private static Dictionary<string, int> _onlineClientCounts = new Dictionary<string, int>();
 
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
+
 
         public VirtualBoardHub(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager)
         {
@@ -24,23 +27,32 @@ namespace WAVC_WebApi.Hubs
             _userManager = userManager;
         }
 
-        public async Task SendBoardChange(string id, object board, object boardEvent)
+        public async Task SendOnMouseDragEvent(int conversationId, string id, object[] data)
         {
-//            var user = await _userManager.FindByIdAsync(Context.User.Identity.Name);
-            await Clients.All.SendBoardChange(id, board, boardEvent);
+            await Clients.Groups(conversationId.ToString()).SendOnMouseDragEvent(conversationId, id, data);
         }
 
-        public async Task SendOnMouseDragEvent(string id, object[] data)
+        public async Task SendOnMouseDownEvent(int conversationId, string userId, object[] data)
         {
-            await Clients.All.SendOnMouseDragEvent(id, data);
+            await Clients.Groups(conversationId.ToString()).SendOnMouseDownEvent(conversationId, userId, data);
         }
-        public async Task SendOnMouseDownEvent(string id, object[] data)
+
+        public async Task SendOnMouseUpEvent(int conversationId, string userId, object[] data)
         {
-            await Clients.All.SendOnMouseDownEvent(id, data);
+            await Clients.Groups(conversationId.ToString()).SendOnMouseUpEvent(conversationId, userId, data);
         }
-        public async Task SendOnMouseUpEvent(string id, object[] data)
+
+        public async Task SendEntireBoardToConnectionId(string connectionId, object board)
         {
-            await Clients.All.SendOnMouseUpEvent(id, data);
+            await Clients.Client(connectionId).SendEntireBoard(board);
         }
+
+        public async Task JoinVirtualBoardSession(int conversationId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, conversationId.ToString());
+            await Clients.OthersInGroup(conversationId.ToString()).RequestSendVirtualBoard(Context.ConnectionId);
+        }
+
+
     }
 }

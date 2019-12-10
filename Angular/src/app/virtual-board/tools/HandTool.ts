@@ -2,13 +2,13 @@ import { Tool, Project, Point, Path } from 'paper';
 
 export class HandTool extends Tool {
 
-    private project: Project
+    private project: Project;
     private hitOptions: any;
     private segment: any;
     private path: any;
     private myId: string;
 
-    constructor(private signaRConnection: signalR.HubConnection, project: Project, hitOptions: any) {
+    constructor(private conversationId, private signaRConnection: signalR.HubConnection, project: Project, hitOptions: any) {
         super();
         this.project = project;
         this.hitOptions = hitOptions;
@@ -17,44 +17,44 @@ export class HandTool extends Tool {
     }
 
     onMouseDown = (event) => {
-        this.tryOnMouseDownEventOnPoint(event.point); 
-        this.signaRConnection.send('SendOnMouseDownEvent', this.myId, ["hand", event.point]);
+        this.tryOnMouseDownEventOnPoint(event.point);
+        this.signaRConnection.send('SendOnMouseDownEvent', this.conversationId, this.myId, ['hand', event.point]);
     }
 
     onMouseDrag = (event) => {
         this.tryOnMouseDragWithDelta(event.delta);
-        this.signaRConnection.send('SendOnMouseDragEvent', this.myId, ["hand", event.delta]);
+        this.signaRConnection.send('SendOnMouseDragEvent', this.conversationId, this.myId, ['hand', event.delta]);
 
     }
     onMouseMove = (event) => {
-        let hitResult = this.project.hitTest(event.point, this.hitOptions);
+        const hitResult = this.project.hitTest(event.point, this.hitOptions);
         this.project.activeLayer.selected = false;
-        if (hitResult && hitResult.item)
+        if (hitResult && hitResult.item) {
             hitResult.item.selected = true;
+        }
     }
 
     public tryOnMouseDragWithDelta(delta) {
         if (this.segment) {
             switch (this.path.name) {
-                case "rectangle":
-                    console.log("rect");
+                case 'rectangle':
+                    console.log('rect');
                     this.resizeRectangle(delta);
                     break;
-                case "circle":
+                case 'circle':
                     this.resizeCircle(this.path, this.segment, delta);
                     break;
-                case "ellipse":
+                case 'ellipse':
                     this.resizeEllipse(this.path, this.segment, delta);
                     break;
-                case "line":
+                case 'line':
                     this.resizeLine(this.path, this.segment, delta);
                     break;
-                case "pen":
+                case 'pen':
                     this.moveFigure(this.path, delta);
                     break;
             }
-        }
-        else if (this.path) {
+        } else if (this.path) {
             this.moveFigure(this.path, delta);
         }
     }
@@ -62,15 +62,13 @@ export class HandTool extends Tool {
     public tryOnMouseDownEventOnPoint(point: any) {
         this.segment = null;
         this.path = null;
-        var hitResult = this.project.hitTest(point, this.hitOptions);
+        const hitResult = this.project.hitTest(point, this.hitOptions);
         if (hitResult) {
             this.path = hitResult.item;
-            if(this.path.name == "ellipse"){
-                console.log("jeb");
-                console.log(this.path.bounds);
+            if (this.path.name === 'ellipse') {
                 this.path.bounds.visible = true;
             }
-            if (hitResult.type == 'segment') {
+            if (hitResult.type === 'segment') {
                 this.segment = hitResult.segment;
                 this.segment.selected = true;
             }
@@ -83,35 +81,41 @@ export class HandTool extends Tool {
     }
 
     private resizeRectangle(delta: any) {
-        console.log("resizing");
-        var type = this.segment.index % 2 ? "side" : "corner";
-        if (type == "side") {
-            var segmentsToMove = [];
+        console.log('resizing');
+        const type = this.segment.index % 2 ? 'side' : 'corner';
+        if (type === 'side') {
+            const segmentsToMove = [];
             segmentsToMove.push(this.segment);
             segmentsToMove.push(this.segment.next);
             segmentsToMove.push(this.segment.previous);
-            var restrictedDelta = (this.segment.index - 1) % 4 ? new Point(0, delta.y) : new Point(delta.x, 0);
-            for (var i = 0; i < segmentsToMove.length; i++)
-                segmentsToMove[i].point = segmentsToMove[i].point.add(restrictedDelta);
-        }
+            const restrictedDelta = (this.segment.index - 1) % 4 ? new Point(0, delta.y) : new Point(delta.x, 0);
+            // for (let i = 0; i < segmentsToMove.length; i++) {
+            //     segmentsToMove[i].point = segmentsToMove[i].point.add(restrictedDelta);
+            for (const segment of segmentsToMove) {
+                segment.point = segment.point.add(restrictedDelta);
+            }
+        } else if (type === 'corner') {
+            const segmentsToMoveV = [];
+            const segmentsToMoveH = [];
 
-        else if (type == "corner") {
-            var segmentsToMoveV = [];
-            var segmentsToMoveH = [];
-            
-            if (this.segment.index % 4 == 0) {
+            if (this.segment.index % 4 === 0) {
                 this.pushNexts(segmentsToMoveH, this.segment);
                 this.pushPreviouses(segmentsToMoveV, this.segment);
-            }
-            else {
+            } else {
                 this.pushNexts(segmentsToMoveV, this.segment);
                 this.pushPreviouses(segmentsToMoveH, this.segment);
             }
-            for (var i = 0; i < segmentsToMoveV.length; i++) {
-                segmentsToMoveV[i].point = segmentsToMoveV[i].point.add(new Point(0, delta.y));
+            // for (let i = 0; i < segmentsToMoveV.length; i++) {
+            //     segmentsToMoveV[i].point = segmentsToMoveV[i].point.add(new Point(0, delta.y));
+            // }
+            for (const segment of segmentsToMoveV) {
+                segment.point = segment.point.add(new Point(0, delta.y));
             }
-            for (var i = 0; i < segmentsToMoveH.length; i++) {
-                segmentsToMoveH[i].point = segmentsToMoveH[i].point.add(new Point(delta.x, 0));
+            // for (let i = 0; i < segmentsToMoveH.length; i++) {
+            //     segmentsToMoveH[i].point = segmentsToMoveH[i].point.add(new Point(delta.x, 0));
+            // }
+            for (const segment of segmentsToMoveH) {
+                segment.point = segment.point.add(new Point(delta.x, 0));
             }
         }
         this.updateRectangleMidSegments(this.path);
@@ -131,7 +135,7 @@ export class HandTool extends Tool {
     }
 
     private updateRectangleMidSegments(rect) {
-        //TODO to change to loop with next previous 
+        // TODO to change to loop with next previous
         rect.segments[1].point.y = (rect.segments[0].point.y + rect.segments[2].point.y) / 2;
         rect.segments[3].point.x = (rect.segments[2].point.x + rect.segments[4].point.x) / 2;
         rect.segments[5].point.y = (rect.segments[4].point.y + rect.segments[6].point.y) / 2;
@@ -139,8 +143,8 @@ export class HandTool extends Tool {
     }
 
     resizeEllipse(path, segment, delta) {
-        //TODO FIX
-        var restrictedDelta = segment.index % 2 ? new Point(0, delta.y) : new Point(delta.x, 0);
+        // TODO FIX
+        const restrictedDelta = segment.index % 2 ? new Point(0, delta.y) : new Point(delta.x, 0);
         segment.point = segment.point.add(restrictedDelta);
         segment.next.point = segment.next.point.add(restrictedDelta.divide(new Point(2, 2)));
         segment.previous.point = segment.previous.point.add(restrictedDelta.divide(new Point(2, 2)));
@@ -148,11 +152,13 @@ export class HandTool extends Tool {
     }
     resizeCircle(path, segment, delta) {
         // TODO FIX
-        var restrictedDelta = segment.index % 2 ? new Point(0, delta.y) : new Point(delta.x, 0);
+        const restrictedDelta = segment.index % 2 ? new Point(0, delta.y) : new Point(delta.x, 0);
         segment.point = segment.point.add(restrictedDelta);
-        segment.next.point = segment.next.point.add(new Point(-restrictedDelta.y, restrictedDelta.x).add(restrictedDelta).divide(new Point(2, 2)));
-        segment.previous.point = segment.previous.point.add(new Point(restrictedDelta.y, -restrictedDelta.x).add(restrictedDelta).divide(new Point(2, 2)));
-        path.smooth(); 
+        segment.next.point = segment.next.point.add(
+            new Point(-restrictedDelta.y, restrictedDelta.x).add(restrictedDelta).divide(new Point(2, 2)));
+        segment.previous.point = segment.previous.point.add(
+            new Point(restrictedDelta.y, -restrictedDelta.x).add(restrictedDelta).divide(new Point(2, 2)));
+        path.smooth();
     }
 
     resizeLine(path, segment, delta) {

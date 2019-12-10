@@ -25,8 +25,12 @@
     "@ctrl/ngx-emoji-mart": "^1.0.2",
     "@ng-bootstrap/ng-bootstrap": "^5.1.2",
 <<<<<<< HEAD
+<<<<<<< HEAD
     "hammerjs": "^2.0.8",
 =======
+=======
+    "file-saver": "^2.0.2",
+>>>>>>> finalize virtual board
     "html2canvas": "^1.0.0-rc.5",
 >>>>>>> vb proto
     "ng-bootstrap": "^1.6.3",

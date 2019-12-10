@@ -12,7 +12,7 @@ export class SignalRService {
 
   constructor() { }
 
-  public startConnection = (url: string): signalR.HubConnection => {
+  public startConnection = (url: string, callback= undefined): signalR.HubConnection => {
     const fullUrl = this.BaseUrl + url;
     console.log('Trying to establish connection to ' + fullUrl);
     if (this.connectionHubs.containsKey(fullUrl)) {
@@ -29,7 +29,7 @@ export class SignalRService {
 
     connection
       .start()
-      .then(() => console.log('Connected to SignalR Successfully!'))
+      .then(() => this.onConnected(callback))
       .catch((error) => console.error(error));
 
     this.connectionHubs.setValue(url, connection);
@@ -38,5 +38,12 @@ export class SignalRService {
 
   public getConnection = (url: string) => {
     return this.connectionHubs.getValue(url);
+  }
+
+  private onConnected = (callback) => {
+    if (callback !== undefined) {
+      callback();
+      console.log('Connected to SignalR Successfully!');
+    }
   }
 }

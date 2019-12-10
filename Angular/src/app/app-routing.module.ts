@@ -11,7 +11,7 @@ const routes: Routes = [
   { path: 'registration', component: RegistrationPageComponent },
   { path: 'sign-in', component: LogInPageComponent },
   { path: 'messenger', component: MessengerPageComponent, canActivate: [AuthGuard] },
-  {path: 'board', component: VirtualBoardComponent}
+  {path: 'board/:id', component: VirtualBoardComponent}
 
 ];
 

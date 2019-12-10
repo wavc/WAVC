@@ -8,14 +8,20 @@ namespace WAVC_WebApi.Hubs.Interfaces
 {
     public interface IVirtualBoardClient
     {
-        Task SendBoardChange(string userId, object board, object boardEvent);
+//        Task SendBoardChange(string connectionId, string userId, object board, object boardEvent);
 
-        Task SendOnMouseDragEvent(string userId, object[] data);
+        Task SendOnMouseDragEvent(int conversation, string userId, object[] data);
 
-        Task SendOnMouseDownEvent(string userId, object[] data);
+        Task SendOnMouseDownEvent(int conversation, string userId, object[] data);
 
-        Task SendOnMouseUpEvent(string userId, object[] data);
+        Task SendOnMouseUpEvent(int conversation, string userId, object[] data);
+        
+        Task SendEntireBoardToConnectionId(string connectionId, object board);
 
-        Task NotifyUsersAboutBoardChange(string userId, object board, object boardEventType);
+        Task SendEntireBoard(object board);
+
+        Task RequestSendVirtualBoard(string connectionId);
+
+        Task JoinVirtualBoardSession(int conversationId);
     }
 }

@@ -45,6 +45,11 @@ export class ChatService {
         }
     }
 
+    public getConversationIds() {
+        const conversations = this.conversationSubject.getValue();
+        return conversations.map(c => c.conversationId);
+    }
+
     private async setupConversations() {
         await this.fetchStaticData();
         await this.attachDynamicData();
