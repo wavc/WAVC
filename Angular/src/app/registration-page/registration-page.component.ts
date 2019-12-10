@@ -32,7 +32,7 @@ export class RegistrationPageComponent implements OnInit {
           data.result.errors.forEach(element => {
             switch (element.code) {
               case 'DuplicateUserName':
-                this.toastr.error('Username is already taken', 'Registration failed.');
+                this.toastr.error('E-mail is already taken', 'Registration failed.');
                 break;
 
               default:
