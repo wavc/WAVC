@@ -1,4 +1,13 @@
-<div class="message message-recieved rounded-1 p-2 m-1">
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae quas aliquid sed quasi rem dolorem veritatis!
-  Repudiandae maiores doloribus rerum? Enim, ipsam voluptas exercitationem vero aliquid id beatae pariatur nemo?
+<div class="message message-recieved rounded-1 p-2 m-1 text-break">
+  <div *ngIf="message.type === 0">
+    {{message.content}}
+  </div>
+  <div *ngIf="message.type === 2">
+    <div *ngFor="let file of message.content.split('|')">
+      <a href="/conversations/{{message.conversationId}}/{{file}}" download>
+        <i class="fas fa-file"></i> {{file}}
+      </a>
+
+    </div>
+  </div>
 </div>

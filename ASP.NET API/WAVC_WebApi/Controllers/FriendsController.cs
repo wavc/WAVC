@@ -22,7 +22,7 @@ namespace WAVC_WebApi.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly FriendsManager _friendsManager;
         private readonly IHubContext<FriendRequestHub, IFriendRequestClient> _friendRequestHubContext;
-
+        
         public FriendsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager, IHubContext<FriendRequestHub, IFriendRequestClient> hubContext)
         {
             _userManager = userManager;

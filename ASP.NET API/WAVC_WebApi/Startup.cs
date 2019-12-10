@@ -131,10 +131,17 @@ namespace WAVC_WebApi
             {
                 routes.MapHub<FriendRequestHub>("/signalR/FriendRequest");
                 routes.MapHub<ConnectPeers>("/signalR/ConnectPeers");
+                routes.MapHub<MessagesHub>("/signalR/Messages");
+                routes.MapHub<ConversationHub>("/signalR/Conversations");
             });
 
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                ServeUnknownFileTypes = true,
+                DefaultContentType = "text/plain",
+                FileProvider = new PhysicalFileProviderAdapter(env.WebRootPath)
+            });
             app.UseMvc(); 
-            app.UseStaticFiles();
 
             //If you want to use SPA runner uncomment code bellow 
             //it has to be below UseMvc to work properly

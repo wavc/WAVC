@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using WAVC_WebApi;
 using WAVC_WebApi.Models;
 using WAVC_WebApi.Models.HelperModels;
 
@@ -40,22 +41,19 @@ namespace WAVC_WebApi.Controllers
             var user = await _userManager.GetUserAsync(HttpContext.User);
             user.FirstName = userModel.FirstName;
             user.LastName = userModel.LastName;
-            if(userModel.ProfilePictureUrl != null)
+            if(userModel.ProfilePicture != null)
             {
-                user.ProfilePictureUrl = "/images/profiles/" + user.Id + Path.GetExtension(userModel.ProfilePictureUrl.FileName);
+                if(user.ProfilePictureUrl != "/images/profiles/default.jpg")
+                {
+                    System.IO.File.Delete("wwwroot/" + user.ProfilePictureUrl);
+                }
+                user.ProfilePictureUrl = "/images/profiles/" + user.Id + Path.GetExtension(userModel.ProfilePicture.FileName);
 
-                await SaveFileAsync(user.ProfilePictureUrl, userModel.ProfilePictureUrl);
+                await userModel.ProfilePicture.SaveFileAsync(user.ProfilePictureUrl);
             }
             await _userManager.UpdateAsync(user);
         }
 
 
-        async Task SaveFileAsync(string name, IFormFile file)
-        {
-            using (var stream = new FileStream("wwwroot/" + name, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-        }
     }
 }

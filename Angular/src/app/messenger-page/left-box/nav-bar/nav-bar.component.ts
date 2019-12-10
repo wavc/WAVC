@@ -18,7 +18,6 @@ export class NavBarComponent implements OnInit {
   friendRequests: ApplicationUserModel[] = [];
   queryMinLength = 2;
   profile = { firstName: '', lastName: '', profilePictureUrl: ''} as ApplicationUserModel;
-  profilePic: string;
   @Output() friendSearchListChange: EventEmitter<ApplicationUserModel[]> = new EventEmitter<ApplicationUserModel[]>();
 
   constructor(
@@ -40,10 +39,7 @@ export class NavBarComponent implements OnInit {
     this.signalRConnection.on('SendFreiendRequestResponse', (user: ApplicationUserModel) => {
       console.log('New Friend: ' + user.firstName + ' ' + user.lastName);
     });
-    this.profileService.getProfile().subscribe(profile => {
-      this.profile = profile;
-      this.profilePic = profile.profilePictureUrl;
-    });
+    this.getProfile();
   }
 
   deleteNotification($event: ApplicationUserModel) {
@@ -53,6 +49,7 @@ export class NavBarComponent implements OnInit {
   onLogout() {
     console.log('logging out');
     localStorage.removeItem('token');
+    localStorage.removeItem('myId');
     this.router.navigateByUrl('/sign-in');
   }
 
@@ -73,6 +70,12 @@ export class NavBarComponent implements OnInit {
     modalRef.componentInstance.profile = this.profile;
     await modalRef.result;
     // add time to query to force image refresh
-    this.profile.profilePictureUrl = this.profilePic + '?t=' +  new Date().getTime();
+    this.getProfile();
+  }
+
+  getProfile() {
+    this.profileService.getProfile().subscribe(profile => {
+      this.profile = profile;
+    });
   }
 }

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { currentConversation } from 'src/app/services/global-data.service';
+import { Globals } from 'src/app/shared/globals';
+import { ConversationModel } from 'src/app/models/conversation.model';
+import { ChatService } from 'src/app/services/chat.service';
 
 @Component({
   selector: 'app-header-bar',
@@ -8,12 +10,20 @@ import { currentConversation } from 'src/app/services/global-data.service';
 })
 export class HeaderBarComponent implements OnInit {
 
-  constructor() { }
 
-  ngOnInit() {
+  private conversation: ConversationModel;
+
+  constructor(private chatService: ChatService) {
   }
 
   StartAudio() {
+    //to change currentConversation.value
     let wnd = window.open("/call/" + currentConversation.value, "", "modal=yes,width=650,height=600");
+  }
+  
+  ngOnInit() {
+    this.chatService.currentConversation
+    .subscribe(data => this.conversation = data);
+
   }
 }

@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistrationPageComponent } from './registration-page/registration-page.component';
@@ -29,7 +28,11 @@ import { ProfileEditorModalComponent } from './messenger-page/left-box/nav-bar/p
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AudioAndVideoPageComponent } from './audio-and-video-page/audio-and-video-page.component';
 import { VideoAndAudioOptionsModalComponent } from './audio-and-video-page/video-and-audio-options-modal/video-and-audio-options-modal.component';
-
+import { SendMessageModalComponent } from './messenger-page/left-box/nav-bar/send-message-modal/send-message-modal.component';
+import { Globals } from './shared/globals';
+import { ChatService } from './services/chat.service';
+import { BodyEvents } from './services/body-events.service';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -52,9 +55,10 @@ import { VideoAndAudioOptionsModalComponent } from './audio-and-video-page/video
     ProfileEditorModalComponent,
     AudioAndVideoPageComponent,
     VideoAndAudioOptionsModalComponent,
+    SendMessageModalComponent,
   ],
   imports: [
-    // signalR,
+    MatProgressBarModule,
     BrowserAnimationsModule,
     BrowserModule,
     AppRoutingModule,
@@ -66,12 +70,18 @@ import { VideoAndAudioOptionsModalComponent } from './audio-and-video-page/video
     HttpClientModule,
     NgbModule
   ],
-  providers: [UserService, ProfileService,
-  {
-    provide: HTTP_INTERCEPTORS,
-    useClass: AuthInterceptor,
-    multi: true
-  }],
+  providers: [
+    UserService,
+    ProfileService,
+    ChatService,
+    UserService,
+    BodyEvents,
+    Globals,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }],
   bootstrap: [AppComponent],
   entryComponents: [ProfileEditorModalComponent]
 })
