@@ -24,6 +24,10 @@ export class ApiService {
     return this.http.post(this.BaseUrl + '/Messages', body);
   }
 
+  sendNewGroupMessage(userIds:string[], initialMessage:string){
+    return this.http.post(this.BaseUrl + "/Conversations/group", {userIds, initialMessage});
+  }
+
   getConversationList() {
     return this.http.get(this.BaseUrl + '/Conversations');
   }

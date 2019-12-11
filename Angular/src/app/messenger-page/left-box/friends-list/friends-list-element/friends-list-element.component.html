@@ -2,9 +2,7 @@
   <img src={{getProfilePictureLink()}} class="rounded-circle profile-picture" />
   <div class="d-flex flex-column w-100 mx-2" [ngClass]="conversation.wasRead ? 'font-weight-light': 'font-weight-bold'">
     <div class="d-flex justify-content-between">
-      <h6 class="mb-1">
-        {{conversation.users[0].firstName + " " + conversation.users[0].lastName}}
-      </h6>
+      <h6 class="mb-1">{{getNameDisplay()}}</h6>
       <i class="fas fa-ellipsis-h"></i>
     </div>
     <div class="container p-0">

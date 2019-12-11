@@ -19,9 +19,16 @@ export class FriendsListElementComponent implements OnInit {
   }
 
   private getProfilePictureLink = () => {
-    const user = this.conversation.users[0];
-    return user.profilePictureUrl;
+      return this.conversation.users[0].profilePictureUrl;
   }
+
+  getNameDisplay = () =>{
+    if( this.conversation.users.length <= 1)
+        return `${this.conversation.users[0].firstName} ${this.conversation.users[0].lastName}`
+    else
+      return this.conversation.users.map(user => user.firstName).join(', ');
+  }
+
   constructor(private globals: Globals) { }
   ngOnInit() {
   }

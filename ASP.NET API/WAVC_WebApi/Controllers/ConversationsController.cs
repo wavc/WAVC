@@ -5,8 +5,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
 using WAVC_WebApi.Data;
+using WAVC_WebApi.Hubs;
+using WAVC_WebApi.Hubs.Interfaces;
 using WAVC_WebApi.Models;
+using WAVC_WebApi.Models.HelperModels;
 
 namespace WAVC_WebApi.Controllers
 {
@@ -17,11 +21,15 @@ namespace WAVC_WebApi.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _dbContext;
+        private readonly IHubContext<ConversationHub, IConversationClient> _conversationHubContext;
+        private readonly MessagesController _messagesController;
 
-        public ConversationsController(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
+        public ConversationsController(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext, IHubContext<MessagesHub, IMessagesClient> messagesHubContext, IHubContext<ConversationHub, IConversationClient> conversationHubContext)
         {
             _userManager = userManager;
             _dbContext = dbContext;
+            _conversationHubContext = conversationHubContext;
+            _messagesController = new MessagesController(messagesHubContext, userManager, dbContext);
         }
 
         [HttpGet]
@@ -53,6 +61,62 @@ namespace WAVC_WebApi.Controllers
             return Ok(conversationModels);
         }
 
+        [HttpPost]
+        [Route("group")]
+        public async Task<IActionResult> CreateConversationForUsersWithInitialMessage([FromBody] GroupMessageModel messageModel)
+        {
+            var invoker = await _userManager.FindByIdAsync(User.Identity.Name);
+            var allIds = new List<string>(messageModel.UserIds) {invoker.Id};
+        
+            var convId = FindConversationThatContainsAllIds(allIds);
+            if (convId == null)
+            {
+                var users = new List<ApplicationUser> {invoker};
+        
+                foreach (var id in messageModel.UserIds)
+                {
+                    var us = await _userManager.FindByIdAsync(id);
+                    if (us == null) 
+                        return BadRequest();
+                    users.Add(us);
+                }
+        
+                await CreateConversationForUsers(users);
+                convId = FindConversationThatContainsAllIds(allIds);
+
+                await FriendRequestsController.NotifyUsersAboutNewConversation(_conversationHubContext, convId ?? default, 
+                    users.Select(u =>new ApplicationUserModel(u)).ToList());
+
+            }
+
+            await _messagesController.SaveMessageAsync(new MessageModel()
+                {
+                    Content = messageModel.InitialMessage,
+                    ConversationId = convId ?? default,
+                    senderId = invoker.Id,
+                    Type = Message.Type.Text
+                },
+                invoker, 
+                Message.Type.Text);
+          
+        
+            return Ok();
+        }
+        
+        private int? FindConversationThatContainsAllIds(List<string> userIds)
+        {
+            var conversations = _dbContext.ApplicationUserConversations
+                .GroupBy(auc => auc.ConversationId).Select(g => g.ToList());
+        
+            foreach (var conf in conversations)
+            {
+                if (conf.All(auc => userIds.Contains(auc.UserId)) && conf.Count == userIds.Count)
+                {
+                    return conf.First().ConversationId;
+                };
+            }
+            return null;
+        }
 
         [HttpPost]
         [Route("create")]

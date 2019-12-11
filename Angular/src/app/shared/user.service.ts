@@ -59,7 +59,9 @@ export class UserService {
   getFriendsList() {
     return this.http.get(this.BaseURI + '/Friends');
   }
-
+  getSearchFriend(query: string){
+    return this.http.get(this.BaseURI + '/Friends/Search?query='+ query);
+  }
 
   getFriendRequestsList() {
     return this.http.get(this.BaseURI + '/FriendRequests');

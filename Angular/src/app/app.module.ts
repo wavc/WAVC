@@ -37,7 +37,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { VirtualBoardComponent } from './virtual-board/virtual-board.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { Ng5SliderModule } from 'ng5-slider';
-
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @NgModule({
   declarations: [
@@ -76,7 +76,8 @@ import { Ng5SliderModule } from 'ng5-slider';
     HttpClientModule,
     NgbModule,
     ColorPickerModule,
-    Ng5SliderModule
+    Ng5SliderModule,
+    NgSelectModule
   ],
   providers: [
     UserService,
