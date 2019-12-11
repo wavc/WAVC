@@ -84,7 +84,7 @@ namespace WAVC_WebApi.Controllers
                 await CreateConversationForUsers(users);
                 convId = FindConversationThatContainsAllIds(allIds);
 
-                await FriendRequestsController.NotifyUsersAboutNewConversation(_conversationHubContext, convId ?? default, 
+                await FriendRequestsController.NotifyUsersAboutNewConversation(_conversationHubContext, convId ?? 0, 
                     users.Select(u =>new ApplicationUserModel(u)).ToList());
 
             }
