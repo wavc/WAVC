@@ -65,7 +65,7 @@ export class SenderBarComponent implements OnInit {
 
     const messageText = messageInput.value.trim();
 
-    if (this.filesInput.files !== null) {
+    if (this.filesInput.files.length > 0) {
       this.SaveFiles();
     }
     if (messageText === '') {
