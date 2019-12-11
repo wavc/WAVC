@@ -18,10 +18,10 @@ export class SendMessageModalComponent implements OnInit {
   people$: Observable<any>;
   peopleLoading = false;
   peopleInput$ = new Subject<string>();
-  selectedPersons: ApplicationUserModel[] = <any>[];
-  
+  selectedPersons: ApplicationUserModel[] = [] as any;
+
   constructor(private service: UserService, private apiService: ApiService) { }
-  
+
   ngOnInit() {
       this.loadPeople();
   }
@@ -42,14 +42,14 @@ export class SendMessageModalComponent implements OnInit {
             )
         );
     }
-    
-    sendNewTextMessage(){
-        this.apiService.sendNewGroupMessage(this.selectedPersons.map(p => p.id),this.myInput.nativeElement.value).subscribe();
+
+    sendNewTextMessage() {
+        this.apiService.sendNewGroupMessage(this.selectedPersons.map(p => p.id), this.myInput.nativeElement.value).subscribe();
         this.purge();
     }
 
     private purge() {
-        this.myInput.nativeElement.value = "";
+        this.myInput.nativeElement.value = '';
         this.selectedPersons = [];
     }
 }
