@@ -24,10 +24,6 @@ namespace WAVC_WebApi.Data
         {
             modelBuilder.Entity<Relationship>()
                 .HasKey(r => new { r.UserId, r.RelatedUserId });
-            modelBuilder.Entity<Relationship>()
-                .HasOne(r => r.User)
-                .WithMany(u => u.Friends)
-                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<ApplicationUserConversation>()
                 .HasKey(auc => new { auc.UserId, auc.ConversationId });

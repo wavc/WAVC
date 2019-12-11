@@ -38,32 +38,10 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
             if (user == null || await _userManager.CheckPasswordAsync(user, model.Password) == false)
                 return BadRequest(new { message = "Username or password is incorrect." });
 
-            string token = GenerateToken(user);
+            string token = new TokenGenerator(_applicationSettings.JWTSecret).GenerateToken(user);
+
             string myId = user.Id;
             return Ok(new { token, myId });
-
         }
-
-        private string GenerateToken(ApplicationUser user)
-        {
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                    {
-                        new Claim(ClaimTypes.Name, user.Id),
-                        new Claim(ClaimTypes.NameIdentifier, user.Id)
-                    }),
-
-                Expires = DateTime.UtcNow.AddHours(6),
-                SigningCredentials = new SigningCredentials(
-                                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_applicationSettings.JWTSecret)),
-                                SecurityAlgorithms.HmacSha256Signature)
-            };
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
-            var token = tokenHandler.WriteToken(securityToken);
-
-            return token;
-        }   
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System;
 using System.Threading.Tasks;
 using WAVC_WebApi.Models;
@@ -11,10 +12,12 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
     public class RegisterController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationSettings _applicationSettings;
 
-        public RegisterController(UserManager<ApplicationUser> userManager)
+        public RegisterController(UserManager<ApplicationUser> userManager, IOptions<ApplicationSettings> appSettings)
         {
             _userManager = userManager;
+            _applicationSettings = appSettings.Value;
         }
 
         [HttpPost]
@@ -33,7 +36,16 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
             try
             {
                 var result = await _userManager.CreateAsync(applicationUser, model.Password);
-                return Ok(result);
+
+                if (!result.Succeeded)
+                {
+                    return Ok(new { result });
+                }
+
+                var createdUser = await _userManager.FindByNameAsync(applicationUser.UserName);
+                string token = new TokenGenerator(_applicationSettings.JWTSecret).GenerateToken(createdUser);
+
+                return Ok(new { result, token });
             }
             catch (Exception)
             {

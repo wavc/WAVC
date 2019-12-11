@@ -20,17 +20,19 @@ export class RegistrationPageComponent implements OnInit {
     console.log(this.service.formModel);
 
     this.service.register().subscribe(
-      (res: any) => {
-        if (res.succeeded) {
+      (data: any) => {
+        console.log(data);
+        if (data.result.succeeded) {
+          localStorage.setItem('token', data.token);
           this.service.formModel.reset();
           this.toastr.success('New user created!', 'Registration successful.');
-          this.router.navigateByUrl('/sign-in');
+          this.router.navigateByUrl('/messenger');
 
         } else {
-          res.errors.forEach(element => {
+          data.result.errors.forEach(element => {
             switch (element.code) {
               case 'DuplicateUserName':
-                this.toastr.error('Username is already taken', 'Registration failed.');
+                this.toastr.error('E-mail is already taken', 'Registration failed.');
                 break;
 
               default:
