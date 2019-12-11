@@ -36,7 +36,7 @@ namespace WAVC_WebApi.Controllers
             _conversationHubContext = conversationHubContext;
             _messageHubContext = messageHubContext;
             _friendsManager = new FriendsManager(context);
-            _conversationsController = new ConversationsController(_userManager, _dbContext);
+            _conversationsController = new ConversationsController( _userManager, _dbContext, null, null);
 
         }
 
@@ -110,7 +110,7 @@ namespace WAVC_WebApi.Controllers
                     var conversation = await _conversationsController.CreateConversationForUsers(new List<ApplicationUser>{sender, reciever});
                     await _friendsManager.AcceptRequestAsync(sender, reciever);
                     await _friendRequestHubContext.Clients.User(reciever.Id).SendFreiendRequestResponse(new ApplicationUserModel(sender));
-                    await NotifyUsersAboutNewConversation(conversation.ConversationId,
+                    await NotifyUsersAboutNewConversation(_conversationHubContext, conversation.ConversationId,
                         new List<ApplicationUserModel>
                             {
                                 new ApplicationUserModel(sender),
@@ -156,7 +156,7 @@ namespace WAVC_WebApi.Controllers
 
             return queryResult;
         }
-        public async Task NotifyUsersAboutNewConversation(int conversationId, List<ApplicationUserModel> users)
+        public static async Task NotifyUsersAboutNewConversation(IHubContext<ConversationHub, IConversationClient> conversationHubContext, int conversationId, List<ApplicationUserModel> users)
         {
             foreach (var userModel in users)
             {
@@ -167,7 +167,7 @@ namespace WAVC_WebApi.Controllers
                     WasRead = true
                 };
                 
-                await _conversationHubContext.Clients.User(userModel.Id).SendNewConversation(conversationModel);
+                await conversationHubContext.Clients.User(userModel.Id).SendNewConversation(conversationModel);
             }
         }
     }

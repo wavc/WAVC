@@ -87,8 +87,8 @@ namespace WAVC_WebApi.Controllers
             }
             return Ok();
         }
-
-        private async Task<bool> SaveMessageAsync(MessageModel messageModel, ApplicationUser user, Message.Type type)
+        [NonAction]
+        public async Task<bool> SaveMessageAsync(MessageModel messageModel, ApplicationUser user, Message.Type type)
         {
             var conversation = await _dbContext.Conversations.FindAsync(messageModel.ConversationId);
 
