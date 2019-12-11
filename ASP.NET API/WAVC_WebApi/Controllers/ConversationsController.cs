@@ -92,7 +92,7 @@ namespace WAVC_WebApi.Controllers
             await _messagesController.SaveMessageAsync(new MessageModel()
                 {
                     Content = messageModel.InitialMessage,
-                    ConversationId = convId ?? default,
+                    ConversationId = convId ?? 0,
                     senderId = invoker.Id,
                     Type = Message.Type.Text
                 },
