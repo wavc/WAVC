@@ -118,6 +118,7 @@ export class SenderBarComponent implements OnInit {
         case HttpEventType.Response:
           this.progressBar = 0;
           this.fileInfo.classList.add('hide_element');
+          this.filesInput.files = this.ArrayToFileList([]);
           this.fileArray = [];
           break;
         case HttpEventType.Sent:
