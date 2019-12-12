@@ -8,7 +8,7 @@ import { MessageModel } from '../models/message.model';
   providedIn: 'root'
 })
 export class ApiService {
-  readonly BaseUrl = 'https://localhost:44395/api';
+  readonly BaseUrl = '/api';
 
   constructor(public globals: Globals, private http: HttpClient) { }
 

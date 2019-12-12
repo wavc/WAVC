@@ -45,7 +45,8 @@ namespace WAVC_WebApi.Controllers.AuthenticationControllers
                 var createdUser = await _userManager.FindByNameAsync(applicationUser.UserName);
                 string token = new TokenGenerator(_applicationSettings.JWTSecret).GenerateToken(createdUser);
 
-                return Ok(new { result, token });
+                string myId = createdUser.Id;
+                return Ok(new { result, token, myId });
             }
             catch (Exception)
             {

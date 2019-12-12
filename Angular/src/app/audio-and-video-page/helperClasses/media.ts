@@ -135,7 +135,7 @@ export class Media {
     }
 
     SelectDevice(deviceId, deviceList) {
-        if (deviceId !== -1) {
+        if (deviceId !== '-1') {
             if (deviceId !== null) {
                 return { deviceId: { exact: deviceList[deviceId][0] } };
             } else if (deviceList.length !== 0) {

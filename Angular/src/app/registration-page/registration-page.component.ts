@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../shared/user.service';
 import { Router } from '@angular/router';
+import { Globals } from '../shared/globals';
 
 @Component({
   selector: 'app-registration-page',
@@ -10,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class RegistrationPageComponent implements OnInit {
 
-  constructor(public service: UserService, private toastr: ToastrService, private router: Router) { }
+  constructor(public service: UserService, private toastr: ToastrService, private router: Router, public globals: Globals) { }
 
   ngOnInit() {
     this.service.formModel.reset();
@@ -24,6 +25,8 @@ export class RegistrationPageComponent implements OnInit {
         console.log(data);
         if (data.result.succeeded) {
           localStorage.setItem('token', data.token);
+          localStorage.setItem('myId', data.myId);
+          this.globals.myId = data.myId;
           this.service.formModel.reset();
           this.toastr.success('New user created!', 'Registration successful.');
           this.router.navigateByUrl('/messenger');
